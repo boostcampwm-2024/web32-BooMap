@@ -16,7 +16,7 @@ AI 기반 마인드맵 자동화 서비스
 
 | J001 강민주                                                               | J026 김남희                                                          | J155 양현호                                                           | J238 조민형                                                              |
 | ---------------------------------------------------------------------- | ----------------------------------------------------------------- | ------------------------------------------------------------------ | --------------------------------------------------------------------- |
-| <img src="https://i.imgur.com/zjvZ2sa.jpeg" width=150 height=150/><br> | <img src="https://i.imgur.com/GMFP1FK.png" width=150 heigth=150/> | <img src="https://i.imgur.com/wtHJtfD.jpeg" width=150 height=150/> | <img src="https://i.imgur.com/wXzG6SX.png" width=150 height=150/><br> |
+| <img src="https://i.imgur.com/zjvZ2sa.jpeg" width=150 height=150/> | <img src="https://i.imgur.com/GMFP1FK.png" width=150 height=150/> | <img src="https://i.imgur.com/wtHJtfD.jpeg" width=150 height=150/> | <img src="https://i.imgur.com/wXzG6SX.png" width=150 height=150/>|
 | [@Minju9187](https://github.com/Minju9187)                             | [@kimnamheeee](https://github.com/kimnamheeee)                    | [@adkm12](https://github.com/adkm12)                               | [@alsgud8311](https://github.com/alsgud8311)                          |
 
 ### 🔗 Links
