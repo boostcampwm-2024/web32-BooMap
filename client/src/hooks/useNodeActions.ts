@@ -8,23 +8,30 @@ export default function useNodeActions(content: string) {
   function handleMouseEnter() {
     setHover(true);
   }
+
   function handleMouseLeave() {
     setHover(false);
   }
+
   function handleDoubleClick() {
     setIsEditing(true);
   }
+
   function handleBlur() {
+    if (!keyword) setKeyword("제목없는 키워드");
     setIsEditing(false);
   }
+
   function handleChangeKeyword(e: ChangeEvent<HTMLInputElement>) {
     setKeyword(e.target.value);
   }
+
   function handleKeyDown(e: KeyboardEvent<HTMLInputElement>) {
     if (e.key == "Enter") {
-      setIsEditing(false);
+      handleBlur();
     }
   }
+
   return {
     hover,
     isEditing,
