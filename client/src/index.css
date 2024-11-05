@@ -3,6 +3,17 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  body {
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  img {
+    -webkit-user-drag: none;
+    pointer-events: none;
+  }
+}
+
 :root {
   font-family: Pretendard, sans-serif;
   line-height: 1.5;
