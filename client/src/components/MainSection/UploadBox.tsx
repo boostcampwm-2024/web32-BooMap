@@ -1,9 +1,9 @@
-import { useRef, useState } from "react";
+import { RefAttributes, useRef, useState } from "react";
 import voiceIcon from "@/assets/voiceFile.png";
 import { Input } from "@headlessui/react";
 
 export default function UploadBox() {
-  const fileInputRef = useRef(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [file, setFile] = useState<File | null>(null);
   const [isDragging, setIsDragging] = useState<boolean>(false);
 
@@ -47,7 +47,7 @@ export default function UploadBox() {
 
   return (
     <div
-      className={`flex h-full w-full border-spacing-9 cursor-pointer flex-col items-center justify-center gap-8 rounded-xl border-[3px] p-4 text-grayscale-400 ${isDragging ? "bg-grayscale-300" : "border-dotted"}`}
+      className={`flex h-full w-full border-spacing-9 cursor-pointer flex-col items-center justify-center gap-8 rounded-xl border-[3px] border-grayscale-300 p-4 text-grayscale-400 ${isDragging ? "bg-grayscale-400" : "border-dotted"}`}
       onClick={handleClick}
       onDrop={onDrop}
       onDragEnter={onDragEnter}
