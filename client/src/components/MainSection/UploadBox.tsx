@@ -1,10 +1,13 @@
-import { RefAttributes, useRef, useState } from "react";
+import { Dispatch, SetStateAction, useRef, useState } from "react";
 import voiceIcon from "@/assets/voiceFile.png";
 import { Input } from "@headlessui/react";
 
-export default function UploadBox() {
+type UploadBoxProps = {
+  file: File | null;
+  setFile: Dispatch<SetStateAction<File | null>>;
+};
+export default function UploadBox({ file, setFile }: UploadBoxProps) {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const [file, setFile] = useState<File | null>(null);
   const [isDragging, setIsDragging] = useState<boolean>(false);
 
   function handleClick() {
