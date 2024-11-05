@@ -1,6 +1,6 @@
+import UploadBox from "@/components/MainSection/ControlSection/UploadBox";
 import { Button } from "@headlessui/react";
 import { useState } from "react";
-import UploadBox from "@/components/MainSection/Uploadbox";
 
 export default function VoiceFileUpload() {
   const [file, setFile] = useState<File | null>(null);
