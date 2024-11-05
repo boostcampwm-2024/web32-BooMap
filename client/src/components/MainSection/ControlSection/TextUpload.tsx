@@ -1,7 +1,6 @@
+import { TEXT_UPLOAD_LIMIT } from "@/constants/textUploadLimit";
 import { Button, Input, Textarea } from "@headlessui/react";
 import { useState } from "react";
-
-const CONTENT_LIMIT = 10000;
 
 export default function TextUpload() {
   const [title, setTitle] = useState("제목 없는 마인드맵");
@@ -25,7 +24,7 @@ export default function TextUpload() {
           onChange={(e) => setContent(e.target.value)}
         />
         <p className="text-right text-grayscale-400">
-          {content.length}/{CONTENT_LIMIT}
+          {content.length}/{TEXT_UPLOAD_LIMIT}
         </p>
       </div>
       <Button className="rounded-xl bg-bm-blue p-3">🚀 만들기</Button>
