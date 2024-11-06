@@ -1,0 +1,21 @@
+# 빌드
+FROM node:22-alpine AS build
+WORKDIR /app
+
+COPY ./client/package*.json ./
+RUN npm install
+
+COPY ./client ./
+
+RUN npm run build
+
+# 웹서버
+FROM nginx:alpine
+
+WORKDIR /
+
+COPY ./nginx/default /etc/nginx/sites-available/default
+
+COPY --from=build /app/dist ./usr/share/nginx/html
+
+CMD ["nginx", "-g", "daemon off;"]
