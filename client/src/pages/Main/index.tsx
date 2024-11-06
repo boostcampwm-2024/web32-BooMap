@@ -4,9 +4,9 @@ import Sidebar from "@/components/Sidebar";
 
 export default function MainPage() {
   return (
-    <main className="w-screen h-screen flex">
+    <main className="flex h-screen min-h-[700px] w-full min-w-[900px]">
       <Sidebar />
-      <div className="w-full h-screen flex flex-col">
+      <div className="flex h-full w-full flex-col">
         <Header />
         <MainSection />
       </div>

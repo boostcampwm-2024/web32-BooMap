@@ -11,7 +11,7 @@ export default function NodeList({ data, depth = 1, updateNodeList }: NodeListPr
   const { open, handleAccordian } = useAccordian();
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex h-full flex-col gap-2">
       {data && <NodeItem content={data.content} depth={nodeDepth} handleAccordian={handleAccordian} open={open} />}
       {open &&
         data?.children.map((node) => {

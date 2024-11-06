@@ -25,11 +25,11 @@ export default function NodeItem({ content, depth, open, handleAccordian }: Node
     handleMouseLeave,
     handleKeyDown,
   } = useNodeActions(content);
-  const margin = ((depth - 1) * 5).toString();
 
   return (
     <div
-      className={`flex cursor-pointer justify-between rounded-xl bg-grayscale-600 p-3 ml-${margin}`}
+      className="flex cursor-pointer justify-between rounded-xl bg-grayscale-600 p-3"
+      style={{ marginLeft: `${(depth - 1) * 30}px` }}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >

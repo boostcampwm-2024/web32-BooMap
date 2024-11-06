@@ -3,14 +3,13 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-  body {
-    user-select: none;
-    -webkit-user-select: none;
+@layer utilities {
+  .no-scrollbar ::-webkit-scrollbar {
+    display: none;
   }
-  img {
-    -webkit-user-drag: none;
-    pointer-events: none;
+  .no-scrollbar {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
   }
 }
 

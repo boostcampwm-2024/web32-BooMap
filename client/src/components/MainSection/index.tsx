@@ -1,4 +1,5 @@
 import ControlSection from "@/components/MainSection/ControlSection";
+import MindMapView from "@/components/MindMapView";
 import useSection from "@/hooks/useSection";
 import NodeListProvider from "@/store/NodeListProvider";
 
@@ -11,11 +12,12 @@ export default function MainSection() {
     default: "텍스트 형식으로 업로드",
   };
   return (
-    <main className="box-border flex h-full flex-col p-8">
+    <main className="flex h-full w-full flex-col p-8">
       <NodeListProvider>
         <p className="p-3 text-2xl font-bold">{modeView[mode] || modeView.default}</p>
-        <div className="h-full">
+        <div className="flex h-full w-full gap-4">
           <ControlSection />
+          <MindMapView />
         </div>
       </NodeListProvider>
     </main>

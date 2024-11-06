@@ -13,7 +13,7 @@ export default function ControlSection() {
   };
 
   return (
-    <section className="h-full w-1/3 min-w-80 max-w-[420px] rounded-[20px] bg-grayscale-700 p-8">
+    <section className="no-scrollbar h-full w-1/3 min-w-80 max-w-[420px] overflow-y-scroll rounded-[20px] bg-grayscale-700 p-8">
       {modeView[mode] || modeView.default}
     </section>
   );
