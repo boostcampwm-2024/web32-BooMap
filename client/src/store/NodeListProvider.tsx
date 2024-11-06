@@ -7,26 +7,164 @@ export type NodeListContextType = {
 };
 
 const nodeData = {
-  content: "qwrqwrqwrqwrqwrqwrqwrqw",
+  content: "대분류",
   location: { x: 24.1515, y: 211.214124 },
   children: [
     {
-      content: "qwrqwrqwr",
+      content: "중분류1",
       location: { x: 24.1515, y: 211.214124 },
       children: [
         {
-          content: "qwrqwr",
+          content: "소분류1-1",
+          location: { x: 24.1515, y: 211.214124 },
+          children: [],
+        },
+        {
+          content: "소분류1-2",
           location: { x: 24.1515, y: 211.214124 },
           children: [],
         },
       ],
     },
     {
-      content: "qwrqwrqwr",
+      content: "중분류2",
       location: { x: 24.1515, y: 211.214124 },
       children: [
         {
-          content: "qwrqwr",
+          content: "소분류2-1",
+          location: { x: 24.1515, y: 211.214124 },
+          children: [],
+        },
+        {
+          content: "소분류2-2",
+          location: { x: 24.1515, y: 211.214124 },
+          children: [],
+        },
+      ],
+    },
+    {
+      content: "중분류2",
+      location: { x: 24.1515, y: 211.214124 },
+      children: [
+        {
+          content: "소분류2-1",
+          location: { x: 24.1515, y: 211.214124 },
+          children: [],
+        },
+        {
+          content: "소분류2-2",
+          location: { x: 24.1515, y: 211.214124 },
+          children: [],
+        },
+      ],
+    },
+    {
+      content: "중분류2",
+      location: { x: 24.1515, y: 211.214124 },
+      children: [
+        {
+          content: "소분류2-1",
+          location: { x: 24.1515, y: 211.214124 },
+          children: [],
+        },
+        {
+          content: "소분류2-2",
+          location: { x: 24.1515, y: 211.214124 },
+          children: [],
+        },
+      ],
+    },
+    {
+      content: "중분류2",
+      location: { x: 24.1515, y: 211.214124 },
+      children: [
+        {
+          content: "소분류2-1",
+          location: { x: 24.1515, y: 211.214124 },
+          children: [],
+        },
+        {
+          content: "소분류2-2",
+          location: { x: 24.1515, y: 211.214124 },
+          children: [],
+        },
+      ],
+    },
+    {
+      content: "중분류2",
+      location: { x: 24.1515, y: 211.214124 },
+      children: [
+        {
+          content: "소분류2-1",
+          location: { x: 24.1515, y: 211.214124 },
+          children: [],
+        },
+        {
+          content: "소분류2-2",
+          location: { x: 24.1515, y: 211.214124 },
+          children: [],
+        },
+      ],
+    },
+    {
+      content: "중분류2",
+      location: { x: 24.1515, y: 211.214124 },
+      children: [
+        {
+          content: "소분류2-1",
+          location: { x: 24.1515, y: 211.214124 },
+          children: [],
+        },
+        {
+          content: "소분류2-2",
+          location: { x: 24.1515, y: 211.214124 },
+          children: [],
+        },
+      ],
+    },
+    {
+      content: "중분류2",
+      location: { x: 24.1515, y: 211.214124 },
+      children: [
+        {
+          content: "소분류2-1",
+          location: { x: 24.1515, y: 211.214124 },
+          children: [],
+        },
+        {
+          content: "소분류2-2",
+          location: { x: 24.1515, y: 211.214124 },
+          children: [],
+        },
+      ],
+    },
+    {
+      content: "중분류2",
+      location: { x: 24.1515, y: 211.214124 },
+      children: [
+        {
+          content: "소분류2-1",
+          location: { x: 24.1515, y: 211.214124 },
+          children: [],
+        },
+        {
+          content: "소분류2-2",
+          location: { x: 24.1515, y: 211.214124 },
+          children: [],
+        },
+      ],
+    },
+    {
+      content: "중분류2",
+      location: { x: 24.1515, y: 211.214124 },
+      children: [
+        {
+          content: "소분류2-1",
+          location: { x: 24.1515, y: 211.214124 },
+          children: [],
+        },
+        {
+          content: "소분류2-2",
           location: { x: 24.1515, y: 211.214124 },
           children: [],
         },
