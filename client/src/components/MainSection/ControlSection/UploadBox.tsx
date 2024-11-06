@@ -48,6 +48,7 @@ export default function UploadBox({ file, setFile }: UploadBoxProps) {
     setIsDragging(false);
   };
 
+  //TODO : 머시기 확장자에서 나중에 정확히 확장자 표기하기
   return (
     <div
       className={`flex h-full w-full border-spacing-9 cursor-pointer flex-col items-center justify-center gap-8 rounded-xl border-[3px] border-grayscale-300 p-4 text-grayscale-400 ${isDragging ? "bg-grayscale-400" : "border-dotted"}`}

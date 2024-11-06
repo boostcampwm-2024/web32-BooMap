@@ -17,6 +17,7 @@ export default function MindMapView() {
   });
 
   return (
+    //TODO : 캔버스 사이즈에 따라 확장
     <div ref={divRef} className="relative h-full w-full rounded-xl bg-white">
       <Stage
         width={dimensions.width}
