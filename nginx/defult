@@ -1,0 +1,23 @@
+server {
+        listen 80;
+
+        # react 빌드 정적파일 경로
+        root /var/www/html;
+        index index.html;
+
+        server_name boomap.site;
+
+        location / {
+                # 요청 파일이 없을 경우 /index.html로 리다이렉트
+                try_files $uri $uri/ /index.html;
+        }
+
+        location /api {
+                proxy_pass http://localhost:3000;
+                proxy_http_version 1.1;
+                proxy_set_header Upgrade $http_upgrade;
+                proxy_set_header Connection 'upgrade';
+                proxy_set_header Host $host;
+                proxy_cache_bypass $http_upgrade;
+        }
+}
