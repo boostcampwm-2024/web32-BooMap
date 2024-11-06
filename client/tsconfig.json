@@ -1,7 +1,27 @@
 {
-  "files": [],
-  "references": [
-    { "path": "./tsconfig.app.json" },
-    { "path": "./tsconfig.node.json" }
+  "compilerOptions": {
+    "target": "esnext", // 최신 JavaScript로 컴파일
+    "module": "esnext", // ES 모듈 사용
+    "moduleResolution": "node", // Node.js 모듈 해석 방식
+    "jsx": "react-jsx", // React JSX 사용
+    "esModuleInterop": true, // CommonJS와 ES6 모듈 호환성
+    "skipLibCheck": true, // 라이브러리 타입 검사 건너뛰기
+    "forceConsistentCasingInFileNames": true,
+    "baseUrl": ".", // 경로 설정
+    "paths": {
+      "@/*": ["src/*"]
+    },
+    "declaration": false, // .d.ts 파일 생성을 방지
+    "outDir": "./dist", // 번들된 파일을 dist 폴더에 출력
+    "noEmit": false, // emit을 true로 설정해야 실제 파일이 생성됨
+    "isolatedModules": true, // 모듈로 분리된 파일을 처리
+    "skipDefaultLibCheck": true // 기본 라이브러리 파일 체크 건너뛰기
+  },
+  "include": [
+    "src/**/*", // 모든 src 파일 포함
+    "postcss.config.js" // 설정 파일 추가
+  ],
+  "exclude": [
+    "node_modules" // node_modules 제외
   ]
 }
