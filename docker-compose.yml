@@ -4,6 +4,8 @@ services:
       context: .
       dockerfile: Dockerfile.api-server
     container_name: api-server
+    env_file:
+      - ./server/.env
     networks:
       - my-network
 
