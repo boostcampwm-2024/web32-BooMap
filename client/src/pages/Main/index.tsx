@@ -4,12 +4,14 @@ import Sidebar from "@/components/Sidebar";
 
 export default function MainPage() {
   return (
-    <main className="flex h-screen min-h-[700px] w-full min-w-[900px]">
+    <div className="flex h-full w-full">
       <Sidebar />
-      <div className="flex h-full w-full flex-col">
-        <Header />
-        <MainSection />
+      <div className="flex flex-grow">
+        <div className="flex h-full w-full flex-col">
+          <Header />
+          <MainSection />
+        </div>
       </div>
-    </main>
+    </div>
   );
 }

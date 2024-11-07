@@ -1,5 +1,5 @@
 import { Button } from "@headlessui/react";
-import { useEffect, useRef, useState } from "react";
+import { RefObject, useEffect, useRef, useState } from "react";
 import { Layer, Rect, Stage } from "react-konva";
 import plusIcon from "@/assets/plus.png";
 import minusIcon from "@/assets/minus.png";
@@ -7,7 +7,7 @@ import addElementIcon from "@/assets/addElement.png";
 import deleteIcon from "@/assets/trash.png";
 
 export default function MindMapView() {
-  const divRef = useRef(null);
+  const divRef = useRef<HTMLDivElement>(null);
   const [dimensions, setDimensions] = useState({
     scale: 1,
     width: 500,
@@ -16,9 +16,38 @@ export default function MindMapView() {
     y: 0,
   });
 
+  function resizing() {
+    console.log(divRef.current.offsetWidth, divRef.current.offsetHeight);
+
+    if (divRef.current) {
+      setDimensions((prevDimensions) => ({
+        ...prevDimensions,
+        width: divRef.current.offsetWidth,
+        height: divRef.current.offsetHeight,
+      }));
+    }
+  }
+
+  useEffect(() => {
+    resizing(); // 초기 크기 설정
+    const resizeObserver = new ResizeObserver(() => {
+      resizing();
+    });
+
+    if (divRef.current) {
+      resizeObserver.observe(divRef.current);
+    }
+
+    return () => resizeObserver.disconnect();
+
+    // resizing(); // 초기 렌더링 시 크기 설정
+    // window.addEventListener("resize", resizing);
+    // return () => window.removeEventListener("resize", resizing);
+  }, [divRef]);
+
   return (
     //TODO : 캔버스 사이즈에 따라 확장
-    <div ref={divRef} className="relative h-full w-full rounded-xl bg-white">
+    <div ref={divRef} className="relative h-full min-h-0 w-full min-w-0 rounded-xl bg-white">
       <Stage
         width={dimensions.width}
         height={dimensions.height}
