@@ -1,0 +1,28 @@
+name: Backend CI
+
+on:
+  push:
+    branches:
+      - dev
+    paths:
+      - "server/**"
+
+jobs:
+  be-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "22"
+
+      - name: Install backend dependencies
+        working-directory: server
+        run: npm install
+
+      - name: Run backend tests
+        working-directory: server
+        run: npm test
