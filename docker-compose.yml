@@ -1,0 +1,23 @@
+services:
+  api-server:
+    build:
+      context: .
+      dockerfile: Dockerfile.api-server
+    container_name: api-server
+    env_file:
+      - ./server/.env
+    networks:
+      - my-network
+
+  nginx:
+    build:
+      context: .
+      dockerfile: Dockerfile.nginx
+    ports:
+      - "80:80"
+    container_name: nginx
+    networks:
+      - my-network
+networks:
+  my-network:
+    driver: bridge
