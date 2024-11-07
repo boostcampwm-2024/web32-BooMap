@@ -14,10 +14,10 @@ export default function MainSection() {
     default: "텍스트 형식으로 업로드",
   };
   return (
-    <main className="flex h-full w-full flex-col p-8">
+    <div className="box-border flex flex-col p-8">
       <NodeListProvider>
         <p className="p-3 text-2xl font-bold">{modeView[mode] || modeView.default}</p>
-        <div className="flex h-full w-full gap-4">
+        <div className="flex w-full flex-grow gap-4">
           {mode === "dashboard" ? (
             <DashBoard />
           ) : (
@@ -28,6 +28,6 @@ export default function MainSection() {
           )}
         </div>
       </NodeListProvider>
-    </main>
+    </div>
   );
 }

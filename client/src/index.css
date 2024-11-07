@@ -12,11 +12,25 @@
     scrollbar-width: none; /* Firefox */
   }
 }
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  height: 100vh;
+  min-width: 1280px;
+  min-height: 720px;
+  max-width: 100vw;
+  max-height: 100vh;
+  box-sizing: border-box;
+}
 
 :root {
   font-family: Pretendard, sans-serif;
   line-height: 1.5;
-
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
   background-color: #262837;
