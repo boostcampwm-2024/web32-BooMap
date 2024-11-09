@@ -1,10 +1,13 @@
 import { Button } from "@headlessui/react";
-import { RefObject, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Layer, Rect, Stage } from "react-konva";
 import plusIcon from "@/assets/plus.png";
 import minusIcon from "@/assets/minus.png";
 import addElementIcon from "@/assets/addElement.png";
 import deleteIcon from "@/assets/trash.png";
+import { useNodeListContext } from "@/store/NodeListProvider";
+import { NodeData } from "@/types/Node";
+import useWindowKeyEventListener from "@/hooks/useWindowKeyEventListener";
 
 export default function MindMapView() {
   const divRef = useRef<HTMLDivElement>(null);
@@ -16,9 +19,44 @@ export default function MindMapView() {
     y: 0,
   });
 
-  function resizing() {
-    console.log(divRef.current.offsetWidth, divRef.current.offsetHeight);
+  const { data, updateNodeList, undo, redo } = useNodeListContext();
+  const [selectedNode, setSelectedNode] = useState<number | null>(null);
 
+  const handleNodeClick = (e: any) => {
+    const selectedNodeId = Number(e.target.id());
+    setSelectedNode(selectedNodeId);
+  };
+
+  const handleNodeDeleteRequest = () => {
+    if (selectedNode) {
+      setSelectedNode(null);
+      const newData = deleteNode({ ...data }, selectedNode);
+      updateNodeList(newData);
+    }
+  };
+
+  useWindowKeyEventListener("keydown", (e) => {
+    if (e.ctrlKey && e.key === "z") {
+      undo();
+    } else if (e.ctrlKey && e.key === "y") {
+      redo();
+    }
+  })
+
+  const deleteNode = (nodeData: NodeData, nodeId: number) => {
+    if (!nodeData[nodeId]) return;
+    const { children } = nodeData[nodeId];
+    children.forEach((childId) => {
+      deleteNode(nodeData, childId);
+    });
+    for (const node of Object.values(nodeData)) {
+      node.children = node.children.filter((childId) => childId !== nodeId);
+    }
+    delete nodeData[nodeId];
+    return nodeData;
+  }
+
+  function resizing() {
     if (divRef.current) {
       setDimensions((prevDimensions) => ({
         ...prevDimensions,
@@ -73,7 +111,7 @@ export default function MindMapView() {
         <Button className="w-8 border-r-2 pr-2">
           <img src={addElementIcon} alt="요소 추가" />
         </Button>
-        <Button className="h-5 w-5">
+        <Button className="h-5 w-5" onClick={handleNodeDeleteRequest}>
           <img src={deleteIcon} alt="요소 삭제" />
         </Button>
       </div>
