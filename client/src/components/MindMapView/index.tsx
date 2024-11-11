@@ -9,9 +9,11 @@ import { useNodeListContext } from "@/store/NodeListProvider";
 import { DrawNodefromData } from "@/konva_mindmap/node";
 import { checkCollision } from "@/konva_mindmap/utils/collision";
 import Konva from "konva";
+import useWindowKeyEventListener from "@/hooks/useWindowKeyEventListener";
+import { Node, NodeData } from "@/types/Node";
 
 export default function MindMapView() {
-  const { data, updateNodeList } = useNodeListContext();
+  const { data, updateNodeList, updateNodeData, undo, redo } = useNodeListContext();
   const divRef = useRef<HTMLDivElement>(null);
   const layer = useRef<Konva.Layer>(null);
   const [dimensions, setDimensions] = useState({
@@ -21,6 +23,45 @@ export default function MindMapView() {
     x: 0,
     y: 0,
   });
+
+  const [selectedNode, setSelectedNode] = useState<number | null>(null);
+
+  const keyMap = {
+    z: undo,
+    y: redo,
+  };
+
+  const handleNodeClick = (e: any) => {
+    const selectedNodeId = Number(e.target.id());
+    setSelectedNode(selectedNodeId);
+  };
+
+  const handleNodeDeleteRequest = () => {
+    if (selectedNode) {
+      setSelectedNode(null);
+      const newData = deleteNode({ ...data }, selectedNode);
+      updateNodeData(newData);
+    }
+  };
+
+  useWindowKeyEventListener("keydown", (e) => {
+    if (e.ctrlKey && keyMap[e.key]) {
+      keyMap[e.key]();
+    }
+  });
+
+  const deleteNode = (nodeData: NodeData, nodeId: number) => {
+    if (!nodeData[nodeId]) return;
+    const { children } = nodeData[nodeId];
+    children.forEach((childId) => {
+      deleteNode(nodeData, childId);
+    });
+    Object.values(nodeData).forEach((node: Node) => {
+      node.children = node.children.filter((childId) => childId !== nodeId);
+    });
+    delete nodeData[nodeId];
+    return nodeData;
+  };
 
   function resizing() {
     if (divRef.current) {
