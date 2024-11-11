@@ -11,11 +11,12 @@ import { checkCollision } from "@/konva_mindmap/utils/collision";
 import Konva from "konva";
 import useWindowKeyEventListener from "@/hooks/useWindowKeyEventListener";
 import { Node, NodeData } from "@/types/Node";
+import useLayerEvent from "@/konva_mindmap/hooks/useLayerEvent";
 
 export default function MindMapView() {
   const { data, updateNodeList, updateNodeData, undo, redo } = useNodeListContext();
   const divRef = useRef<HTMLDivElement>(null);
-  const layer = useRef<Konva.Layer>(null);
+  const layer = useLayerEvent([["dragmove", () => checkCollision(layer, updateNodeList)]]);
   const [dimensions, setDimensions] = useState({
     scale: 1,
     width: 500,
@@ -72,10 +73,6 @@ export default function MindMapView() {
       }));
     }
   }
-
-  useEffect(() => {
-    layer.current.on("dragmove", () => checkCollision(layer, updateNodeList));
-  }, []);
 
   useEffect(() => {
     resizing();
