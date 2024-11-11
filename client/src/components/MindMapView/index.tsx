@@ -1,15 +1,16 @@
 import { Button } from "@headlessui/react";
-import { RefObject, useEffect, useRef, useState } from "react";
-import { Layer, Rect, Stage } from "react-konva";
+import { useEffect, useRef, useState } from "react";
+import { Layer, Stage } from "react-konva";
 import plusIcon from "@/assets/plus.png";
 import minusIcon from "@/assets/minus.png";
 import addElementIcon from "@/assets/addElement.png";
 import deleteIcon from "@/assets/trash.png";
 import { useNodeListContext } from "@/store/NodeListProvider";
-import { DrawNodefromData } from "@/utils/konva_mindmap/node";
+import useWindowKeyEventListener from "@/hooks/useWindowKeyEventListener";
+import { DrawNodefromData } from "@/konva_mindmap/node";
+import { Node, NodeData } from "@/types/Node";
 
 export default function MindMapView() {
-  const { data } = useNodeListContext();
   const divRef = useRef<HTMLDivElement>(null);
   const [dimensions, setDimensions] = useState({
     scale: 1,
@@ -18,6 +19,46 @@ export default function MindMapView() {
     x: 0,
     y: 0,
   });
+  
+  const { data, updateNodeList, updateNodeData, undo, redo } = useNodeListContext();
+  const [selectedNode, setSelectedNode] = useState<number | null>(null);
+
+  const keyMap = {
+    'z': undo,
+    'y': redo
+  }
+
+  const handleNodeClick = (e: any) => {
+    const selectedNodeId = Number(e.target.id());
+    setSelectedNode(selectedNodeId);
+  };
+
+  const handleNodeDeleteRequest = () => {
+    if (selectedNode) {
+      setSelectedNode(null);
+      const newData = deleteNode({ ...data }, selectedNode);
+      updateNodeData(newData);
+    }
+  };
+
+  useWindowKeyEventListener("keydown", (e) => {
+    if (e.ctrlKey && keyMap[e.key]) {
+      keyMap[e.key]();
+    }
+  });
+
+  const deleteNode = (nodeData: NodeData, nodeId: number) => {
+    if (!nodeData[nodeId]) return;
+    const { children } = nodeData[nodeId];
+    children.forEach((childId) => {
+      deleteNode(nodeData, childId);
+    });
+    Object.values(nodeData).forEach((node: Node) => {
+      node.children = node.children.filter((childId) => childId !== nodeId);
+    })
+    delete nodeData[nodeId];
+    return nodeData;
+  }
 
   function resizing() {
     if (divRef.current) {
@@ -53,7 +94,7 @@ export default function MindMapView() {
         x={dimensions.x}
         y={dimensions.y}
       >
-        <Layer>{DrawNodefromData({ root: data, depth: 1, x: 250, y: 250 })}</Layer>
+        <Layer>{DrawNodefromData({ data: data, root: data[0], depth: data[0].depth, update: updateNodeList, })}</Layer>
       </Stage>
 
       <div className="absolute bottom-2 left-1/2 flex -translate-x-2/4 -translate-y-2/4 items-center gap-3 rounded-full border px-10 py-2 shadow-md">
@@ -69,7 +110,7 @@ export default function MindMapView() {
         <Button className="w-8 border-r-2 pr-2">
           <img src={addElementIcon} alt="요소 추가" />
         </Button>
-        <Button className="h-5 w-5">
+        <Button className="h-5 w-5" onClick={handleNodeDeleteRequest}>
           <img src={deleteIcon} alt="요소 삭제" />
         </Button>
       </div>
