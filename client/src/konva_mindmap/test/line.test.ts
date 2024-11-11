@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { Location } from "@/utils/konva_mindmap/types/location";
-import { getCircleEdgePoint, getLinePoints } from "@/utils/konva_mindmap/utils/points";
+import { Location } from "@/konva_mindmap/types/location";
+import { getCircleEdgePoint, getLinePoints } from "@/konva_mindmap/utils/points";
 
 // 테스트용 데이터
 const from: Location = { x: Math.random() * 100, y: Math.random() * 100 };

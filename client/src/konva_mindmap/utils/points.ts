@@ -1,4 +1,4 @@
-import { Location } from "@/utils/konva_mindmap/types/location";
+import { Location } from "@/konva_mindmap/types/location";
 
 // from 원의 중점에서 to 원의 중점으로 이어지는 선에서 from 선의 위치를 원의 중점이 아닌 가장자리의 위치 구하는 함수
 export function getCircleEdgePoint(from: Location, to: Location, fromRadius: number, toRadius: number) {
