@@ -6,6 +6,7 @@ export type NodeListContextType = {
   data: NodeData | null;
   updateNodeList: (id: number, node: Node) => void;
   updateNodeData: (node: NodeData) => void;
+  saveHistory: (newState: NodeData) => void;
   undo: () => void;
   redo: () => void;
 };
@@ -72,7 +73,7 @@ export function useNodeListContext() {
 }
 
 export default function NodeListProvider({ children }: { children: ReactNode }) {
-  const { state: data, setState: setData, undo, redo } = useHistoryState(nodeData);
+  const { data, setData, saveHistory, undo, redo } = useHistoryState(nodeData);
 
   function updateNodeList(id: number, updatedNode: Node) {
     setData({ ...data, [id]: { ...data?.[id], ...updatedNode } });
@@ -82,5 +83,5 @@ export default function NodeListProvider({ children }: { children: ReactNode }) 
     setData(newData);
   }
   
-  return <NodeListContext.Provider value={{ data, updateNodeList, updateNodeData, undo, redo }}>{children}</NodeListContext.Provider>;
+  return <NodeListContext.Provider value={{ data, updateNodeList, updateNodeData, undo, redo, saveHistory }}>{children}</NodeListContext.Provider>;
 }
