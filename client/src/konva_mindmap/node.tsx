@@ -1,6 +1,6 @@
-import { Node } from "@/types/Node";
+import { Node, NodeData } from "@/types/Node";
 import { ConnectedLine } from "@/konva_mindmap/ConnectedLine";
-import { Circle, Text } from "react-konva";
+import { Circle, Group, Text } from "react-konva";
 
 type NodeProps = {
   parentNode?: Node;
@@ -13,7 +13,8 @@ type NodeProps = {
 function NodeComponent({ parentNode, node, depth, text, updateNode }: NodeProps) {
   return (
     <>
-      <Circle
+      <Group
+        name="node"
         id={node.id.toString()}
         onDragMove={(e) => {
           updateNode(node.id, {
@@ -36,14 +37,10 @@ function NodeComponent({ parentNode, node, depth, text, updateNode }: NodeProps)
         draggable
         x={node.location.x}
         y={node.location.y}
-        fill={"white"}
-        width={100}
-        height={100}
-        radius={70 - depth * 10}
-        stroke="black"
-        strokeWidth={3}
-      />
-      <Text name="text" text={text} x={node.location.x - 20} y={node.location.y - 10} />
+      >
+        <Circle fill={"white"} width={100} height={100} radius={70 - depth * 10} stroke="black" strokeWidth={3} />
+        <Text name="text" text={text} />
+      </Group>
       {parentNode && (
         <ConnectedLine
           from={parentNode.location}
@@ -57,7 +54,7 @@ function NodeComponent({ parentNode, node, depth, text, updateNode }: NodeProps)
 }
 
 type DrawNodeProps = {
-  data: Node[];
+  data: NodeData;
   root: Node;
   depth?: number;
   parentNode?: any;
@@ -74,7 +71,7 @@ export function DrawNodefromData({ data, root, depth = 0, parentNode, update }: 
         <DrawNodefromData
           data={data}
           key={index}
-          root={data[childNode - 1]}
+          root={data[childNode]}
           depth={depth + 1}
           parentNode={root}
           update={update}
