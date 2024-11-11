@@ -1,12 +1,35 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { TestModule } from './modules/test/test.module';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { WinstonModule } from 'nest-winston';
+import { getWinstonConfig } from './configs/logger.config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { typeormConfig } from './configs/typeorm.config';
+import { getTypeOrmConfig } from './configs/typeorm.config';
+import { RedisModule } from '@liaoliaots/nestjs-redis';
+import { getRedisConfig } from './configs/redis.config';
+import { TestModule } from './modules/test/test.module';
+import { ConnectionModule } from './modules/connection/connection.module';
+
 @Module({
-  imports: [TypeOrmModule.forRoot(typeormConfig), TestModule],
-  controllers: [AppController],
-  providers: [AppService],
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+    WinstonModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: getWinstonConfig,
+    }),
+    RedisModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: getRedisConfig,
+    }),
+    TypeOrmModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: getTypeOrmConfig,
+    }),
+    TestModule,
+    ConnectionModule,
+  ],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}
