@@ -8,7 +8,7 @@ import deleteIcon from "@/assets/trash.png";
 import { useNodeListContext } from "@/store/NodeListProvider";
 import useWindowKeyEventListener from "@/hooks/useWindowKeyEventListener";
 import { DrawNodefromData } from "@/konva_mindmap/node";
-import { NodeData } from "@/types/Node";
+import { Node, NodeData } from "@/types/Node";
 
 export default function MindMapView() {
   const divRef = useRef<HTMLDivElement>(null);
@@ -22,6 +22,11 @@ export default function MindMapView() {
   
   const { data, updateNodeList, updateNodeData, undo, redo } = useNodeListContext();
   const [selectedNode, setSelectedNode] = useState<number | null>(null);
+
+  const keyMap = {
+    'z': undo,
+    'y': redo
+  }
 
   const handleNodeClick = (e: any) => {
     const selectedNodeId = Number(e.target.id());
@@ -37,12 +42,10 @@ export default function MindMapView() {
   };
 
   useWindowKeyEventListener("keydown", (e) => {
-    if (e.ctrlKey && e.key === "z") {
-      undo();
-    } else if (e.ctrlKey && e.key === "y") {
-      redo();
+    if (e.ctrlKey && keyMap[e.key]) {
+      keyMap[e.key]();
     }
-  })
+  });
 
   const deleteNode = (nodeData: NodeData, nodeId: number) => {
     if (!nodeData[nodeId]) return;
@@ -50,9 +53,9 @@ export default function MindMapView() {
     children.forEach((childId) => {
       deleteNode(nodeData, childId);
     });
-    for (const node of Object.values(nodeData)) {
+    Object.values(nodeData).forEach((node: Node) => {
       node.children = node.children.filter((childId) => childId !== nodeId);
-    }
+    })
     delete nodeData[nodeId];
     return nodeData;
   }
