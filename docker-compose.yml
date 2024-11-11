@@ -5,7 +5,7 @@ services:
       dockerfile: Dockerfile.api-server
     container_name: api-server
     env_file:
-      - ./server/.env
+      - .env
     networks:
       - my-network
 
@@ -18,6 +18,23 @@ services:
     container_name: nginx
     networks:
       - my-network
+
+  redis:
+    image: redis:7.4.1-alpine
+    container_name: redis-container
+    networks:
+      - my-network
+
+  socket-server:
+    build:
+      context: .
+      dockerfile: Dockerfile.socket-server
+    container_name: socket-server
+    env_file:
+      - .env
+    networks:
+      - my-network
+
 networks:
   my-network:
     driver: bridge
