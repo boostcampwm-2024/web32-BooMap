@@ -6,10 +6,11 @@ import minusIcon from "@/assets/minus.png";
 import addElementIcon from "@/assets/addElement.png";
 import deleteIcon from "@/assets/trash.png";
 import { useNodeListContext } from "@/store/NodeListProvider";
-import { NodeData } from "@/types/Node";
 import useWindowKeyEventListener from "@/hooks/useWindowKeyEventListener";
+import { DrawNodefromData } from "@/utils/konva_mindmap/node";
 
 export default function MindMapView() {
+  const { data } = useNodeListContext();
   const divRef = useRef<HTMLDivElement>(null);
   const [dimensions, setDimensions] = useState({
     scale: 1,
@@ -18,7 +19,7 @@ export default function MindMapView() {
     x: 0,
     y: 0,
   });
-
+  
   const { data, updateNodeList, undo, redo } = useNodeListContext();
   const [selectedNode, setSelectedNode] = useState<number | null>(null);
 
@@ -67,7 +68,7 @@ export default function MindMapView() {
   }
 
   useEffect(() => {
-    resizing(); // 초기 크기 설정
+    resizing();
     const resizeObserver = new ResizeObserver(() => {
       resizing();
     });
@@ -77,10 +78,6 @@ export default function MindMapView() {
     }
 
     return () => resizeObserver.disconnect();
-
-    // resizing(); // 초기 렌더링 시 크기 설정
-    // window.addEventListener("resize", resizing);
-    // return () => window.removeEventListener("resize", resizing);
   }, [divRef]);
 
   return (
@@ -94,10 +91,9 @@ export default function MindMapView() {
         x={dimensions.x}
         y={dimensions.y}
       >
-        <Layer>
-          <Rect fill="red" x={40} y={40} width={150} height={150}></Rect>
-        </Layer>
+        <Layer>{DrawNodefromData({ root: data, depth: 1, x: 250, y: 250 })}</Layer>
       </Stage>
+
       <div className="absolute bottom-2 left-1/2 flex -translate-x-2/4 -translate-y-2/4 items-center gap-3 rounded-full border px-10 py-2 shadow-md">
         <div className="flex items-center gap-3 border-r-2 px-5">
           <Button className="h-5 w-5">
