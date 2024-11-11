@@ -7,3 +7,5 @@ export type Node = {
   location: Location;
   children: number[] | [];
 };
+
+export type NodeData = Record<number, Node>;
