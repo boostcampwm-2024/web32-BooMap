@@ -1,15 +1,16 @@
 import useHistoryState from "@/hooks/useHistoryState";
-import { Node } from "@/types/Node";
+import { Node, NodeData } from "@/types/Node";
 import { createContext, ReactNode, useContext, useState } from "react";
         
 export type NodeListContextType = {
   data: NodeData | null;
-  updateNodeList: (nodeList: NodeData) => void;
+  updateNodeList: (id: number, node: Node) => void;
+  updateNodeData: (node: NodeData) => void;
   undo: () => void;
   redo: () => void;
 };
 
-const nodeData = {
+const nodeData: NodeData = {
   1: {
     id: 1,
     keyword: "점심메뉴",
@@ -71,11 +72,15 @@ export function useNodeListContext() {
 }
 
 export default function NodeListProvider({ children }: { children: ReactNode }) {
-  const { state: data, setState: setData, undo, redo } = useHistoryState<NodeData>(nodeData);
+  const { state: data, setState: setData, undo, redo } = useHistoryState(nodeData);
 
   function updateNodeList(id: number, updatedNode: Node) {
-    setData((prevData) => prevData.map((node) => (node.id === id ? { ...node, ...updatedNode } : node)));
+    setData({ ...data, [id]: { ...data?.[id], ...updatedNode } });
   }
 
-  return <NodeListContext.Provider value={{ data, updateNodeList, undo, redo }}>{children}</NodeListContext.Provider>;
+  function updateNodeData(newData: NodeData) {
+    setData(newData);
+  }
+  
+  return <NodeListContext.Provider value={{ data, updateNodeList, updateNodeData, undo, redo }}>{children}</NodeListContext.Provider>;
 }

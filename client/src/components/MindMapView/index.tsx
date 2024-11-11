@@ -1,16 +1,16 @@
 import { Button } from "@headlessui/react";
 import { useEffect, useRef, useState } from "react";
-import { Layer, Rect, Stage } from "react-konva";
+import { Layer, Stage } from "react-konva";
 import plusIcon from "@/assets/plus.png";
 import minusIcon from "@/assets/minus.png";
 import addElementIcon from "@/assets/addElement.png";
 import deleteIcon from "@/assets/trash.png";
 import { useNodeListContext } from "@/store/NodeListProvider";
 import useWindowKeyEventListener from "@/hooks/useWindowKeyEventListener";
-import { DrawNodefromData } from "@/utils/konva_mindmap/node";
+import { DrawNodefromData } from "@/konva_mindmap/node";
+import { NodeData } from "@/types/Node";
 
 export default function MindMapView() {
-  const { data } = useNodeListContext();
   const divRef = useRef<HTMLDivElement>(null);
   const [dimensions, setDimensions] = useState({
     scale: 1,
@@ -20,7 +20,7 @@ export default function MindMapView() {
     y: 0,
   });
   
-  const { data, updateNodeList, undo, redo } = useNodeListContext();
+  const { data, updateNodeList, updateNodeData, undo, redo } = useNodeListContext();
   const [selectedNode, setSelectedNode] = useState<number | null>(null);
 
   const handleNodeClick = (e: any) => {
@@ -32,7 +32,7 @@ export default function MindMapView() {
     if (selectedNode) {
       setSelectedNode(null);
       const newData = deleteNode({ ...data }, selectedNode);
-      updateNodeList(newData);
+      updateNodeData(newData);
     }
   };
 
@@ -91,7 +91,7 @@ export default function MindMapView() {
         x={dimensions.x}
         y={dimensions.y}
       >
-        <Layer>{DrawNodefromData({ root: data, depth: 1, x: 250, y: 250 })}</Layer>
+        <Layer>{DrawNodefromData({ data: data, root: data[0], depth: data[0].depth, update: updateNodeList, })}</Layer>
       </Stage>
 
       <div className="absolute bottom-2 left-1/2 flex -translate-x-2/4 -translate-y-2/4 items-center gap-3 rounded-full border px-10 py-2 shadow-md">
