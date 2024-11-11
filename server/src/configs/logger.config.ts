@@ -1,4 +1,4 @@
-import winstonDaily from 'winston-daily-rotate-file';
+import DailyRotateFile from 'winston-daily-rotate-file';
 import * as winston from 'winston';
 import { utilities } from 'nest-winston';
 import { ConfigService } from '@nestjs/config';
@@ -35,9 +35,9 @@ export const getWinstonConfig = (configService: ConfigService) => {
               }),
             ),
       }),
-      new winstonDaily(dailyOptions('info')),
-      new winstonDaily(dailyOptions('warn')),
-      new winstonDaily(dailyOptions('error')),
+      new DailyRotateFile(dailyOptions('info')),
+      new DailyRotateFile(dailyOptions('warn')),
+      new DailyRotateFile(dailyOptions('error')),
     ],
   };
 };

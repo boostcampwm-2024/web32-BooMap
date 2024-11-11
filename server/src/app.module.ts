@@ -13,6 +13,7 @@ import { ConnectionModule } from './modules/connection/connection.module';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+      envFilePath: '../../.env',
     }),
     WinstonModule.forRootAsync({
       inject: [ConfigService],
