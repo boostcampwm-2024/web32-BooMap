@@ -16,6 +16,14 @@ function NodeComponent({ parentNode, node, depth, text }: NodeProps) {
   const { updateNodeList } = useNodeListContext();
   return (
     <>
+      {parentNode && (
+        <ConnectedLine
+          from={parentNode.location}
+          to={node.location}
+          fromRadius={70 - depth * 10}
+          toRadius={60 - depth * 10}
+        />
+      )}
       <Group
         name="node"
         id={node.id.toString()}
@@ -42,16 +50,18 @@ function NodeComponent({ parentNode, node, depth, text }: NodeProps) {
         y={node.location.y}
       >
         <Circle fill={colors[depth - 1]} width={100} height={100} radius={60 - depth * 10} />
-        <Text name="text" text={text} color="black" offsetX={text.length * 5.5} offsetY={8 * depth - 60} />
-      </Group>
-      {parentNode && (
-        <ConnectedLine
-          from={parentNode.location}
-          to={node.location}
-          fromRadius={70 - depth * 10}
-          toRadius={60 - depth * 10}
+        <Text
+          name="text"
+          text={text}
+          color="black"
+          fontStyle="bold"
+          offsetX={70 - depth * 10}
+          offsetY={8 * depth - 60}
+          width={140 - depth * 20}
+          wrap="word"
+          align="center"
         />
-      )}
+      </Group>
     </>
   );
 }
