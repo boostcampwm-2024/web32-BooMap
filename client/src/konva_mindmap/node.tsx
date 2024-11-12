@@ -1,7 +1,9 @@
 import { Node, NodeData } from "@/types/Node";
 import { ConnectedLine } from "@/konva_mindmap/ConnectedLine";
-import { Circle, Group, Text } from "react-konva";
+import { Circle, Group } from "react-konva";
 import { useNodeListContext } from "@/store/NodeListProvider";
+import { useState } from "react";
+import EditableText from "./EditableText";
 
 type NodeProps = {
   parentNode?: Node;
@@ -14,6 +16,12 @@ const colors = ["skyblue", "lightgreen", "lightcoral"];
 
 function NodeComponent({ parentNode, node, depth, text }: NodeProps) {
   const { updateNodeList } = useNodeListContext();
+  const [isEditing, setIsEditing] = useState(false);
+
+  function handleDoubleClick() {
+    setIsEditing(true);
+  }
+
   return (
     <>
       {parentNode && (
@@ -25,6 +33,7 @@ function NodeComponent({ parentNode, node, depth, text }: NodeProps) {
         />
       )}
       <Group
+        onDblClick={handleDoubleClick}
         name="node"
         id={node.id.toString()}
         onDragMove={(e) => {
