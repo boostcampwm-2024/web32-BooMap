@@ -100,9 +100,7 @@ export default function MindMapView() {
         draggable
         onWheel={(e) => ratioSizing(e, dimensions, setDimensions)}
       >
-        <Layer ref={layer}>
-          {DrawNodefromData({ data: data, root: data[1], depth: data[1].depth, update: updateNodeList })}
-        </Layer>
+        <Layer ref={layer}>{DrawNodefromData({ data: data, root: data[1], depth: data[1].depth })}</Layer>
       </Stage>
 
       <div className="absolute bottom-2 left-1/2 flex -translate-x-2/4 -translate-y-2/4 items-center gap-3 rounded-full border px-10 py-2 shadow-md">
