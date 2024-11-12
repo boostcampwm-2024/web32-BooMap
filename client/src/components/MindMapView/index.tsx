@@ -90,6 +90,7 @@ export default function MindMapView() {
   return (
     <div ref={divRef} className="relative h-full min-h-0 w-full min-w-0 rounded-xl bg-white">
       <Stage
+        className="cursor-pointer"
         width={dimensions.width}
         height={dimensions.height}
         scaleX={dimensions.scale}
