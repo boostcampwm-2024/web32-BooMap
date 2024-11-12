@@ -6,12 +6,13 @@ import minusIcon from "@/assets/minus.png";
 import addElementIcon from "@/assets/addElement.png";
 import deleteIcon from "@/assets/trash.png";
 import { useNodeListContext } from "@/store/NodeListProvider";
-import { DrawNodefromData } from "@/konva_mindmap/node";
-import { checkCollision } from "@/konva_mindmap/utils/collision";
 import useWindowKeyEventListener from "@/hooks/useWindowKeyEventListener";
 import { Node, NodeData } from "@/types/Node";
+import { DrawNodefromData } from "@/konva_mindmap/node";
+import { checkCollision } from "@/konva_mindmap/utils/collision";
 import useLayerEvent from "@/konva_mindmap/hooks/useLayerEvent";
 import { ratioSizing } from "@/konva_mindmap/events/ratioSizing";
+import { useAutoAdjustStage } from "@/konva_mindmap/hooks/useAutoAdjustStage";
 
 export default function MindMapView() {
   const { data, updateNodeList, updateNodeData, undo, redo } = useNodeListContext();
@@ -25,11 +26,27 @@ export default function MindMapView() {
     y: 0,
   });
   const [selectedNode, setSelectedNode] = useState<number | null>(null);
+  const adjustedDimensions = useAutoAdjustStage(data, dimensions.width, dimensions.height);
 
-  const keyMap = {
-    z: undo,
-    y: redo,
-  };
+  useEffect(() => {
+    resizing();
+    const resizeObserver = new ResizeObserver(() => {
+      resizing();
+    });
+
+    if (divRef.current) {
+      resizeObserver.observe(divRef.current);
+    }
+
+    return () => resizeObserver.disconnect();
+  }, [divRef]);
+
+  useEffect(() => {
+    setDimensions((prev) => ({
+      ...prev,
+      ...adjustedDimensions,
+    }));
+  }, [adjustedDimensions]);
 
   const handleNodeClick = (e: any) => {
     const selectedNodeId = Number(e.target.id());
@@ -42,6 +59,11 @@ export default function MindMapView() {
       const newData = deleteNode({ ...data }, selectedNode);
       updateNodeData(newData);
     }
+  };
+
+  const keyMap = {
+    z: undo,
+    y: redo,
   };
 
   useWindowKeyEventListener("keydown", (e) => {
@@ -67,92 +89,17 @@ export default function MindMapView() {
     if (divRef.current) {
       const newWidth = divRef.current.offsetWidth;
       const newHeight = divRef.current.offsetHeight;
-
       const centerX = newWidth / 2;
       const centerY = newHeight / 2;
       setDimensions((prevDimensions) => ({
         ...prevDimensions,
         width: divRef.current.offsetWidth,
         height: divRef.current.offsetHeight,
-        x: centerX,
-        y: centerY,
+        x: divRef.current.offsetWidth / 2,
+        y: divRef.current.offsetHeight / 2,
       }));
     }
   }
-
-  //그림이 그려지는 영역 크기 계산
-  const calculateBounds = (data: NodeData, rootId: number) => {
-    const stack = [data[rootId]];
-    let minX = Infinity,
-      minY = Infinity,
-      maxX = -Infinity,
-      maxY = -Infinity;
-
-    while (stack.length > 0) {
-      const node = stack.pop();
-      if (!node || node.location.x === null || node.location.y === null) continue;
-
-      minX = Math.min(minX, node.location.x);
-      minY = Math.min(minY, node.location.y);
-      maxX = Math.max(maxX, node.location.x);
-      maxY = Math.max(maxY, node.location.y);
-
-      node.children?.forEach((childId) => stack.push(data[childId]));
-    }
-
-    return { minX, minY, maxX, maxY };
-  };
-
-  //그림 영역에 따른 canvas 크기 조정
-  const adjustStageToFit = (
-    bounds: { minX: number; minY: number; maxX: number; maxY: number },
-    containerWidth: number,
-    containerHeight: number,
-  ) => {
-    const width = bounds.maxX - bounds.minX + 200;
-    const height = bounds.maxY - bounds.minY + 200;
-
-    const scaleX = containerWidth / width;
-    const scaleY = containerHeight / height;
-
-    const scale = Math.min(scaleX, scaleY);
-
-    const newWidth = divRef.current.offsetWidth;
-    const newHeight = divRef.current.offsetHeight;
-
-    const centerX = newWidth / 2;
-    const centerY = newHeight / 2;
-
-    return {
-      scale,
-      x: centerX,
-      y: centerY,
-    };
-  };
-
-  useEffect(() => {
-    resizing();
-    const resizeObserver = new ResizeObserver(() => {
-      resizing();
-    });
-
-    if (divRef.current) {
-      resizeObserver.observe(divRef.current);
-    }
-
-    return () => resizeObserver.disconnect();
-  }, [divRef]);
-
-  useEffect(() => {
-    const bounds = calculateBounds(data, 1);
-    const { scale, x, y } = adjustStageToFit(bounds, dimensions.width, dimensions.height);
-    setDimensions((prev) => ({
-      ...prev,
-      scale,
-      x,
-      y,
-    }));
-  }, [data, dimensions.width, dimensions.height]);
 
   return (
     <div ref={divRef} className="relative h-full min-h-0 w-full min-w-0 rounded-xl bg-white">
