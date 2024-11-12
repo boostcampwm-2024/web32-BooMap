@@ -162,7 +162,7 @@ const nodeData = {
   },
   22: {
     id: 22,
-    keyword: "피자",
+    keyword: "치즈피자 페퍼로니피자 핫치킨피자",
     depth: 3,
     location: { x: 760, y: 300 },
     children: [],
