@@ -1,5 +1,5 @@
 {
-  "name": "server",
+  "name": "socket-server",
   "version": "0.0.1",
   "description": "",
   "author": "",
@@ -25,8 +25,11 @@
     "@nestjs/config": "^3.3.0",
     "@nestjs/core": "^10.0.0",
     "@nestjs/platform-express": "^10.0.0",
+    "@nestjs/platform-socket.io": "^10.4.7",
     "@nestjs/typeorm": "^10.0.2",
-    "dotenv": "^16.4.5",
+    "@nestjs/websockets": "^10.4.7",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.1",
     "ioredis": "^5.4.1",
     "mysql2": "^3.11.4",
     "nest-winston": "^1.9.7",
@@ -34,7 +37,7 @@
     "rxjs": "^7.8.1",
     "typeorm": "^0.3.20",
     "uuid": "^11.0.2",
-    "winston": "^3.16.0",
+    "winston": "^3.17.0",
     "winston-daily-rotate-file": "^5.0.0"
   },
   "devDependencies": {

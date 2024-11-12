@@ -9,6 +9,6 @@ export const getTypeOrmConfig = (configService: ConfigService): TypeOrmModuleOpt
   password: configService.get<string>('MYSQL_PASSWORD'),
   database: configService.get<string>('MYSQL_DATABASE'),
   entities: [__dirname + '/../**/*.entity.{js,ts}'],
-  timezone: '+09:00',
   synchronize: true,
+  timezone: '+09:00',
 });

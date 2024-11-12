@@ -1,20 +1,18 @@
 import { Module } from '@nestjs/common';
+
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { WinstonModule } from 'nest-winston';
 import { getWinstonConfig } from './configs/logger.config';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { getTypeOrmConfig } from './configs/typeorm.config';
 import { RedisModule } from '@liaoliaots/nestjs-redis';
 import { getRedisConfig } from './configs/redis.config';
-import { TestModule } from './modules/test/test.module';
-import { ConnectionModule } from './modules/connection/connection.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { getTypeOrmConfig } from './configs/typeorm.config';
+
+import { MapModule } from './modules/map/map.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({
-      isGlobal: true,
-      envFilePath: '../../.env',
-    }),
+    ConfigModule.forRoot({ isGlobal: true }),
     WinstonModule.forRootAsync({
       inject: [ConfigService],
       useFactory: getWinstonConfig,
@@ -27,8 +25,7 @@ import { ConnectionModule } from './modules/connection/connection.module';
       inject: [ConfigService],
       useFactory: getTypeOrmConfig,
     }),
-    TestModule,
-    ConnectionModule,
+    MapModule,
   ],
   controllers: [],
   providers: [],
