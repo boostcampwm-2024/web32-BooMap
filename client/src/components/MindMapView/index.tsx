@@ -8,10 +8,10 @@ import deleteIcon from "@/assets/trash.png";
 import { useNodeListContext } from "@/store/NodeListProvider";
 import { DrawNodefromData } from "@/konva_mindmap/node";
 import { checkCollision } from "@/konva_mindmap/utils/collision";
-import Konva from "konva";
 import useWindowKeyEventListener from "@/hooks/useWindowKeyEventListener";
 import { Node, NodeData } from "@/types/Node";
 import useLayerEvent from "@/konva_mindmap/hooks/useLayerEvent";
+import { ratioSizing } from "@/konva_mindmap/events/ratioSizing";
 
 export default function MindMapView() {
   const { data, updateNodeList, updateNodeData, undo, redo } = useNodeListContext();
@@ -96,6 +96,8 @@ export default function MindMapView() {
         scaleY={dimensions.scale}
         x={dimensions.x}
         y={dimensions.y}
+        draggable
+        onWheel={(e) => ratioSizing(e, dimensions, setDimensions)}
       >
         <Layer ref={layer}>
           {DrawNodefromData({ data: data, root: data[1], depth: data[1].depth, update: updateNodeList })}
@@ -107,7 +109,7 @@ export default function MindMapView() {
           <Button className="h-5 w-5">
             <img src={plusIcon} alt="확대하기" />
           </Button>
-          <span className="text-sm font-bold text-black">{dimensions.scale * 100}%</span>
+          <span className="text-sm font-bold text-black">{Math.floor(dimensions.scale * 100)}%</span>
           <Button className="h-5 w-5">
             <img src={minusIcon} alt="축소하기" />
           </Button>
