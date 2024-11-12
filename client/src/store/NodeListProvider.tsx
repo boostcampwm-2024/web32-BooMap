@@ -1,6 +1,7 @@
 import useHistoryState from "@/hooks/useHistoryState";
+import initializeNodePosition from "@/konva_mindmap/utils/initializeNodePosition";
 import { Node, NodeData } from "@/types/Node";
-import { createContext, ReactNode, useContext, useState } from "react";
+import { createContext, ReactNode, useContext } from "react";
 
 export type NodeListContextType = {
   data: NodeData | null;
@@ -11,54 +12,180 @@ export type NodeListContextType = {
   redo: () => void;
 };
 
-const nodeData: NodeData = {
+const nodeData = {
   1: {
     id: 1,
     keyword: "점심메뉴",
     depth: 1,
-    location: { x: 50, y: 50 },
-    children: [2, 3],
+    location: { x: null, y: null },
+    children: [2, 3, 11, 15, 23],
   },
   2: {
     id: 2,
     keyword: "양식",
     depth: 2,
-    location: { x: 100, y: 100 },
-    children: [4, 5],
+    location: { x: null, y: null },
+    children: [4, 5, 6, 7, 21, 22],
   },
   3: {
     id: 3,
     keyword: "한식",
     depth: 2,
-    location: { x: 50, y: 50 },
-    children: [6, 7],
+    location: { x: null, y: null },
+    children: [8, 9, 10],
   },
   4: {
     id: 4,
-    keyword: "면",
+    keyword: "파스타",
     depth: 3,
-    location: { x: 50, y: 50 },
+    location: { x: null, y: null },
     children: [],
   },
   5: {
     id: 5,
-    keyword: "밥",
+    keyword: "스테이크",
     depth: 3,
-    location: { x: 50, y: 50 },
+    location: { x: null, y: null },
     children: [],
   },
   6: {
     id: 6,
-    keyword: "고기",
+    keyword: "샐러드",
     depth: 3,
-    location: { x: 50, y: 50 },
+    location: { x: null, y: null },
     children: [],
   },
   7: {
     id: 7,
-    keyword: "찌개",
+    keyword: "스프",
     depth: 3,
-    location: { x: 50, y: 50 },
+    location: { x: 180, y: 300 },
+    children: [],
+  },
+  8: {
+    id: 8,
+    keyword: "김치찌개",
+    depth: 3,
+    location: { x: 320, y: 300 },
+    children: [],
+  },
+  9: {
+    id: 9,
+    keyword: "된장찌개",
+    depth: 3,
+    location: { x: 340, y: 300 },
+    children: [],
+  },
+  10: {
+    id: 10,
+    keyword: "제육볶음",
+    depth: 3,
+    location: { x: 360, y: 300 },
+    children: [],
+  },
+  11: {
+    id: 11,
+    keyword: "중식",
+    depth: 2,
+    location: { x: 500, y: 250 },
+    children: [12, 13, 14],
+  },
+  12: {
+    id: 12,
+    keyword: "짜장면",
+    depth: 3,
+    location: { x: 520, y: 300 },
+    children: [],
+  },
+  13: {
+    id: 13,
+    keyword: "짬뽕",
+    depth: 3,
+    location: { x: 540, y: 300 },
+    children: [],
+  },
+  14: {
+    id: 14,
+    keyword: "탕수육",
+    depth: 3,
+    location: { x: 560, y: 300 },
+    children: [],
+  },
+  15: {
+    id: 15,
+    keyword: "디저트",
+    depth: 2,
+    location: { x: 700, y: 250 },
+    children: [16, 17, 18, 19, 20],
+  },
+  16: {
+    id: 16,
+    keyword: "아이스크림",
+    depth: 3,
+    location: { x: 720, y: 300 },
+    children: [],
+  },
+  17: {
+    id: 17,
+    keyword: "케이크",
+    depth: 3,
+    location: { x: 740, y: 300 },
+    children: [],
+  },
+  18: {
+    id: 18,
+    keyword: "쿠키",
+    depth: 3,
+    location: { x: 760, y: 300 },
+    children: [],
+  },
+  19: {
+    id: 19,
+    keyword: "빵",
+    depth: 3,
+    location: { x: 760, y: 300 },
+    children: [],
+  },
+  20: {
+    id: 20,
+    keyword: "붕어빵",
+    depth: 3,
+    location: { x: 760, y: 300 },
+    children: [],
+  },
+  21: {
+    id: 21,
+    keyword: "감바스",
+    depth: 3,
+    location: { x: 760, y: 300 },
+    children: [],
+  },
+  22: {
+    id: 22,
+    keyword: "피자",
+    depth: 3,
+    location: { x: 760, y: 300 },
+    children: [],
+  },
+  23: {
+    id: 23,
+    keyword: "일식",
+    depth: 2,
+    location: { x: 0, y: 0 },
+    children: [24, 25],
+  },
+  24: {
+    id: 24,
+    keyword: "초밥",
+    depth: 3,
+    location: { x: 0, y: 0 },
+    children: [],
+  },
+  25: {
+    id: 25,
+    keyword: "장어덮밥",
+    depth: 3,
+    location: { x: 0, y: 0 },
     children: [],
   },
 };
@@ -73,7 +200,7 @@ export function useNodeListContext() {
 }
 
 export default function NodeListProvider({ children }: { children: ReactNode }) {
-  const { data, setData, saveHistory, undo, redo } = useHistoryState<NodeData>(nodeData);
+  const { data, setData, saveHistory, undo, redo } = useHistoryState<NodeData>(initializeNodePosition(nodeData));
 
   function updateNodeList(id: number, updatedNode: Node) {
     setData((prevData) => ({
