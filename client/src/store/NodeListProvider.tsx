@@ -1,7 +1,7 @@
 import useHistoryState from "@/hooks/useHistoryState";
 import { Node, NodeData } from "@/types/Node";
 import { createContext, ReactNode, useContext, useState } from "react";
-        
+
 export type NodeListContextType = {
   data: NodeData | null;
   updateNodeList: (id: number, node: Node) => void;
@@ -73,15 +73,22 @@ export function useNodeListContext() {
 }
 
 export default function NodeListProvider({ children }: { children: ReactNode }) {
-  const { data, setData, saveHistory, undo, redo } = useHistoryState(nodeData);
+  const { data, setData, saveHistory, undo, redo } = useHistoryState<NodeData>(nodeData);
 
   function updateNodeList(id: number, updatedNode: Node) {
-    setData({ ...data, [id]: { ...data?.[id], ...updatedNode } });
+    setData((prevData) => ({
+      ...prevData,
+      [id]: { ...prevData[id], ...updatedNode },
+    }));
   }
 
   function updateNodeData(newData: NodeData) {
     setData(newData);
   }
-  
-  return <NodeListContext.Provider value={{ data, updateNodeList, updateNodeData, undo, redo, saveHistory }}>{children}</NodeListContext.Provider>;
+
+  return (
+    <NodeListContext.Provider value={{ data, updateNodeList, updateNodeData, undo, redo, saveHistory }}>
+      {children}
+    </NodeListContext.Provider>
+  );
 }

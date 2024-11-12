@@ -6,12 +6,17 @@ import minusIcon from "@/assets/minus.png";
 import addElementIcon from "@/assets/addElement.png";
 import deleteIcon from "@/assets/trash.png";
 import { useNodeListContext } from "@/store/NodeListProvider";
-import useWindowKeyEventListener from "@/hooks/useWindowKeyEventListener";
 import { DrawNodefromData } from "@/konva_mindmap/node";
+import { checkCollision } from "@/konva_mindmap/utils/collision";
+import Konva from "konva";
+import useWindowKeyEventListener from "@/hooks/useWindowKeyEventListener";
 import { Node, NodeData } from "@/types/Node";
+import useLayerEvent from "@/konva_mindmap/hooks/useLayerEvent";
 
 export default function MindMapView() {
+  const { data, updateNodeList, updateNodeData, undo, redo } = useNodeListContext();
   const divRef = useRef<HTMLDivElement>(null);
+  const layer = useLayerEvent([["dragmove", () => checkCollision(layer, updateNodeList)]]);
   const [dimensions, setDimensions] = useState({
     scale: 1,
     width: 500,
@@ -19,14 +24,13 @@ export default function MindMapView() {
     x: 0,
     y: 0,
   });
-  
-  const { data, updateNodeList, updateNodeData, undo, redo } = useNodeListContext();
+
   const [selectedNode, setSelectedNode] = useState<number | null>(null);
 
   const keyMap = {
-    'z': undo,
-    'y': redo
-  }
+    z: undo,
+    y: redo,
+  };
 
   const handleNodeClick = (e: any) => {
     const selectedNodeId = Number(e.target.id());
@@ -55,10 +59,10 @@ export default function MindMapView() {
     });
     Object.values(nodeData).forEach((node: Node) => {
       node.children = node.children.filter((childId) => childId !== nodeId);
-    })
+    });
     delete nodeData[nodeId];
     return nodeData;
-  }
+  };
 
   function resizing() {
     if (divRef.current) {
@@ -84,7 +88,6 @@ export default function MindMapView() {
   }, [divRef]);
 
   return (
-    //TODO : 캔버스 사이즈에 따라 확장
     <div ref={divRef} className="relative h-full min-h-0 w-full min-w-0 rounded-xl bg-white">
       <Stage
         width={dimensions.width}
@@ -94,7 +97,9 @@ export default function MindMapView() {
         x={dimensions.x}
         y={dimensions.y}
       >
-        <Layer>{DrawNodefromData({ data: data, root: data[0], depth: data[0].depth, update: updateNodeList, })}</Layer>
+        <Layer ref={layer}>
+          {DrawNodefromData({ data: data, root: data[1], depth: data[1].depth, update: updateNodeList })}
+        </Layer>
       </Stage>
 
       <div className="absolute bottom-2 left-1/2 flex -translate-x-2/4 -translate-y-2/4 items-center gap-3 rounded-full border px-10 py-2 shadow-md">
@@ -110,7 +115,7 @@ export default function MindMapView() {
         <Button className="w-8 border-r-2 pr-2">
           <img src={addElementIcon} alt="요소 추가" />
         </Button>
-        <Button className="h-5 w-5" onClick={handleNodeDeleteRequest}>
+        <Button className="h-5 w-5">
           <img src={deleteIcon} alt="요소 삭제" />
         </Button>
       </div>
