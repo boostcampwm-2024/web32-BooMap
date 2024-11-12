@@ -2,24 +2,24 @@ import { NodeData } from "@/types/Node";
 
 type CalculateNodePositionParams = {
   nodeId: number;
-  length?: number;
-  index?: number;
-  xPos?: number;
-  yPos?: number;
-  angle?: number;
+  length: number;
+  index: number;
+  xPos: number;
+  yPos: number;
+  angle: number;
 };
 
 export default function initializeNodePosition(data: NodeData) {
-  calculateNodePosition({ nodeId: 1 });
+  calculateNodePosition({
+    nodeId: 1,
+    length: 0,
+    index: 0,
+    xPos: 0,
+    yPos: 0,
+    angle: 0,
+  });
 
-  function calculateNodePosition({
-    nodeId,
-    length = 0,
-    index = 0,
-    xPos = 0,
-    yPos = 0,
-    angle = 0,
-  }: CalculateNodePositionParams) {
+  function calculateNodePosition({ nodeId, length, index, xPos, yPos, angle }: CalculateNodePositionParams) {
     const node = data[nodeId];
     const depth = node.depth;
     const radius = 60 - 10 * depth;
