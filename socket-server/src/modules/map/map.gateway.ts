@@ -48,4 +48,10 @@ export class MapGateway implements OnGatewayConnection {
     const nodeCreateDto = JSON.parse(data) as NodeCreateDto;
     this.mapService.createNode(client, nodeCreateDto);
   }
+
+  @SubscribeMessage('deleteNode')
+  handleDeleteNode(@ConnectedSocket() client: Socket, @MessageBody() data: string): void {
+    const nodeId = parseInt(data, 10);
+    this.mapService.deleteNode(client, nodeId);
+  }
 }
