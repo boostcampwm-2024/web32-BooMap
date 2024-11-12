@@ -9,7 +9,7 @@ import {
 } from 'typeorm';
 
 @Entity()
-export class Keyword {
+export class Node {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -31,9 +31,9 @@ export class Keyword {
   @UpdateDateColumn({ type: 'timestamp', name: 'modified_date' })
   modifiedDate: Date;
 
-  @ManyToOne(() => Keyword, (keyword) => keyword.children, { nullable: true })
-  parent: Keyword;
+  @ManyToOne(() => Node, (node) => node.children, { nullable: true })
+  parent: Node;
 
-  @OneToMany(() => Keyword, (keyword) => keyword.parent)
-  children: Keyword[];
+  @OneToMany(() => Node, (node) => node.parent)
+  children: Node[];
 }

@@ -11,7 +11,7 @@ import { Server, Socket } from 'socket.io';
 import { MindmapDto } from './dto/mindmap.update.dto';
 import { RedisService } from '@liaoliaots/nestjs-redis';
 import { Redis } from 'ioredis';
-import { MindmapCreateDto } from './dto/mindmap.create.dto';
+import { NodeCreateDto } from './dto/node.create.dto';
 
 @WebSocketGateway({ namespace: 'map' })
 export class MapGateway implements OnGatewayConnection {
@@ -45,7 +45,7 @@ export class MapGateway implements OnGatewayConnection {
 
   @SubscribeMessage('createNode')
   handleCreateNode(@ConnectedSocket() client: Socket, @MessageBody() data: string): void {
-    const mindmapCreateDto = JSON.parse(data) as MindmapCreateDto;
-    this.mapService.createNode(client, mindmapCreateDto);
+    const nodeCreateDto = JSON.parse(data) as NodeCreateDto;
+    this.mapService.createNode(client, nodeCreateDto);
   }
 }
