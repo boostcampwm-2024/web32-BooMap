@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 import { NodeData } from "@/types/Node";
 
-export function useAutoAdjustStage(data: NodeData, containerWidth: number, containerHeight: number) {
+export function useAdjustedStage(data: NodeData, containerWidth: number, containerHeight: number) {
   const [adjustedDimensions, setAdjustedDimensions] = useState({ scale: 1, x: 0, y: 0 });
 
   useEffect(() => {
     const bounds = calculateBounds(data, 1);
     const newDimensions = adjustStageToFit(bounds);
     setAdjustedDimensions(newDimensions);
-  }, [data, containerWidth, containerHeight]);
+  }, [containerWidth, containerHeight]);
 
   //그림이 그려지는 영역 크기 계산
   function calculateBounds(data: NodeData, rootId: number) {

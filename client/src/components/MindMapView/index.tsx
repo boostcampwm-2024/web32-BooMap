@@ -12,7 +12,7 @@ import { DrawNodefromData } from "@/konva_mindmap/node";
 import { checkCollision } from "@/konva_mindmap/utils/collision";
 import useLayerEvent from "@/konva_mindmap/hooks/useLayerEvent";
 import { ratioSizing } from "@/konva_mindmap/events/ratioSizing";
-import { useAutoAdjustStage } from "@/konva_mindmap/hooks/useAutoAdjustStage";
+import { useAdjustedStage } from "@/konva_mindmap/hooks/useAdjustedStage";
 
 export default function MindMapView() {
   const { data, updateNodeList, updateNodeData, undo, redo } = useNodeListContext();
@@ -26,7 +26,7 @@ export default function MindMapView() {
     y: 0,
   });
   const [selectedNode, setSelectedNode] = useState<number | null>(null);
-  const adjustedDimensions = useAutoAdjustStage(data, dimensions.width, dimensions.height);
+  const adjustedDimensions = useAdjustedStage(data, dimensions.width, dimensions.height);
 
   useEffect(() => {
     resizing();
@@ -87,10 +87,6 @@ export default function MindMapView() {
 
   function resizing() {
     if (divRef.current) {
-      const newWidth = divRef.current.offsetWidth;
-      const newHeight = divRef.current.offsetHeight;
-      const centerX = newWidth / 2;
-      const centerY = newHeight / 2;
       setDimensions((prevDimensions) => ({
         ...prevDimensions,
         width: divRef.current.offsetWidth,
