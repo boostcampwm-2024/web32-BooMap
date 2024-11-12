@@ -2,7 +2,7 @@ import { Type } from 'class-transformer';
 import { IsArray, IsNumber, IsObject, IsString, ValidateNested } from 'class-validator';
 import { LocationDto } from './';
 
-export class KeywordDto {
+export class NodeDto {
   @IsNumber()
   id: number;
 
@@ -23,5 +23,5 @@ export class KeywordDto {
 }
 
 export class MindmapDto {
-  [key: number]: KeywordDto;
+  [key: number]: NodeDto;
 }

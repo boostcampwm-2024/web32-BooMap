@@ -1,13 +1,22 @@
 import { Button } from "@headlessui/react";
-import { RefObject, useEffect, useRef, useState } from "react";
-import { Layer, Rect, Stage } from "react-konva";
+import { useEffect, useRef, useState } from "react";
+import { Layer, Stage } from "react-konva";
 import plusIcon from "@/assets/plus.png";
 import minusIcon from "@/assets/minus.png";
 import addElementIcon from "@/assets/addElement.png";
 import deleteIcon from "@/assets/trash.png";
+import { useNodeListContext } from "@/store/NodeListProvider";
+import { DrawNodefromData } from "@/konva_mindmap/node";
+import { checkCollision } from "@/konva_mindmap/utils/collision";
+import useWindowKeyEventListener from "@/hooks/useWindowKeyEventListener";
+import { Node, NodeData } from "@/types/Node";
+import useLayerEvent from "@/konva_mindmap/hooks/useLayerEvent";
+import { ratioSizing } from "@/konva_mindmap/events/ratioSizing";
 
 export default function MindMapView() {
+  const { data, updateNodeList, updateNodeData, undo, redo } = useNodeListContext();
   const divRef = useRef<HTMLDivElement>(null);
+  const layer = useLayerEvent([["dragmove", () => checkCollision(layer, updateNodeList)]]);
   const [dimensions, setDimensions] = useState({
     scale: 1,
     width: 500,
@@ -16,9 +25,46 @@ export default function MindMapView() {
     y: 0,
   });
 
-  function resizing() {
-    console.log(divRef.current.offsetWidth, divRef.current.offsetHeight);
+  const [selectedNode, setSelectedNode] = useState<number | null>(null);
 
+  const keyMap = {
+    z: undo,
+    y: redo,
+  };
+
+  const handleNodeClick = (e: any) => {
+    const selectedNodeId = Number(e.target.id());
+    setSelectedNode(selectedNodeId);
+  };
+
+  const handleNodeDeleteRequest = () => {
+    if (selectedNode) {
+      setSelectedNode(null);
+      const newData = deleteNode({ ...data }, selectedNode);
+      updateNodeData(newData);
+    }
+  };
+
+  useWindowKeyEventListener("keydown", (e) => {
+    if (e.ctrlKey && keyMap[e.key]) {
+      keyMap[e.key]();
+    }
+  });
+
+  const deleteNode = (nodeData: NodeData, nodeId: number) => {
+    if (!nodeData[nodeId]) return;
+    const { children } = nodeData[nodeId];
+    children.forEach((childId) => {
+      deleteNode(nodeData, childId);
+    });
+    Object.values(nodeData).forEach((node: Node) => {
+      node.children = node.children.filter((childId) => childId !== nodeId);
+    });
+    delete nodeData[nodeId];
+    return nodeData;
+  };
+
+  function resizing() {
     if (divRef.current) {
       setDimensions((prevDimensions) => ({
         ...prevDimensions,
@@ -29,7 +75,7 @@ export default function MindMapView() {
   }
 
   useEffect(() => {
-    resizing(); // 초기 크기 설정
+    resizing();
     const resizeObserver = new ResizeObserver(() => {
       resizing();
     });
@@ -39,33 +85,30 @@ export default function MindMapView() {
     }
 
     return () => resizeObserver.disconnect();
-
-    // resizing(); // 초기 렌더링 시 크기 설정
-    // window.addEventListener("resize", resizing);
-    // return () => window.removeEventListener("resize", resizing);
   }, [divRef]);
 
   return (
-    //TODO : 캔버스 사이즈에 따라 확장
     <div ref={divRef} className="relative h-full min-h-0 w-full min-w-0 rounded-xl bg-white">
       <Stage
+        className="cursor-pointer"
         width={dimensions.width}
         height={dimensions.height}
         scaleX={dimensions.scale}
         scaleY={dimensions.scale}
         x={dimensions.x}
         y={dimensions.y}
+        draggable
+        onWheel={(e) => ratioSizing(e, dimensions, setDimensions)}
       >
-        <Layer>
-          <Rect fill="red" x={40} y={40} width={150} height={150}></Rect>
-        </Layer>
+        <Layer ref={layer}>{DrawNodefromData({ data: data, root: data[1], depth: data[1].depth })}</Layer>
       </Stage>
+
       <div className="absolute bottom-2 left-1/2 flex -translate-x-2/4 -translate-y-2/4 items-center gap-3 rounded-full border px-10 py-2 shadow-md">
         <div className="flex items-center gap-3 border-r-2 px-5">
           <Button className="h-5 w-5">
             <img src={plusIcon} alt="확대하기" />
           </Button>
-          <span className="text-sm font-bold text-black">{dimensions.scale * 100}%</span>
+          <span className="text-sm font-bold text-black">{Math.floor(dimensions.scale * 100)}%</span>
           <Button className="h-5 w-5">
             <img src={minusIcon} alt="축소하기" />
           </Button>

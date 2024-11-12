@@ -1,8 +1,8 @@
 import { IsNumber, IsObject, IsOptional, IsString, ValidateNested } from 'class-validator';
-import { LocationDto } from './';
+import { LocationDto } from '.';
 import { Type } from 'class-transformer';
 
-export class MindmapCreateDto {
+export class NodeCreateDto {
   @IsString()
   keyword: string;
 

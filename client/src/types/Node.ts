@@ -1,5 +1,11 @@
+import { Location } from "@/konva_mindmap/types/location";
+
 export type Node = {
-  content: string;
-  location: { x: number; y: number };
-  children: Node[] | [];
+  id: number;
+  keyword: string;
+  depth: number;
+  location: Location;
+  children: number[] | [];
 };
+
+export type NodeData = Record<number, Node>;
