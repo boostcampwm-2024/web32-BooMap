@@ -8,10 +8,10 @@ import deleteIcon from "@/assets/trash.png";
 import { useNodeListContext } from "@/store/NodeListProvider";
 import { DrawNodefromData } from "@/konva_mindmap/node";
 import { checkCollision } from "@/konva_mindmap/utils/collision";
-import Konva from "konva";
 import useWindowKeyEventListener from "@/hooks/useWindowKeyEventListener";
 import { Node, NodeData } from "@/types/Node";
 import useLayerEvent from "@/konva_mindmap/hooks/useLayerEvent";
+import { ratioSizing } from "@/konva_mindmap/events/ratioSizing";
 
 export default function MindMapView() {
   const { data, updateNodeList, updateNodeData, undo, redo } = useNodeListContext();
@@ -90,16 +90,17 @@ export default function MindMapView() {
   return (
     <div ref={divRef} className="relative h-full min-h-0 w-full min-w-0 rounded-xl bg-white">
       <Stage
+        className="cursor-pointer"
         width={dimensions.width}
         height={dimensions.height}
         scaleX={dimensions.scale}
         scaleY={dimensions.scale}
         x={dimensions.x}
         y={dimensions.y}
+        draggable
+        onWheel={(e) => ratioSizing(e, dimensions, setDimensions)}
       >
-        <Layer ref={layer}>
-          {DrawNodefromData({ data: data, root: data[1], depth: data[1].depth, update: updateNodeList })}
-        </Layer>
+        <Layer ref={layer}>{DrawNodefromData({ data: data, root: data[1], depth: data[1].depth })}</Layer>
       </Stage>
 
       <div className="absolute bottom-2 left-1/2 flex -translate-x-2/4 -translate-y-2/4 items-center gap-3 rounded-full border px-10 py-2 shadow-md">
@@ -107,7 +108,7 @@ export default function MindMapView() {
           <Button className="h-5 w-5">
             <img src={plusIcon} alt="확대하기" />
           </Button>
-          <span className="text-sm font-bold text-black">{dimensions.scale * 100}%</span>
+          <span className="text-sm font-bold text-black">{Math.floor(dimensions.scale * 100)}%</span>
           <Button className="h-5 w-5">
             <img src={minusIcon} alt="축소하기" />
           </Button>

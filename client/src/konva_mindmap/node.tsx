@@ -1,23 +1,24 @@
 import { Node, NodeData } from "@/types/Node";
 import { ConnectedLine } from "@/konva_mindmap/ConnectedLine";
 import { Circle, Group, Text } from "react-konva";
+import { useNodeListContext } from "@/store/NodeListProvider";
 
 type NodeProps = {
   parentNode?: Node;
   node: Node;
   depth: number;
   text: string;
-  updateNode: (id: number, updatedNode: Node) => void;
 };
 
-function NodeComponent({ parentNode, node, depth, text, updateNode }: NodeProps) {
+function NodeComponent({ parentNode, node, depth, text }: NodeProps) {
+  const { updateNodeList } = useNodeListContext();
   return (
     <>
       <Group
         name="node"
         id={node.id.toString()}
         onDragMove={(e) => {
-          updateNode(node.id, {
+          updateNodeList(node.id, {
             ...node,
             location: {
               x: e.target.x(),
@@ -26,7 +27,7 @@ function NodeComponent({ parentNode, node, depth, text, updateNode }: NodeProps)
           });
         }}
         onDragEnd={(e) =>
-          updateNode(node.id, {
+          updateNodeList(node.id, {
             ...node,
             location: {
               x: e.target.x(),
@@ -61,21 +62,14 @@ type DrawNodeProps = {
   update?: (id: number, node: Node) => void;
 };
 
-export function DrawNodefromData({ data, root, depth = 0, parentNode, update }: DrawNodeProps) {
+export function DrawNodefromData({ data, root, depth = 0, parentNode }: DrawNodeProps) {
   return (
     <>
       {/* from */}
-      <NodeComponent text={root.keyword} depth={depth} parentNode={parentNode} node={root} updateNode={update} />
+      <NodeComponent text={root.keyword} depth={depth} parentNode={parentNode} node={root} />
       {/* to */}
       {root.children?.map((childNode, index) => (
-        <DrawNodefromData
-          data={data}
-          key={index}
-          root={data[childNode]}
-          depth={depth + 1}
-          parentNode={root}
-          update={update}
-        />
+        <DrawNodefromData data={data} key={index} root={data[childNode]} depth={depth + 1} parentNode={root} />
       ))}
     </>
   );
