@@ -6,12 +6,17 @@ import minusIcon from "@/assets/minus.png";
 import addElementIcon from "@/assets/addElement.png";
 import deleteIcon from "@/assets/trash.png";
 import { useNodeListContext } from "@/store/NodeListProvider";
-import useWindowKeyEventListener from "@/hooks/useWindowKeyEventListener";
 import { DrawNodefromData } from "@/konva_mindmap/node";
+import { checkCollision } from "@/konva_mindmap/utils/collision";
+import useWindowKeyEventListener from "@/hooks/useWindowKeyEventListener";
 import { Node, NodeData } from "@/types/Node";
+import useLayerEvent from "@/konva_mindmap/hooks/useLayerEvent";
+import { ratioSizing } from "@/konva_mindmap/events/ratioSizing";
 
 export default function MindMapView() {
+  const { data, updateNodeList, updateNodeData, undo, redo } = useNodeListContext();
   const divRef = useRef<HTMLDivElement>(null);
+  const layer = useLayerEvent([["dragmove", () => checkCollision(layer, updateNodeList)]]);
   const [dimensions, setDimensions] = useState({
     scale: 1,
     width: 500,
@@ -19,14 +24,12 @@ export default function MindMapView() {
     x: 0,
     y: 0,
   });
-  
-  const { data, updateNodeList, updateNodeData, undo, redo } = useNodeListContext();
   const [selectedNode, setSelectedNode] = useState<number | null>(null);
 
   const keyMap = {
-    'z': undo,
-    'y': redo
-  }
+    z: undo,
+    y: redo,
+  };
 
   const handleNodeClick = (e: any) => {
     const selectedNodeId = Number(e.target.id());
@@ -55,20 +58,77 @@ export default function MindMapView() {
     });
     Object.values(nodeData).forEach((node: Node) => {
       node.children = node.children.filter((childId) => childId !== nodeId);
-    })
+    });
     delete nodeData[nodeId];
     return nodeData;
-  }
+  };
 
   function resizing() {
     if (divRef.current) {
+      const newWidth = divRef.current.offsetWidth;
+      const newHeight = divRef.current.offsetHeight;
+
+      const centerX = newWidth / 2;
+      const centerY = newHeight / 2;
       setDimensions((prevDimensions) => ({
         ...prevDimensions,
         width: divRef.current.offsetWidth,
         height: divRef.current.offsetHeight,
+        x: centerX,
+        y: centerY,
       }));
     }
   }
+
+  //그림이 그려지는 영역 크기 계산
+  const calculateBounds = (data: NodeData, rootId: number) => {
+    const stack = [data[rootId]];
+    let minX = Infinity,
+      minY = Infinity,
+      maxX = -Infinity,
+      maxY = -Infinity;
+
+    while (stack.length > 0) {
+      const node = stack.pop();
+      if (!node || node.location.x === null || node.location.y === null) continue;
+
+      minX = Math.min(minX, node.location.x);
+      minY = Math.min(minY, node.location.y);
+      maxX = Math.max(maxX, node.location.x);
+      maxY = Math.max(maxY, node.location.y);
+
+      node.children?.forEach((childId) => stack.push(data[childId]));
+    }
+
+    return { minX, minY, maxX, maxY };
+  };
+
+  //그림 영역에 따른 canvas 크기 조정
+  const adjustStageToFit = (
+    bounds: { minX: number; minY: number; maxX: number; maxY: number },
+    containerWidth: number,
+    containerHeight: number,
+  ) => {
+    const width = bounds.maxX - bounds.minX + 200;
+    const height = bounds.maxY - bounds.minY + 200;
+
+    const scaleX = containerWidth / width;
+    const scaleY = containerHeight / height;
+
+    const scale = Math.min(scaleX, scaleY);
+
+    const newWidth = divRef.current.offsetWidth;
+    const newHeight = divRef.current.offsetHeight;
+
+    const centerX = newWidth / 2;
+    const centerY = newHeight / 2;
+
+    return {
+      scale,
+      x: centerX,
+      y: centerY,
+    };
+  };
 
   useEffect(() => {
     resizing();
@@ -83,26 +143,41 @@ export default function MindMapView() {
     return () => resizeObserver.disconnect();
   }, [divRef]);
 
+  useEffect(() => {
+    const bounds = calculateBounds(data, 1);
+    const { scale, x, y } = adjustStageToFit(bounds, dimensions.width, dimensions.height);
+    setDimensions((prev) => ({
+      ...prev,
+      scale,
+      x,
+      y,
+    }));
+  }, [data, dimensions.width, dimensions.height]);
+
   return (
-    //TODO : 캔버스 사이즈에 따라 확장
     <div ref={divRef} className="relative h-full min-h-0 w-full min-w-0 rounded-xl bg-white">
       <Stage
+        className="cursor-pointer"
         width={dimensions.width}
         height={dimensions.height}
         scaleX={dimensions.scale}
         scaleY={dimensions.scale}
         x={dimensions.x}
         y={dimensions.y}
+        draggable
+        onWheel={(e) => ratioSizing(e, dimensions, setDimensions)}
       >
-        <Layer>{DrawNodefromData({ data: data, root: data[0], depth: data[0].depth, update: updateNodeList, })}</Layer>
+        <Layer ref={layer}>
+          <DrawNodefromData data={data} root={data[1]} depth={data[1].depth} />
+        </Layer>
       </Stage>
 
-      <div className="absolute bottom-2 left-1/2 flex -translate-x-2/4 -translate-y-2/4 items-center gap-3 rounded-full border px-10 py-2 shadow-md">
+      <div className="absolute bottom-2 left-1/2 flex -translate-x-2/4 -translate-y-2/4 items-center gap-3 rounded-full border bg-white px-10 py-2 shadow-md">
         <div className="flex items-center gap-3 border-r-2 px-5">
           <Button className="h-5 w-5">
             <img src={plusIcon} alt="확대하기" />
           </Button>
-          <span className="text-sm font-bold text-black">{dimensions.scale * 100}%</span>
+          <span className="w-8 text-center text-sm font-bold text-black">{Math.floor(dimensions.scale * 100)}%</span>
           <Button className="h-5 w-5">
             <img src={minusIcon} alt="축소하기" />
           </Button>
@@ -110,7 +185,7 @@ export default function MindMapView() {
         <Button className="w-8 border-r-2 pr-2">
           <img src={addElementIcon} alt="요소 추가" />
         </Button>
-        <Button className="h-5 w-5" onClick={handleNodeDeleteRequest}>
+        <Button className="h-5 w-5">
           <img src={deleteIcon} alt="요소 삭제" />
         </Button>
       </div>
