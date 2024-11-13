@@ -1,6 +1,5 @@
 import NodeItem from "@/components/MainSection/ControlSection/ListView/NodeItem";
 import useAccordian from "@/hooks/useAccordian";
-import {} from "@/store/NodeListProvider";
 import { NodeData } from "@/types/Node";
 
 type NodeListProps = {
@@ -17,7 +16,7 @@ export default function NodeList({ data, id }: NodeListProps) {
       <NodeItem content={nodeData.keyword} depth={nodeData.depth} handleAccordian={handleAccordian} open={open} />
 
       {open &&
-        nodeData.children.map((childId) => {
+        data.children.map((childId) => {
           return <NodeList key={childId} data={data} id={childId} />;
         })}
     </div>
