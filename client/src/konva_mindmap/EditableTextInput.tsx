@@ -13,7 +13,7 @@ export default function EditableTextInput({ value, onChange, onKeyDown, onBlur }
       <input
         value={value}
         onChange={onChange}
-        className={`w-full resize-none bg-transparent text-xs text-grayscale-800 ${value.trim() === "" ? "border border-red-500" : ""}`}
+        className={`w-full resize-none bg-transparent text-sm font-semibold text-black ${value.trim() === "" ? "border border-red-500" : ""}`}
         onKeyDown={onKeyDown}
         onBlur={onBlur}
         maxLength={14}
