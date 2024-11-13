@@ -1,15 +1,17 @@
 import useHistoryState from "@/hooks/useHistoryState";
 import initializeNodePosition from "@/konva_mindmap/utils/initializeNodePosition";
 import { Node, NodeData } from "@/types/Node";
-import { createContext, ReactNode, useContext } from "react";
+import { createContext, ReactNode, useContext, useEffect, useState } from "react";
 
 export type NodeListContextType = {
   data: NodeData | null;
-  updateNodeList: (id: number, node: Node) => void;
-  updateNodeData: (node: NodeData) => void;
+  selectedNode: { nodeId: number; parentNodeId: number } | null;
+  updateNode: (id: number, node: Node) => void;
+  overrideNodeData: (node: NodeData | ((newData: NodeData) => void)) => void;
   saveHistory: (newState: NodeData) => void;
-  undo: () => void;
-  redo: () => void;
+  undoData: () => void;
+  redoData: () => void;
+  selectNode: ({ nodeId, parentNodeId }) => void;
 };
 
 const nodeData = {
@@ -200,21 +202,40 @@ export function useNodeListContext() {
 }
 
 export default function NodeListProvider({ children }: { children: ReactNode }) {
-  const { data, setData, saveHistory, undo, redo } = useHistoryState<NodeData>(initializeNodePosition(nodeData));
+  const [data, setData] = useState(nodeData);
+  const [selectedNode, setSelectedNode] = useState(null);
+  const { saveHistory, undo, redo } = useHistoryState<NodeData>(initializeNodePosition(nodeData));
 
-  function updateNodeList(id: number, updatedNode: Node) {
+  function updateNode(id: number, updatedNode: Node) {
     setData((prevData) => ({
       ...prevData,
       [id]: { ...prevData[id], ...updatedNode },
     }));
   }
 
-  function updateNodeData(newData: NodeData) {
+  function overrideNodeData(newData) {
     setData(newData);
   }
 
+  function undoData() {
+    undo(setData);
+  }
+
+  function redoData() {
+    redo(setData);
+  }
+
+  function selectNode({ nodeId, parentNodeId }: { nodeId: string; parentNodeId: string }) {
+    setSelectedNode({
+      nodeId,
+      parentNodeId,
+    });
+  }
+
   return (
-    <NodeListContext.Provider value={{ data, updateNodeList, updateNodeData, undo, redo, saveHistory }}>
+    <NodeListContext.Provider
+      value={{ data, updateNode, overrideNodeData, undoData, redoData, saveHistory, selectNode, selectedNode }}
+    >
       {children}
     </NodeListContext.Provider>
   );

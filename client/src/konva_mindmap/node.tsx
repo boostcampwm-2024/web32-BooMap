@@ -22,6 +22,7 @@ function NodeComponent({ parentNode, node, depth, text }: NodeProps) {
     setIsEditing(true);
   }
 
+  const { updateNode, selectNode, selectedNode } = useNodeListContext();
   return (
     <>
       {parentNode && (
@@ -37,7 +38,7 @@ function NodeComponent({ parentNode, node, depth, text }: NodeProps) {
         name="node"
         id={node.id.toString()}
         onDragMove={(e) => {
-          updateNodeList(node.id, {
+          updateNode(node.id, {
             ...node,
             location: {
               x: e.target.x(),
@@ -46,7 +47,7 @@ function NodeComponent({ parentNode, node, depth, text }: NodeProps) {
           });
         }}
         onDragEnd={(e) =>
-          updateNodeList(node.id, {
+          updateNode(node.id, {
             ...node,
             location: {
               x: e.target.x(),
@@ -57,6 +58,7 @@ function NodeComponent({ parentNode, node, depth, text }: NodeProps) {
         draggable
         x={node.location.x}
         y={node.location.y}
+        onClick={() => selectNode({ nodeId: node.id, parentNodeId: parentNode ? parentNode.id : null })}
       >
         <Circle fill={colors[depth - 1]} width={100} height={100} radius={60 - depth * 10} />
         <EditableText
