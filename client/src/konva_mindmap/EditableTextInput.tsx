@@ -22,6 +22,7 @@ export default function EditableTextInput({
   return (
     <Html groupProps={{ offset: { x: offsetX, y: offsetY } }}>
       <input
+        autoFocus={true}
         value={value}
         onChange={onChange}
         className={`w-full resize-none bg-transparent text-center text-sm font-semibold text-black ${value.trim() === "" ? "border border-red-500" : ""}`}
