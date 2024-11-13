@@ -23,6 +23,7 @@ export default function EditableText({
   offsetY,
   width,
 }: EditableTextProps) {
+  const [originalContent] = useState(text);
   const [content, setContent] = useState(text);
   const { data, updateNodeList } = useNodeListContext();
 
@@ -31,10 +32,9 @@ export default function EditableText({
   }
 
   function saveContent() {
-    if (content.trim() !== "") {
-      updateNodeList(id, { ...data[id], keyword: content });
-      setIsEditing(false);
-    }
+    if (content.trim() !== "") updateNodeList(id, { ...data[id], keyword: content });
+    else setContent(originalContent);
+    setIsEditing(false);
   }
 
   function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
