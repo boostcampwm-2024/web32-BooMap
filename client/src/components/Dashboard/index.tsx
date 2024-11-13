@@ -1,18 +1,17 @@
-import { test } from "@/api/test";
-import { Button } from "@headlessui/react";
+import { useState } from "react";
+import GuestDashBoard from "./GuestDashBoard";
+import UserDashBoard from "./UserDashBoard";
 
 export default function DashBoard() {
-  async function testingApi() {
-    try {
-      const response = await test();
-      console.log(response.data);
-    } catch (error) {
-      console.log(error);
-    }
-  }
+  const [login, setLogin] = useState(false);
   return (
-    <div>
-      <Button onClick={testingApi}>API 뾰용용</Button>
-    </div>
+    <>
+      <section className="relative w-full">
+        {login ? <UserDashBoard /> : <GuestDashBoard />}
+        <button className="absolute bottom-[-30px] left-0" onClick={() => setLogin((prev) => !prev)}>
+          login
+        </button>
+      </section>
+    </>
   );
 }
