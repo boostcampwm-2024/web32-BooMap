@@ -12,7 +12,7 @@ import { MapModule } from './modules/map/map.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true }),
+    ConfigModule.forRoot({ isGlobal: true, envFilePath: '../../.env' }),
     WinstonModule.forRootAsync({
       inject: [ConfigService],
       useFactory: getWinstonConfig,
