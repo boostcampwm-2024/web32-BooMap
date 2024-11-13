@@ -48,7 +48,15 @@ export default function EditableText({
   return (
     <>
       {isEditing ? (
-        <EditableTextInput value={content} onChange={handleTextChange} onKeyDown={handleKeyDown} onBlur={handleBlur} />
+        <EditableTextInput
+          value={content}
+          onChange={handleTextChange}
+          onKeyDown={handleKeyDown}
+          onBlur={handleBlur}
+          offsetX={offsetX}
+          offsetY={offsetY}
+          width={width}
+        />
       ) : (
         <Text
           text={content}
