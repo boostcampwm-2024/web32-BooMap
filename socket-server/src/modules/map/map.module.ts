@@ -8,4 +8,4 @@ import { Node } from './entity/node.entity';
   imports: [TypeOrmModule.forFeature([Node])],
   providers: [MapGateway, MapService],
 })
-export class MapModule { }
+export class MapModule {}
