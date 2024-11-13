@@ -12,12 +12,18 @@ import { DrawNodefromData } from "@/konva_mindmap/node";
 import { checkCollision } from "@/konva_mindmap/utils/collision";
 import useLayerEvent from "@/konva_mindmap/hooks/useLayerEvent";
 import { ratioSizing } from "@/konva_mindmap/events/ratioSizing";
-import { useAdjustedStage } from "@/konva_mindmap/hooks/useAdjustedStage";
+import Konva from "konva";
 
 export default function MindMapView() {
-  const { data, updateNodeList, updateNodeData, undo, redo } = useNodeListContext();
+  const { data, undoData: undo, redoData: redo, updateNode, selectedNode, overrideNodeData } = useNodeListContext();
   const divRef = useRef<HTMLDivElement>(null);
-  const layer = useLayerEvent([["dragmove", () => checkCollision(layer, updateNodeList)]]);
+  const layer = useRef<Konva.Layer>();
+
+  useEffect(() => {
+    checkCollision(layer, updateNode);
+  }, [data]);
+
+  // const layer = useLayerEvent([["dragmove", () => checkCollision(layer, updateNode)]]);
   const [dimensions, setDimensions] = useState({
     scale: 1,
     width: 500,
@@ -126,7 +132,7 @@ export default function MindMapView() {
           </Button>
         </div>
         <Button className="w-8 border-r-2 pr-2">
-          <img src={addElementIcon} alt="요소 추가" />
+          <img src={addElementIcon} alt="요소 추가" onClick={() => addNode(data, selectedNode, overrideNodeData)} />
         </Button>
         <Button className="h-5 w-5">
           <img src={deleteIcon} alt="요소 삭제" />
