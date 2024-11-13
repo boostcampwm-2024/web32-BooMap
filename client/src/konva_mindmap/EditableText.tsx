@@ -23,7 +23,7 @@ export default function EditableText({
   offsetY,
   width,
 }: EditableTextProps) {
-  const [originalContent] = useState(text);
+  const originalContent = text;
   const [content, setContent] = useState(text);
   const { data, updateNodeList } = useNodeListContext();
 
@@ -32,7 +32,7 @@ export default function EditableText({
   }
 
   function saveContent() {
-    if (content.trim() !== "") updateNodeList(id, { ...data[id], keyword: content });
+    if (content.trim().length) updateNodeList(id, { ...data[id], keyword: content });
     else setContent(originalContent);
     setIsEditing(false);
   }
