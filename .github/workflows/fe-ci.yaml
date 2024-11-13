@@ -19,6 +19,11 @@ jobs:
         with:
           node-version: "22"
 
+      - name: Install required libraries
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y pkg-config libcairo2-dev libpango1.0-dev libjpeg-dev libgif-dev libpng-dev
+
       - name: Install frontend dependencies
         working-directory: client
         run: npm install

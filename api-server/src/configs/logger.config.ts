@@ -1,4 +1,4 @@
-import DailyRotateFile from 'winston-daily-rotate-file';
+import * as DailyRotateFile from 'winston-daily-rotate-file';
 import * as winston from 'winston';
 import { utilities } from 'nest-winston';
 import { ConfigService } from '@nestjs/config';

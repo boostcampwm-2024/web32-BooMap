@@ -1,14 +1,13 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { WinstonModule } from 'nest-winston';
-import { getWinstonConfig } from './configs/logger.config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { getTypeOrmConfig } from './configs/typeorm.config';
 import { RedisModule } from '@liaoliaots/nestjs-redis';
-import { getRedisConfig } from './configs/redis.config';
+import { getWinstonConfig, getTypeOrmConfig, getRedisConfig } from './configs';
 import { TestModule } from './modules/test/test.module';
 import { ConnectionModule } from './modules/connection/connection.module';
 
+import { LoggerMiddleware } from './middlewares/logger.middleware';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -33,4 +32,8 @@ import { ConnectionModule } from './modules/connection/connection.module';
   controllers: [],
   providers: [],
 })
-export class AppModule {}
+export class AppModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LoggerMiddleware).forRoutes('*');
+  }
+}

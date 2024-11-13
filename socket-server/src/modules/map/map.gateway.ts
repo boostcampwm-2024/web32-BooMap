@@ -1,4 +1,3 @@
-import { MapService } from './map.service';
 import {
   ConnectedSocket,
   MessageBody,
@@ -8,12 +7,17 @@ import {
   WebSocketServer,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-import { MindmapDto } from './dto/mindmap.update.dto';
 import { RedisService } from '@liaoliaots/nestjs-redis';
 import { Redis } from 'ioredis';
-import { NodeCreateDto } from './dto/node.create.dto';
+import { MapService } from './map.service';
+import { UseFilters } from '@nestjs/common';
+import { WsExceptionFilter } from 'src/exceptionfilter/ws.exceptionFilter';
+import { InvalidMindmapIdException } from './exceptions';
+
+import { MindmapDto, NodeCreateDto } from './dto';
 
 @WebSocketGateway({ namespace: 'map' })
+@UseFilters(new WsExceptionFilter())
 export class MapGateway implements OnGatewayConnection {
   @WebSocketServer()
   server: Server;
@@ -28,13 +32,18 @@ export class MapGateway implements OnGatewayConnection {
 
   async handleConnection(@ConnectedSocket() client: Socket): Promise<void> {
     const { mindmapId } = client.handshake.query;
-    const isMindmapIdValid = await this.redis.sismember('mindmapIds', mindmapId as string);
-    if (isMindmapIdValid) {
-      client.join(mindmapId);
-      client.data.mindmapId = mindmapId;
-    } else {
-      client.disconnect();
+
+    if (!mindmapId) {
+      throw new InvalidMindmapIdException();
     }
+
+    const isMindmapIdValid = await this.redis.sismember('mindmapIds', mindmapId as string);
+    if (!isMindmapIdValid) {
+      throw new InvalidMindmapIdException();
+    }
+
+    client.join(mindmapId);
+    client.data.mindmapId = mindmapId;
   }
 
   @SubscribeMessage('updateNode')
@@ -47,5 +56,11 @@ export class MapGateway implements OnGatewayConnection {
   handleCreateNode(@ConnectedSocket() client: Socket, @MessageBody() data: string): void {
     const nodeCreateDto = JSON.parse(data) as NodeCreateDto;
     this.mapService.createNode(client, nodeCreateDto);
+  }
+
+  @SubscribeMessage('deleteNode')
+  handleDeleteNode(@ConnectedSocket() client: Socket, @MessageBody() data: string): void {
+    const nodeId = parseInt(data, 10);
+    this.mapService.deleteNode(client, nodeId);
   }
 }

@@ -1,17 +1,17 @@
 FROM node:22-alpine AS build
 WORKDIR /app
 
-COPY ./server/package*.json ./
+COPY ./api-server/package*.json ./
 RUN npm install 
 
-COPY ./server ./
+COPY ./api-server ./
 RUN npm run build
 
 
 FROM node:22-alpine AS production
 WORKDIR /app
 
-COPY ./server/package*.json ./
+COPY ./api-server/package*.json ./
 RUN npm install --only=production
 COPY --from=build /app/dist ./dist
 
