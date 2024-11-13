@@ -6,6 +6,7 @@ export default {
       colors: {
         bm: {
           blue: "#2F2FE9",
+          purple: "#98A4EE",
         },
         grayscale: {
           800: "#2F3044",
