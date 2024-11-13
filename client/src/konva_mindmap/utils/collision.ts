@@ -37,7 +37,7 @@ export function moveOnCollision(
   const dy = targetNode.attrs.y - draggedNode.attrs.y;
   const angle = Math.atan2(dy, dx);
 
-  const minDistance = 5;
+  const minDistance = 10;
 
   const moveX = Math.cos(angle) * minDistance;
   const moveY = Math.sin(angle) * minDistance;
