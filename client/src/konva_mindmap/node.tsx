@@ -59,16 +59,15 @@ function NodeComponent({ parentNode, node, depth, text }: NodeProps) {
         y={node.location.y}
       >
         <Circle fill={colors[depth - 1]} width={100} height={100} radius={60 - depth * 10} />
-        <Text
+        <EditableText
+          id={node.id}
           name="text"
           text={text}
-          color="black"
-          fontStyle="bold"
           offsetX={70 - depth * 10}
           offsetY={8 * depth - 60}
           width={140 - depth * 20}
-          wrap="word"
-          align="center"
+          isEditing={isEditing}
+          setIsEditing={setIsEditing}
         />
       </Group>
     </>

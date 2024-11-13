@@ -9,9 +9,20 @@ interface EditableTextProps {
   name: string;
   isEditing: boolean;
   setIsEditing: (isEditing: boolean) => void;
+  offsetX: number;
+  offsetY: number;
+  width: number;
 }
 
-export default function EditableText({ id, text, isEditing, setIsEditing }: EditableTextProps) {
+export default function EditableText({
+  id,
+  text,
+  isEditing,
+  setIsEditing,
+  offsetX,
+  offsetY,
+  width,
+}: EditableTextProps) {
   const [content, setContent] = useState(text);
   const { data, updateNodeList } = useNodeListContext();
 
@@ -39,7 +50,16 @@ export default function EditableText({ id, text, isEditing, setIsEditing }: Edit
       {isEditing ? (
         <EditableTextInput value={content} onChange={handleTextChange} onKeyDown={handleKeyDown} onBlur={handleBlur} />
       ) : (
-        <Text text={content} fill="black" width={80} />
+        <Text
+          text={content}
+          fill="black"
+          wrap="word"
+          align="center"
+          fontStyle="bold"
+          offsetX={offsetX}
+          offsetY={offsetY}
+          width={width}
+        />
       )}
     </>
   );
