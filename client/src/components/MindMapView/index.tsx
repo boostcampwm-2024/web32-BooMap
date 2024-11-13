@@ -6,12 +6,13 @@ import minusIcon from "@/assets/minus.png";
 import addElementIcon from "@/assets/addElement.png";
 import deleteIcon from "@/assets/trash.png";
 import { useNodeListContext } from "@/store/NodeListProvider";
-import { DrawNodefromData } from "@/konva_mindmap/node";
-import { checkCollision } from "@/konva_mindmap/utils/collision";
 import useWindowKeyEventListener from "@/hooks/useWindowKeyEventListener";
 import { Node, NodeData } from "@/types/Node";
+import { DrawNodefromData } from "@/konva_mindmap/node";
+import { checkCollision } from "@/konva_mindmap/utils/collision";
 import useLayerEvent from "@/konva_mindmap/hooks/useLayerEvent";
 import { ratioSizing } from "@/konva_mindmap/events/ratioSizing";
+import { useAdjustedStage } from "@/konva_mindmap/hooks/useAdjustedStage";
 
 export default function MindMapView() {
   const { data, updateNodeList, updateNodeData, undo, redo } = useNodeListContext();
@@ -24,13 +25,28 @@ export default function MindMapView() {
     x: 0,
     y: 0,
   });
-
   const [selectedNode, setSelectedNode] = useState<number | null>(null);
+  const adjustedDimensions = useAdjustedStage(data, dimensions.width, dimensions.height);
 
-  const keyMap = {
-    z: undo,
-    y: redo,
-  };
+  useEffect(() => {
+    resizing();
+    const resizeObserver = new ResizeObserver(() => {
+      resizing();
+    });
+
+    if (divRef.current) {
+      resizeObserver.observe(divRef.current);
+    }
+
+    return () => resizeObserver.disconnect();
+  }, [divRef]);
+
+  useEffect(() => {
+    setDimensions((prev) => ({
+      ...prev,
+      ...adjustedDimensions,
+    }));
+  }, [adjustedDimensions]);
 
   const handleNodeClick = (e: any) => {
     const selectedNodeId = Number(e.target.id());
@@ -43,6 +59,11 @@ export default function MindMapView() {
       const newData = deleteNode({ ...data }, selectedNode);
       updateNodeData(newData);
     }
+  };
+
+  const keyMap = {
+    z: undo,
+    y: redo,
   };
 
   useWindowKeyEventListener("keydown", (e) => {
@@ -70,22 +91,11 @@ export default function MindMapView() {
         ...prevDimensions,
         width: divRef.current.offsetWidth,
         height: divRef.current.offsetHeight,
+        x: divRef.current.offsetWidth / 2,
+        y: divRef.current.offsetHeight / 2,
       }));
     }
   }
-
-  useEffect(() => {
-    resizing();
-    const resizeObserver = new ResizeObserver(() => {
-      resizing();
-    });
-
-    if (divRef.current) {
-      resizeObserver.observe(divRef.current);
-    }
-
-    return () => resizeObserver.disconnect();
-  }, [divRef]);
 
   return (
     <div ref={divRef} className="relative h-full min-h-0 w-full min-w-0 rounded-xl bg-white">
@@ -100,15 +110,17 @@ export default function MindMapView() {
         draggable
         onWheel={(e) => ratioSizing(e, dimensions, setDimensions)}
       >
-        <Layer ref={layer}>{DrawNodefromData({ data: data, root: data[1], depth: data[1].depth })}</Layer>
+        <Layer ref={layer}>
+          <DrawNodefromData data={data} root={data[1]} depth={data[1].depth} />
+        </Layer>
       </Stage>
 
-      <div className="absolute bottom-2 left-1/2 flex -translate-x-2/4 -translate-y-2/4 items-center gap-3 rounded-full border px-10 py-2 shadow-md">
+      <div className="absolute bottom-2 left-1/2 flex -translate-x-2/4 -translate-y-2/4 items-center gap-3 rounded-full border bg-white px-10 py-2 shadow-md">
         <div className="flex items-center gap-3 border-r-2 px-5">
           <Button className="h-5 w-5">
             <img src={plusIcon} alt="확대하기" />
           </Button>
-          <span className="text-sm font-bold text-black">{Math.floor(dimensions.scale * 100)}%</span>
+          <span className="w-8 text-center text-sm font-bold text-black">{Math.floor(dimensions.scale * 100)}%</span>
           <Button className="h-5 w-5">
             <img src={minusIcon} alt="축소하기" />
           </Button>

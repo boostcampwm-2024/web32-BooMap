@@ -10,10 +10,20 @@ type NodeProps = {
   text: string;
 };
 
+const colors = ["skyblue", "lightgreen", "lightcoral"];
+
 function NodeComponent({ parentNode, node, depth, text }: NodeProps) {
   const { updateNodeList } = useNodeListContext();
   return (
     <>
+      {parentNode && (
+        <ConnectedLine
+          from={parentNode.location}
+          to={node.location}
+          fromRadius={70 - depth * 10}
+          toRadius={60 - depth * 10}
+        />
+      )}
       <Group
         name="node"
         id={node.id.toString()}
@@ -39,17 +49,19 @@ function NodeComponent({ parentNode, node, depth, text }: NodeProps) {
         x={node.location.x}
         y={node.location.y}
       >
-        <Circle fill={"white"} width={100} height={100} radius={70 - depth * 10} stroke="black" strokeWidth={3} />
-        <Text name="text" text={text} />
-      </Group>
-      {parentNode && (
-        <ConnectedLine
-          from={parentNode.location}
-          to={node.location}
-          fromRadius={70 - (depth - 1) * 10 + 10}
-          toRadius={70 - depth * 10 + 10}
+        <Circle fill={colors[depth - 1]} width={100} height={100} radius={60 - depth * 10} />
+        <Text
+          name="text"
+          text={text}
+          color="black"
+          fontStyle="bold"
+          offsetX={70 - depth * 10}
+          offsetY={8 * depth - 60}
+          width={140 - depth * 20}
+          wrap="word"
+          align="center"
         />
-      )}
+      </Group>
     </>
   );
 }
@@ -65,9 +77,7 @@ type DrawNodeProps = {
 export function DrawNodefromData({ data, root, depth = 0, parentNode }: DrawNodeProps) {
   return (
     <>
-      {/* from */}
       <NodeComponent text={root.keyword} depth={depth} parentNode={parentNode} node={root} />
-      {/* to */}
       {root.children?.map((childNode, index) => (
         <DrawNodefromData data={data} key={index} root={data[childNode]} depth={depth + 1} parentNode={root} />
       ))}
