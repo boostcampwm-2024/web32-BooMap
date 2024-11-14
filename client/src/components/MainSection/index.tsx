@@ -5,13 +5,18 @@ import useSection from "@/hooks/useSection";
 import NodeListProvider from "@/store/NodeListProvider";
 import { useMindmapStore } from "@/store/useMindmapStore";
 import { useEffect } from "react";
+import { useParams } from "react-router-dom";
 
 export default function MainSection() {
-  const { reconnectSocket } = useMindmapStore();
+  const { mindMapId } = useParams<{ mindMapId: string }>();
+  const { connectSocket, disconnectSocket } = useMindmapStore();
 
   useEffect(() => {
-    reconnectSocket();
-  }, []);
+    if (mindMapId) connectSocket(mindMapId);
+    return () => {
+      disconnectSocket();
+    };
+  }, [mindMapId, connectSocket, disconnectSocket]);
 
   const mode = useSection().searchParams.get("mode") as keyof typeof modeView;
   const modeView = {
