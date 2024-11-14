@@ -13,14 +13,14 @@ export default function LoginModal({ open, close }: LoginModalProps) {
     <>
       {open && (
         <div
-          className="fixed left-0 top-0 z-10 flex h-full w-full items-center justify-center bg-black bg-opacity-30 text-black"
+          className="fixed inset-0 z-10 flex items-center justify-center bg-black bg-opacity-30 text-black"
           onClick={close}
         >
           <div
             className="relative flex w-96 flex-col gap-8 rounded-lg bg-white px-10 py-6 text-center"
             onClick={(e) => e.stopPropagation()}
           >
-            <Button className="absolute right-5 top-5 w-6" onClick={close}>
+            <Button className="absolute right-5 top-5 w-6 hover:bg-grayscale-100" onClick={close}>
               <img src={closeIcon} alt="close" />
             </Button>
             <p className="text-2xl font-bold">로그인</p>

@@ -6,7 +6,7 @@ import { Button, Input } from "@headlessui/react";
 export default function UserDashBoard() {
   const data = Array(10).fill({
     title: "어쩌구 제목 마인드맵",
-    keyword: ["대분류", "중분류", "중분류"],
+    keyword: ["대분류", "중분류", "분류"],
     owner: { img: "이미지", id: "user1" },
     createdAt: "2024.11.13",
   });
