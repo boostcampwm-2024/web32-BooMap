@@ -12,7 +12,7 @@ type mindmapState = {
 };
 
 export const useMindmapStore = create<mindmapState>((set, get) => ({
-  mindMapId: localStorage.getItem("mindMapId") || null,
+  mindMapId: sessionStorage.getItem("mindMapId"),
   socket: null,
 
   initializeMindMap: async () => {
@@ -20,7 +20,7 @@ export const useMindmapStore = create<mindmapState>((set, get) => ({
     const mindMapId = response.data;
 
     set({ mindMapId: mindMapId });
-    localStorage.setItem("mindMapId", mindMapId);
+    sessionStorage.setItem("mindMapId", mindMapId);
     return mindMapId;
   },
 
