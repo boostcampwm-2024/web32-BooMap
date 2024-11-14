@@ -1,6 +1,6 @@
 import MindMapNode from "@/konva_mindmap/components/MindMapNode";
 import ConnectedLine from "@/konva_mindmap/components/ConnectedLine";
-import { Node, NodeData } from "@/konva_mindmap/types/Node";
+import { Node, NodeData } from "@/types/Node";
 
 type MindMapProps = {
   data: NodeData;

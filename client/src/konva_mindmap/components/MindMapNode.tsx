@@ -1,5 +1,5 @@
 import EditableText from "@/konva_mindmap/components/EditableText";
-import { Node, NodeData } from "@/konva_mindmap/types/Node";
+import { Node, NodeData } from "@/types/Node";
 import { Circle, Group } from "react-konva";
 import { useNodeListContext } from "@/store/NodeListProvider";
 import { useState } from "react";
