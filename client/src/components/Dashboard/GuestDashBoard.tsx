@@ -6,19 +6,23 @@ import { useMindmapStore } from "@/store/useMindmapStore";
 import { Button } from "@headlessui/react";
 import { useState } from "react";
 import { createPortal } from "react-dom";
+import { useNavigate } from "react-router-dom";
 
 export default function GuestDashBoard() {
   const [loginModal, setLoginModal] = useState(false);
   const { mindMapId, initializeMindMap, connectSocket } = useMindmapStore();
-  const { handleViewMode } = useSection();
+  const navigate = useNavigate();
 
   async function handleConnection() {
     try {
+      let newMindMapId = mindMapId;
       if (!mindMapId) {
-        const newmindMapId = await initializeMindMap();
-        connectSocket(newmindMapId);
-      } else connectSocket(mindMapId);
-      handleViewMode("textupload");
+        newMindMapId = await initializeMindMap();
+        connectSocket(newMindMapId);
+      } else {
+        connectSocket(mindMapId);
+      }
+      navigate(`/mindmap/${newMindMapId}?mode=textupload`);
     } catch (error) {
       console.error(error);
     }

@@ -33,6 +33,10 @@ const router = createBrowserRouter([
     path: "*",
     element: <NotFound />,
   },
+  {
+    path: "/mindmap/:mindMapId",
+    element: <App />,
+  },
 ]);
 
 const queryClient = new QueryClient({
