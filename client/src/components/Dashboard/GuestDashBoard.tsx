@@ -1,3 +1,4 @@
+import { createMindmap } from "@/api/mindmap.api";
 import dashboardIcon from "@/assets/dashbordIcon.png";
 import plusIcon from "@/assets/plus.png";
 import LoginModal from "@/components/LoginModal";
@@ -10,12 +11,13 @@ import { useNavigate } from "react-router-dom";
 
 export default function GuestDashBoard() {
   const [loginModal, setLoginModal] = useState(false);
-  const { mindMapId, initializeMindMap, connectSocket } = useMindmapStore();
+  const { connectSocket } = useMindmapStore();
   const navigate = useNavigate();
 
   async function handleConnection() {
     try {
-      const newMindMapId = await initializeMindMap();
+      const response = await createMindmap();
+      const newMindMapId = response.data;
       connectSocket(newMindMapId);
       navigate(`/mindmap/${newMindMapId}?mode=textupload`);
     } catch (error) {
