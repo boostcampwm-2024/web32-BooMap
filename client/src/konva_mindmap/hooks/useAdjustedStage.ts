@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { NodeData } from "@/types/Node";
+import { NodeData } from "@/konva_mindmap/types/Node";
 
 export function useAdjustedStage(data: NodeData, containerWidth: number, containerHeight: number) {
   const [adjustedDimensions, setAdjustedDimensions] = useState({ scale: 1, x: 0, y: 0 });
