@@ -9,13 +9,12 @@ export default function ControlSection() {
     voiceupload: <VoiceFileUpload />,
     listview: <ListView />,
     textupload: <TextUpload />,
-    default: <TextUpload />,
   };
 
   return (
     <section className="relative w-full min-w-80 max-w-[420px] flex-grow rounded-[20px] bg-grayscale-700">
       <div className="no-scrollbar absolute left-0 top-0 box-border h-full w-full overflow-y-scroll p-8">
-        {modeView[mode] || modeView.default}
+        {modeView[mode]}
       </div>
     </section>
   );
