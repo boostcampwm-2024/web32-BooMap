@@ -1,7 +1,7 @@
-import EditableTextInput from "./EditableTextInput";
 import { Text } from "react-konva";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNodeListContext } from "@/store/NodeListProvider";
+import EditableTextInput from "@/konva_mindmap/components/EditableTextInput";
 
 interface EditableTextProps {
   id: number;
@@ -24,16 +24,24 @@ export default function EditableText({
   width,
 }: EditableTextProps) {
   const originalContent = text;
-  const [content, setContent] = useState(text);
-  const { data, updateNodeList } = useNodeListContext();
+  const [content, setContent] = useState(originalContent);
+  const { data, updateNode, saveHistory } = useNodeListContext();
+
+  useEffect(() => {
+    setContent(text);
+  }, [text]);
 
   function handleTextChange(e: React.ChangeEvent<HTMLInputElement>) {
     setContent(e.target.value);
   }
 
   function saveContent() {
-    if (content.trim().length) updateNodeList(id, { ...data[id], keyword: content });
-    else setContent(originalContent);
+    if (content.trim()) {
+      saveHistory(JSON.stringify(data));
+      updateNode(id, { ...data[id], keyword: content });
+    } else {
+      setContent(originalContent);
+    }
     setIsEditing(false);
   }
 
