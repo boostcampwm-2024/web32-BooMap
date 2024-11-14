@@ -1,5 +1,5 @@
 import { unitVector } from "@/konva_mindmap/utils/vector";
-import { Node, NodeData, SelectedNode } from "@/konva_mindmap/types/Node";
+import { Node, NodeData, SelectedNode } from "@/types/Node";
 
 export function addNode(
   data: NodeData,

@@ -1,4 +1,4 @@
-import { NodeData } from "@/konva_mindmap/types/Node";
+import { NodeData } from "@/types/Node";
 
 type CalculateNodePositionParams = {
   nodeId: number;

@@ -16,7 +16,7 @@ type ToolMenuProps = {
 };
 export default function ToolMenu({ dimensions, zoomIn, zoomOut }: ToolMenuProps) {
   const { data, selectNode, selectedNode, saveHistory, overrideNodeData } = useNodeListContext();
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const intervalRef = useRef(null);
 
   const startZoom = (zoomFn) => {
     intervalRef.current = setInterval(() => {
