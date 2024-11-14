@@ -19,9 +19,9 @@ export default function MindMapInfoItem({ data, index }) {
       >
         <div className="min-w-72">{data.title}</div>
         <div className="grid w-44 grid-cols-2 gap-1 px-5 text-xs">
-          {data.keyword.map((v, i) => (
-            <span key={i} className="rounded-2xl bg-bm-purple px-4 py-[2px]">
-              {v}
+          {data.keyword.map((keyword, i) => (
+            <span key={i} className="rounded-2xl bg-bm-purple px-4 py-[2px] text-center">
+              {keyword}
             </span>
           ))}
         </div>
