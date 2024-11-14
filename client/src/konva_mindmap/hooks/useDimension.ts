@@ -48,9 +48,26 @@ export default function useDimension(data) {
   function handleWheel(e) {
     ratioSizing(e, dimensions, setDimensions);
   }
+
+  function zoomIn() {
+    setDimensions((prevDimensions) => ({
+      ...prevDimensions,
+      scale: prevDimensions.scale + 0.01,
+    }));
+  }
+
+  function zoomOut() {
+    setDimensions((prevDimensions) => ({
+      ...prevDimensions,
+      scale: prevDimensions.scale - 0.01,
+    }));
+  }
+
   return {
     targetRef,
     dimensions,
     handleWheel,
+    zoomIn,
+    zoomOut,
   };
 }

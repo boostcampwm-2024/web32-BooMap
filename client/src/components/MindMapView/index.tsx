@@ -12,7 +12,7 @@ import initializeNodePosition from "@/konva_mindmap/utils/initializeNodePosition
 
 export default function MindMapView() {
   const { data, undoData: undo, redoData: redo, updateNode, overrideNodeData, saveHistory } = useNodeListContext();
-  const { dimensions, targetRef, handleWheel } = useDimension(data);
+  const { dimensions, targetRef, handleWheel, zoomIn, zoomOut } = useDimension(data);
   const layer = useRef<Konva.Layer>();
 
   useEffect(() => {
@@ -55,7 +55,7 @@ export default function MindMapView() {
           <DrawMindMap data={data} root={data[1]} depth={data[1].depth} />
         </Layer>
       </Stage>
-      <ToolMenu dimensions={dimensions} />
+      <ToolMenu dimensions={dimensions} zoomIn={zoomIn} zoomOut={zoomOut} />
       <div className="absolute right-0 top-[-50px] flex gap-3">
         <Button className="rounded-lg bg-grayscale-600 px-4 py-2 text-sm font-bold" onClick={handleReArrange}>
           캔버스 재정렬
