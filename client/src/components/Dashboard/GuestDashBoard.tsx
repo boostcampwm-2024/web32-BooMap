@@ -5,18 +5,13 @@ import { Button } from "@headlessui/react";
 import { useNavigate } from "react-router-dom";
 
 export default function GuestDashBoard() {
-  const { mindMapId, initializeMindMap, connectSocket } = useMindmapStore();
+  const { initializeMindMap, connectSocket } = useMindmapStore();
   const navigate = useNavigate();
 
   async function handleConnection() {
     try {
-      let newMindMapId = mindMapId;
-      if (!mindMapId) {
-        newMindMapId = await initializeMindMap();
-        connectSocket(newMindMapId);
-      } else {
-        connectSocket(mindMapId);
-      }
+      const newMindMapId = await initializeMindMap();
+      connectSocket(newMindMapId);
       navigate(`/mindmap/${newMindMapId}?mode=textupload`);
     } catch (error) {
       console.error(error);
