@@ -1,15 +1,17 @@
 import useHistoryState from "@/hooks/useHistoryState";
 import initializeNodePosition from "@/konva_mindmap/utils/initializeNodePosition";
-import { Node, NodeData } from "@/types/Node";
-import { createContext, ReactNode, useContext } from "react";
+import { Node, NodeData, SelectedNode } from "@/konva_mindmap/types/Node";
+import { createContext, ReactNode, useContext, useEffect, useState } from "react";
 
 export type NodeListContextType = {
   data: NodeData | null;
-  updateNodeList: (id: number, node: Node) => void;
-  updateNodeData: (node: NodeData) => void;
-  saveHistory: (newState: NodeData) => void;
-  undo: () => void;
-  redo: () => void;
+  selectedNode: { nodeId: number; parentNodeId: number } | null;
+  updateNode: (id: number, node: Node) => void;
+  overrideNodeData: (node: NodeData | ((newData: NodeData) => void)) => void;
+  saveHistory: (newState: string) => void;
+  undoData: () => void;
+  redoData: () => void;
+  selectNode: ({ nodeId, parentNodeId }: SelectedNode) => void;
 };
 
 const nodeData = {
@@ -199,22 +201,55 @@ export function useNodeListContext() {
   return context;
 }
 
+const dummy = initializeNodePosition(nodeData);
 export default function NodeListProvider({ children }: { children: ReactNode }) {
-  const { data, setData, saveHistory, undo, redo } = useHistoryState<NodeData>(initializeNodePosition(nodeData));
+  const [data, setData] = useState({ ...dummy });
+  const [selectedNode, setSelectedNode] = useState({ nodeId: 0, parentNodeId: 0 });
+  const { saveHistory, undo, redo } = useHistoryState<NodeData>(JSON.stringify(data));
 
-  function updateNodeList(id: number, updatedNode: Node) {
+  function updateNode(id: number, updatedNode: Node) {
     setData((prevData) => ({
       ...prevData,
       [id]: { ...prevData[id], ...updatedNode },
     }));
   }
 
-  function updateNodeData(newData: NodeData) {
+  function overrideNodeData(newData) {
     setData(newData);
   }
 
+  function undoData() {
+    undo(setData);
+  }
+
+  function redoData() {
+    redo(setData);
+  }
+
+  function selectNode({ nodeId, parentNodeId }: SelectedNode) {
+    if (!nodeId) {
+      setSelectedNode({ nodeId: 0, parentNodeId: 0 });
+      return;
+    }
+    setSelectedNode({
+      nodeId,
+      parentNodeId,
+    });
+  }
+
   return (
-    <NodeListContext.Provider value={{ data, updateNodeList, updateNodeData, undo, redo, saveHistory }}>
+    <NodeListContext.Provider
+      value={{
+        data,
+        updateNode,
+        overrideNodeData,
+        undoData,
+        redoData,
+        saveHistory,
+        selectNode,
+        selectedNode,
+      }}
+    >
       {children}
     </NodeListContext.Provider>
   );

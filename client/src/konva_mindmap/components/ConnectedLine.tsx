@@ -9,6 +9,6 @@ type ConnectedLineProps = {
   toRadius: number;
 };
 
-export function ConnectedLine({ from, to, fromRadius, toRadius }: ConnectedLineProps) {
+export default function ConnectedLine({ from, to, fromRadius, toRadius }: ConnectedLineProps) {
   return <Line name="line" points={getLinePoints(from, to, fromRadius, toRadius)} stroke="gray" strokeWidth={2} />;
 }
