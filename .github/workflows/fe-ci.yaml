@@ -1,0 +1,33 @@
+name: Frontend CI
+
+on:
+  push:
+    branches:
+      - dev
+    paths:
+      - "client/**"
+
+jobs:
+  fe-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "22"
+
+      - name: Install required libraries
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y pkg-config libcairo2-dev libpango1.0-dev libjpeg-dev libgif-dev libpng-dev
+
+      - name: Install frontend dependencies
+        working-directory: client
+        run: npm install
+
+      - name: Run frontend tests
+        working-directory: client
+        run: npm run test
