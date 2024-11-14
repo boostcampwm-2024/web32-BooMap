@@ -1,13 +1,13 @@
 import { Socket, io } from "socket.io-client";
 import { create } from "zustand";
 
-type mindmapState = {
+type SocketState = {
   socket: Socket | null;
   connectSocket: (id: string) => void;
   disconnectSocket: () => void;
 };
 
-export const useMindmapStore = create<mindmapState>((set, get) => ({
+export const SocketSlice = create<SocketState>((set, get) => ({
   socket: null,
 
   connectSocket: (id) => {

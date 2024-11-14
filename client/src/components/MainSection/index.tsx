@@ -3,13 +3,13 @@ import ControlSection from "@/components/MainSection/ControlSection";
 import MindMapView from "@/components/MindMapView";
 import useSection from "@/hooks/useSection";
 import NodeListProvider from "@/store/NodeListProvider";
-import { useMindmapStore } from "@/store/useMindmapStore";
+import { SocketSlice } from "@/store/SocketSlice";
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 
 export default function MainSection() {
   const { mindMapId } = useParams<{ mindMapId: string }>();
-  const { connectSocket, disconnectSocket } = useMindmapStore();
+  const { connectSocket, disconnectSocket } = SocketSlice();
 
   useEffect(() => {
     if (mindMapId) connectSocket(mindMapId);

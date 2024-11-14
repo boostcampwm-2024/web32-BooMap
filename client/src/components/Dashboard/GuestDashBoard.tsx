@@ -1,12 +1,12 @@
 import { createMindmap } from "@/api/mindmap.api";
 import dashboardIcon from "@/assets/dashbordIcon.png";
 import plusIcon from "@/assets/plus.png";
-import { useMindmapStore } from "@/store/useMindmapStore";
+import { SocketSlice } from "@/store/SocketSlice";
 import { Button } from "@headlessui/react";
 import { useNavigate } from "react-router-dom";
 
 export default function GuestDashBoard() {
-  const { connectSocket } = useMindmapStore();
+  const { connectSocket } = SocketSlice();
   const navigate = useNavigate();
 
   async function handleConnection() {
