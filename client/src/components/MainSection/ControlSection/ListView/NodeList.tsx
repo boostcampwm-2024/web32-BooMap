@@ -16,7 +16,7 @@ export default function NodeList({ data, id }: NodeListProps) {
       <NodeItem content={nodeData.keyword} depth={nodeData.depth} handleAccordian={handleAccordian} open={open} />
 
       {open &&
-        data.children.map((childId) => {
+        nodeData.children.map((childId) => {
           return <NodeList key={childId} data={data} id={childId} />;
         })}
     </div>
