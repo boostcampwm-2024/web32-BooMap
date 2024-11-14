@@ -15,13 +15,8 @@ export default function GuestDashBoard() {
 
   async function handleConnection() {
     try {
-      let newMindMapId = mindMapId;
-      if (!mindMapId) {
-        newMindMapId = await initializeMindMap();
-        connectSocket(newMindMapId);
-      } else {
-        connectSocket(mindMapId);
-      }
+      const newMindMapId = await initializeMindMap();
+      connectSocket(newMindMapId);
       navigate(`/mindmap/${newMindMapId}?mode=textupload`);
     } catch (error) {
       console.error(error);
