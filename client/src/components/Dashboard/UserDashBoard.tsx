@@ -20,9 +20,9 @@ export default function UserDashBoard() {
         <div className="min-w-40 pl-1">생성 일자</div>
       </header>
       <div className="no-scrollbar h-[calc(100%-40px)] overflow-y-scroll border-b-[1px] border-t-[1px] border-grayscale-500">
-        {data.map((v, i) => {
-          return <MindMapInfoItem key={i} data={v} index={i} />;
-        })}
+        {data.map((v, i) => (
+          <MindMapInfoItem key={i} data={v} index={i} />
+        ))}
       </div>
       <div className="absolute bottom-8 right-8">
         <Button

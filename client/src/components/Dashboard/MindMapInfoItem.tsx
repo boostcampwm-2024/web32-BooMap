@@ -9,13 +9,11 @@ export default function MindMapInfoItem({ data, index }) {
     >
       <div className="min-w-72">{data.title}</div>
       <div className="grid w-44 grid-cols-2 gap-1 px-5 text-xs">
-        {data.keyword.map((v, i) => {
-          return (
-            <span key={i} className="bg-bm-purple rounded-2xl px-4 py-[2px]">
-              {v}
-            </span>
-          );
-        })}
+        {data.keyword.map((v, i) => (
+          <span key={i} className="rounded-2xl bg-bm-purple px-4 py-[2px]">
+            {v}
+          </span>
+        ))}
       </div>
       <div className="flex min-w-24 items-center justify-center gap-2">
         <img className="h-6 w-6" src={profile} alt="소유자 이미지" />
