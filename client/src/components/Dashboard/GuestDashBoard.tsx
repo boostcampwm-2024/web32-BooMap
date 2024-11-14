@@ -1,20 +1,23 @@
 import dashboardIcon from "@/assets/dashbordIcon.png";
 import plusIcon from "@/assets/plus.png";
-import useSection from "@/hooks/useSection";
 import { useMindmapStore } from "@/store/useMindmapStore";
 import { Button } from "@headlessui/react";
+import { useNavigate } from "react-router-dom";
 
 export default function GuestDashBoard() {
   const { mindMapId, initializeMindMap, connectSocket } = useMindmapStore();
-  const { handleViewMode } = useSection();
+  const navigate = useNavigate();
 
   async function handleConnection() {
     try {
+      let newMindMapId = mindMapId;
       if (!mindMapId) {
-        const newmindMapId = await initializeMindMap();
-        connectSocket(newmindMapId);
-      } else connectSocket(mindMapId);
-      handleViewMode("textupload");
+        newMindMapId = await initializeMindMap();
+        connectSocket(newMindMapId);
+      } else {
+        connectSocket(mindMapId);
+      }
+      navigate(`/mindmap/${newMindMapId}?mode=textupload`);
     } catch (error) {
       console.error(error);
     }

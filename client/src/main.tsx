@@ -9,6 +9,10 @@ const router = createBrowserRouter([
     path: "/",
     element: <App />,
   },
+  {
+    path: "/mindmap/:mindMapId",
+    element: <App />,
+  },
 ]);
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
