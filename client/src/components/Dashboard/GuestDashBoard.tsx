@@ -3,7 +3,7 @@ import dashboardIcon from "@/assets/dashbordIcon.png";
 import plusIcon from "@/assets/plus.png";
 import LoginModal from "@/components/LoginModal";
 import useSection from "@/hooks/useSection";
-import { useMindmapStore } from "@/store/useMindmapStore";
+import { SocketSlice } from "@/store/SocketSlice";
 import { Button } from "@headlessui/react";
 import { useState } from "react";
 import { createPortal } from "react-dom";
@@ -11,7 +11,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function GuestDashBoard() {
   const [loginModal, setLoginModal] = useState(false);
-  const { connectSocket } = useMindmapStore();
+  const { connectSocket } = SocketSlice();
   const navigate = useNavigate();
 
   async function handleConnection() {
