@@ -32,7 +32,7 @@ body {
   padding: 0;
   box-sizing: border-box;
   color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
+  color: rgba(255, 255, 255);
   background-color: #262837;
 
   font-synthesis: none;

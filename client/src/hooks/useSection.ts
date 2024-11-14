@@ -11,7 +11,7 @@ export default function useSection() {
   }
 
   function getmode() {
-    return searchParams.get("mode") ?? "textupload";
+    return searchParams.get("mode") ?? "dashboard";
   }
 
   return {
