@@ -9,7 +9,7 @@ export default function GuestDashBoard() {
         <header className="whitespace-pre-line text-center text-3xl font-bold">
           마인드맵을 만들고
           <br />
-          브레임 스토밍에 활용해보세요
+          브레인 스토밍에 활용해보세요
         </header>
         <img className="w-[300px]" src={dashboardIcon} alt="대쉬보드 아이콘" />
         <Button className="group flex w-[300px] items-center justify-center gap-3 rounded-[10px] bg-grayscale-600 px-10 py-2 text-grayscale-200 hover:text-white">
