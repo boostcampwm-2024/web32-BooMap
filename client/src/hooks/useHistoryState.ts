@@ -1,24 +1,23 @@
-import { NodeData } from "@/types/Node";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 
-export default function useHistoryState<T>(initialState: T) {
-  const [history, setHistory] = useState([initialState]);
+export default function useHistoryState<T>(data: string) {
+  const [history, setHistory] = useState([data]);
   const [pointer, setPointer] = useState(0);
 
   const saveHistory = useCallback(
-    (data: T) => {
-      const newHistory = [...history.slice(0, pointer + 1), data];
-      setPointer(newHistory.length - 1);
-      setHistory(newHistory);
+    (data: string) => {
+      setHistory((prevHistory) => [...prevHistory.slice(0, pointer + 1), data]);
+      setPointer((p) => p + 1);
     },
-    [pointer, history],
+    [pointer],
   );
 
   const undo = useCallback(
     (setData) => {
-      if (pointer <= 0) return;
+      if (!history[0] || pointer < 0) return;
+      const parsedData = JSON.parse(history[pointer - 1]);
+      setData(parsedData);
       setPointer((p) => p - 1);
-      setData(history[pointer - 1]);
     },
     [history, pointer],
   );
