@@ -1,7 +1,11 @@
 import { unitVector } from "@/konva_mindmap/utils/vector";
-import { Node, NodeData } from "@/types/Node";
+import { Node, NodeData, SelectedNode } from "@/konva_mindmap/types/Node";
 
-export function addNode(data, selectedNode, overrideNodeData) {
+export function addNode(
+  data: NodeData,
+  selectedNode: SelectedNode,
+  overrideNodeData: React.Dispatch<React.SetStateAction<NodeData>>,
+) {
   if (!selectedNode || data[selectedNode.nodeId].depth === 3) return;
 
   const newNodeId = parseInt(Object.keys(data)[Object.keys(data).length - 1]) + 1;
