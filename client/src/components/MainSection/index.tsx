@@ -3,8 +3,16 @@ import ControlSection from "@/components/MainSection/ControlSection";
 import MindMapView from "@/components/MindMapView";
 import useSection from "@/hooks/useSection";
 import NodeListProvider from "@/store/NodeListProvider";
+import { useMindmapStore } from "@/store/useMindmapStore";
+import { useEffect } from "react";
 
 export default function MainSection() {
+  const { reconnectSocket } = useMindmapStore();
+
+  useEffect(() => {
+    reconnectSocket();
+  }, []);
+
   const mode = useSection().searchParams.get("mode") as keyof typeof modeView;
   const modeView = {
     dashboard: "대시보드",
