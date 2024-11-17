@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { WinstonModule } from 'nest-winston';
 import { RedisModule } from '@liaoliaots/nestjs-redis';
@@ -6,6 +6,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { getWinstonConfig, getTypeOrmConfig, getRedisConfig } from './configs';
 import { MapModule } from './modules/map/map.module';
+
+import { LoggerMiddleware } from './middlewares/logger.middleware';
 
 @Module({
   imports: [
@@ -27,4 +29,8 @@ import { MapModule } from './modules/map/map.module';
   controllers: [],
   providers: [],
 })
-export class AppModule {}
+export class AppModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LoggerMiddleware).forRoutes('*');
+  }
+}

@@ -6,7 +6,7 @@ export class ConnectionController {
   constructor(private readonly connectionService: ConnectionService) {}
 
   @Post()
-  createRoom(): Promise<string> {
-    return this.connectionService.createMindmapId();
+  createMindMap(): Promise<string> {
+    return this.connectionService.createMindmap();
   }
 }

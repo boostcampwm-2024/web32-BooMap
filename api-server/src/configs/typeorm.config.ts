@@ -11,4 +11,7 @@ export const getTypeOrmConfig = (configService: ConfigService): TypeOrmModuleOpt
   entities: [__dirname + '/../**/*.entity.{js,ts}'],
   timezone: '+09:00',
   synchronize: true,
+  extra: {
+    charset: 'utf8mb4_unicode_ci',
+  },
 });
