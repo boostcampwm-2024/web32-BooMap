@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback } from "react";
 
 export default function useHistoryState<T>(data: string) {
   const [history, setHistory] = useState([data]);

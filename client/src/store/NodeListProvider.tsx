@@ -1,7 +1,7 @@
 import useHistoryState from "@/hooks/useHistoryState";
 import initializeNodePosition from "@/konva_mindmap/utils/initializeNodePosition";
 import { Node, NodeData, SelectedNode } from "@/types/Node";
-import { createContext, ReactNode, useContext, useEffect, useState } from "react";
+import { createContext, ReactNode, useContext, useState } from "react";
 
 export type NodeListContextType = {
   data: NodeData | null;
