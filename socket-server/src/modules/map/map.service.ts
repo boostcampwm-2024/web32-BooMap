@@ -1,13 +1,14 @@
+import { NodeDto } from './dto/mindmap.update.dto';
 import { Socket } from 'socket.io';
 import { Injectable } from '@nestjs/common';
 import { RedisService } from '@liaoliaots/nestjs-redis';
 import { plainToInstance } from 'class-transformer';
 import { Redis } from 'ioredis';
 import { InjectRepository } from '@nestjs/typeorm';
-import { EntityManager, Repository } from 'typeorm';
-import { MindmapDto, NodeCreateDto, NodeDto } from './dto';
+import { Repository } from 'typeorm';
+import { MindmapDto, NodeCreateDto } from './dto';
 import { Node } from './entity/node.entity';
-import { NodeNotFoundException, DatabaseError } from './exceptions';
+import { NodeNotFoundException, DatabaseException, InvalidMindmapIdException } from './exceptions';
 
 @Injectable()
 export class MapService {
@@ -20,58 +21,30 @@ export class MapService {
     this.redis = redisService.getOrThrow();
   }
 
-  async updateMindmap(client: Socket, mindmapDto: MindmapDto): Promise<void> {
-    const updateNodeList = Object.entries(mindmapDto).map(([, value]) => value as NodeDto);
+  async createNode(client: Socket, nodeCreateDto: NodeCreateDto) {
+    const nodeEntity = plainToInstance(Node, nodeCreateDto);
 
     try {
-      await this.nodeRepository.manager.transaction(async (manager: EntityManager) => {
-        for (const nodeDto of updateNodeList) {
-          const node = await manager.findOne(Node, { where: { id: nodeDto.id } });
-          if (!node) {
-            throw new NodeNotFoundException();
-          }
-
-          await manager.update(Node, nodeDto.id, {
-            keyword: nodeDto.keyword,
-            depth: nodeDto.depth,
-            locationX: nodeDto.location.x,
-            locationY: nodeDto.location.y,
-          });
+      if (nodeCreateDto.parentId) {
+        const parentNode = await this.nodeRepository.findOneBy({ id: nodeCreateDto.parentId });
+        if (!parentNode) {
+          throw new NodeNotFoundException();
         }
-      });
+        nodeEntity.parent = parentNode;
+      }
+
+      nodeEntity.locationX = nodeCreateDto.location.x;
+      nodeEntity.locationY = nodeCreateDto.location.y;
+
+      await this.nodeRepository.save(nodeEntity);
+      return plainToInstance(NodeDto, nodeEntity);
     } catch (error) {
-      if (error instanceof NodeNotFoundException) {
-        throw error;
-      }
-      throw new DatabaseError('마인드맵 업데이트 실패');
+      if (error instanceof NodeNotFoundException) throw error;
+      throw new DatabaseException('노드 생성 실패');
     }
   }
 
-  async createNode(client: Socket, mindmapCreateDto: NodeCreateDto): Promise<void> {
-    const nodeEntity = plainToInstance(Node, mindmapCreateDto);
-    let parentNode: Node | undefined;
-
-    if (mindmapCreateDto.parentId) {
-      parentNode = await this.nodeRepository.findOneBy({ id: mindmapCreateDto.parentId });
-      if (!parentNode) {
-        throw new NodeNotFoundException();
-      }
-      nodeEntity.parent = parentNode;
-    }
-
-    // TODO : 회원, 회의록 외래키 추가 필요
-    nodeEntity.locationX = mindmapCreateDto.location.x;
-    nodeEntity.locationY = mindmapCreateDto.location.y;
-
-    try {
-      const savedNode = await this.nodeRepository.save(nodeEntity);
-      client.emit('nodeCreated', savedNode.id);
-    } catch {
-      throw new DatabaseError('노드 생성 실패');
-    }
-  }
-
-  async deleteNode(client: Socket, nodeId: number): Promise<void> {
+  async deleteNode(client: Socket, nodeId: number) {
     const nodeEntity = await this.nodeRepository.findOneBy({ id: nodeId });
 
     if (!nodeEntity) {
@@ -79,9 +52,54 @@ export class MapService {
     }
 
     try {
-      await this.nodeRepository.remove(nodeEntity);
+      await this.nodeRepository.softDelete(nodeEntity);
+      return 'success';
     } catch {
-      throw new DatabaseError('노드 삭제 실패');
+      throw new DatabaseException('노드 삭제 실패');
+    }
+  }
+
+  async updateNodeList(client: Socket, newState: MindmapDto) {
+    try {
+      await this.redis.set(`mindmapState:${client.data.mindmapId}`, JSON.stringify(newState));
+    } catch {
+      throw new DatabaseException('노드 리스트 업데이트 실패');
+    }
+  }
+
+  async joinRoom(client: Socket) {
+    const mindmapId = this.extractMindmapId(client);
+
+    const isMindmapIdValid = await this.redis.sismember('mindmapIds', mindmapId as string);
+    if (!isMindmapIdValid) {
+      throw new InvalidMindmapIdException();
+    }
+
+    client.join(mindmapId);
+    client.data.mindmapId = mindmapId;
+
+    const currentMindmap = await this.redis.get(`mindmapState:${mindmapId}`);
+    if (currentMindmap) {
+      return plainToInstance(MindmapDto, JSON.parse(currentMindmap));
+    }
+  }
+
+  async leaveRoom(client: Socket) {
+    try {
+      const mindmapId = client.data.mindmapId;
+      //TODO user, mindmap 구현 이후 mysql데이터 동기화 로직 추가
+      client.leave(mindmapId);
+    } catch {
+      throw new DatabaseException('마인드맵 저장 실패');
+    }
+  }
+
+  private extractMindmapId(client: Socket) {
+    try {
+      const mindmapId = client.handshake.query.mindmapId;
+      return Array.isArray(mindmapId) ? mindmapId.pop() : mindmapId;
+    } catch {
+      throw new InvalidMindmapIdException();
     }
   }
 }

@@ -2,6 +2,7 @@ import {
   ConnectedSocket,
   MessageBody,
   OnGatewayConnection,
+  OnGatewayDisconnect,
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
@@ -10,57 +11,52 @@ import { Server, Socket } from 'socket.io';
 import { RedisService } from '@liaoliaots/nestjs-redis';
 import { Redis } from 'ioredis';
 import { MapService } from './map.service';
-import { UseFilters } from '@nestjs/common';
+import { UseFilters, UsePipes, Injectable } from '@nestjs/common';
 import { WsExceptionFilter } from 'src/exceptionfilter/ws.exceptionFilter';
-import { InvalidMindmapIdException } from './exceptions';
 
 import { MindmapDto, NodeCreateDto } from './dto';
+import { WsValidationPipe } from 'src/pipes/ws.validation.pipe';
+import { MindmapValidationPipe } from 'src/pipes/mindmap.validation.pipe';
 
+@Injectable()
 @WebSocketGateway({ namespace: 'map' })
 @UseFilters(new WsExceptionFilter())
-export class MapGateway implements OnGatewayConnection {
+export class MapGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   server: Server;
-  private readonly redis: Redis | null;
+  private readonly redis: Redis;
 
   constructor(
     private readonly mapService: MapService,
-    redisService: RedisService,
+    private readonly redisService: RedisService,
   ) {
-    this.redis = redisService.getOrThrow();
+    this.redis = this.redisService.getOrThrow();
   }
 
+  @UsePipes(WsValidationPipe)
   async handleConnection(@ConnectedSocket() client: Socket): Promise<void> {
-    const { mindmapId } = client.handshake.query;
-
-    if (!mindmapId) {
-      throw new InvalidMindmapIdException();
-    }
-
-    const isMindmapIdValid = await this.redis.sismember('mindmapIds', mindmapId as string);
-    if (!isMindmapIdValid) {
-      throw new InvalidMindmapIdException();
-    }
-
-    client.join(mindmapId);
-    client.data.mindmapId = mindmapId;
+    this.mapService.joinRoom(client);
   }
-
-  @SubscribeMessage('updateNode')
-  handleMessage(@ConnectedSocket() client: Socket, @MessageBody() data: string): void {
-    const mindmapUpdateDto = JSON.parse(data) as MindmapDto;
-    this.mapService.updateMindmap(client, mindmapUpdateDto);
+  @UsePipes(WsValidationPipe)
+  async handleDisconnect(@ConnectedSocket() client: Socket): Promise<void> {
+    this.mapService.leaveRoom(client);
   }
 
   @SubscribeMessage('createNode')
-  handleCreateNode(@ConnectedSocket() client: Socket, @MessageBody() data: string): void {
-    const nodeCreateDto = JSON.parse(data) as NodeCreateDto;
-    this.mapService.createNode(client, nodeCreateDto);
+  async handleCreateNode(@ConnectedSocket() client: Socket, @MessageBody(WsValidationPipe) nodeCreateDto: NodeCreateDto) {
+    const result = await this.mapService.createNode(client, nodeCreateDto);
+    return { event: 'createNode', data: result };
   }
 
   @SubscribeMessage('deleteNode')
-  handleDeleteNode(@ConnectedSocket() client: Socket, @MessageBody() data: string): void {
-    const nodeId = parseInt(data, 10);
-    this.mapService.deleteNode(client, nodeId);
+  async handleDeleteNode(@ConnectedSocket() client: Socket, @MessageBody(WsValidationPipe) nodeId: number) {
+    const result = await this.mapService.deleteNode(client, nodeId);
+    return { event: 'deleteNode', data: result };
+  }
+
+  @SubscribeMessage('updateNode')
+  handleMessage(@ConnectedSocket() client: Socket, @MessageBody(MindmapValidationPipe) mindmapDto: MindmapDto) {
+    this.mapService.updateNodeList(client, mindmapDto);
+    this.server.to(client.data.mindmapId).emit('updateNode', mindmapDto);
   }
 }
