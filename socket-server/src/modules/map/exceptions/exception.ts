@@ -12,7 +12,7 @@ export class NodeNotFoundException extends WsException {
   }
 }
 
-export class DatabaseError extends WsException {
+export class DatabaseException extends WsException {
   constructor(message: string) {
     super(message);
   }
