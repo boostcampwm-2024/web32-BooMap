@@ -1,14 +1,20 @@
 import {
   Column,
   CreateDateColumn,
+  DeleteDateColumn,
   Entity,
-  ManyToOne,
-  OneToMany,
   PrimaryGeneratedColumn,
+  Tree,
+  TreeChildren,
+  TreeParent,
   UpdateDateColumn,
+  ManyToOne,
+  JoinColumn,
 } from 'typeorm';
+import { Mindmap } from './mindmap.entity';
 
-@Entity()
+@Entity('node')
+@Tree('closure-table')
 export class Node {
   @PrimaryGeneratedColumn()
   id: number;
@@ -31,9 +37,16 @@ export class Node {
   @UpdateDateColumn({ type: 'timestamp', name: 'modified_date' })
   modifiedDate: Date;
 
-  @ManyToOne(() => Node, (node) => node.children, { nullable: true })
+  @DeleteDateColumn()
+  deletedAt: Date | null;
+
+  @TreeParent()
   parent: Node;
 
-  @OneToMany(() => Node, (node) => node.parent)
+  @TreeChildren()
   children: Node[];
+
+  @ManyToOne(() => Mindmap, (mindmap) => mindmap.nodes, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'mindmap_id' })
+  mindmap: Mindmap;
 }
