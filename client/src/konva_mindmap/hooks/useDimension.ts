@@ -52,14 +52,14 @@ export default function useDimension(data) {
   function zoomIn() {
     setDimensions((prevDimensions) => ({
       ...prevDimensions,
-      scale: prevDimensions.scale + 0.01,
+      scale: prevDimensions.scale + 0.05,
     }));
   }
 
   function zoomOut() {
     setDimensions((prevDimensions) => ({
       ...prevDimensions,
-      scale: prevDimensions.scale - 0.01,
+      scale: prevDimensions.scale - 0.05 < 0.05 ? 0.05 : prevDimensions.scale - 0.05,
     }));
   }
 

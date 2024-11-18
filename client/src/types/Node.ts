@@ -6,6 +6,7 @@ export type Node = {
   depth: number;
   location: Location;
   children: number[] | [];
+  newNode?: boolean;
 };
 
 export type NodeData = Record<number, Node>;

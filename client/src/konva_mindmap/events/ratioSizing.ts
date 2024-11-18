@@ -5,7 +5,6 @@ export function ratioSizing(e, dimensions, setDimensions) {
   const stage = e.target.getStage();
   const oldScale = stage.attrs.scaleX;
   const pointer = stage.getPointerPosition();
-  console.log(oldScale, pointer, stage.x(), stage.y());
   const mousePointTo = {
     // 포인터가 가르키는 x,y좌표를 기존 확대비율로 나눈 것에 stage의 x좌표에 기존 확대비율로 나눈 값을 뻄
     x: pointer.x / oldScale - stage.x() / oldScale,

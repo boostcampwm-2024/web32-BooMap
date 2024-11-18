@@ -31,5 +31,5 @@ export default function useHistoryState<T>(data: string) {
     [history, pointer],
   );
 
-  return { saveHistory, undo, redo };
+  return { saveHistory, undo, redo, history };
 }

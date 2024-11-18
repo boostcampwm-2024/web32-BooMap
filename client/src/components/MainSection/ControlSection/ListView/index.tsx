@@ -6,9 +6,5 @@ export default function ListView() {
 
   if (!data) return <p>데이터가 없습니다. 새롭게 추가해주세요!</p>;
 
-  return (
-    <div>
-      <NodeList data={data} id={1} />
-    </div>
-  );
+  return <div>{Object.keys(data).length >= 1 && <NodeList data={data} id={1} />}</div>;
 }

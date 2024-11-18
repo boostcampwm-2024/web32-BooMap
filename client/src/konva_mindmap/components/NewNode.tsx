@@ -1,7 +1,6 @@
 import EditableTextInput from "@/konva_mindmap/components/EditableTextInput";
 import { colors, NodeProps } from "@/konva_mindmap/components/MindMapNode";
 import { addNode } from "@/konva_mindmap/events/addNode";
-import { SelectedNode } from "@/konva_mindmap/types/Node";
 import { useNodeListContext } from "@/store/NodeListProvider";
 import { useEffect, useState } from "react";
 import { Circle, Group } from "react-konva";
@@ -9,7 +8,6 @@ import { Circle, Group } from "react-konva";
 export default function NewNode({ data, parentNode, node, depth }: NodeProps) {
   const { saveHistory, selectedNode, updateNode } = useNodeListContext();
   const [keyword, setKeyword] = useState("제목없음");
-  console.log(node);
   useEffect(() => {
     setKeyword(keyword);
   }, [keyword]);
