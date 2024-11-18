@@ -20,12 +20,11 @@ export function addNode(
         id: newNodeId,
         // keyword, depth, location 보내면 id 받고 id 받은걸로 상태 업데이트
         keyword: "제목없음",
-        depth: data[selectedNode.parentNodeId].depth + 1,
+        depth: data[selectedNode.nodeId].depth + 1,
         location: getNewNodePosition(data[selectedNode.nodeId].children, data, data[selectedNode.nodeId]),
         children: [],
       },
     }));
-    return;
   }
 
   overrideNodeData((prev) => ({
@@ -42,6 +41,7 @@ export function addNode(
       children: [],
     },
   }));
+  return newNodeId;
 }
 
 // 수직벡터 -> 벡터 구한 다음에 벡터의 y값이 x값으로 가고 x값의 반대 부호값이 y좌표
