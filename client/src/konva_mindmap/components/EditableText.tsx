@@ -24,23 +24,23 @@ export default function EditableText({
   width,
 }: EditableTextProps) {
   const originalContent = text;
-  const [content, setContent] = useState(originalContent);
+  const [keyword, setKeyword] = useState(originalContent);
   const { data, updateNode, saveHistory } = useNodeListContext();
 
   useEffect(() => {
-    setContent(text);
+    setKeyword(text);
   }, [text]);
 
   function handleTextChange(e: React.ChangeEvent<HTMLInputElement>) {
-    setContent(e.target.value);
+    setKeyword(e.target.value);
   }
 
   function saveContent() {
-    if (content.trim()) {
+    if (keyword.trim()) {
       saveHistory(JSON.stringify(data));
-      updateNode(id, { ...data[id], keyword: content });
+      updateNode(id, { keyword: keyword });
     } else {
-      setContent(originalContent);
+      setKeyword(originalContent);
     }
     setIsEditing(false);
   }
@@ -57,7 +57,7 @@ export default function EditableText({
     <>
       {isEditing ? (
         <EditableTextInput
-          value={content}
+          value={keyword}
           onChange={handleTextChange}
           onKeyDown={handleKeyDown}
           onBlur={handleBlur}
@@ -67,7 +67,7 @@ export default function EditableText({
         />
       ) : (
         <Text
-          text={content}
+          text={keyword}
           fill="black"
           wrap="word"
           align="center"
