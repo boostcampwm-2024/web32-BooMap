@@ -6,14 +6,13 @@ import { createContext, ReactNode, useContext, useEffect, useState } from "react
 export type NodeListContextType = {
   data: NodeData | null;
   selectedNode: { nodeId: number; parentNodeId: number } | null;
-  updateNode: (id: number, node: Node) => void;
+  history: string[];
+  updateNode: (id: number, node: Partial<Node>) => void;
   overrideNodeData: (node: NodeData | ((newData: NodeData) => void)) => void;
   saveHistory: (newState: string) => void;
   undoData: () => void;
   redoData: () => void;
   selectNode: ({ nodeId, parentNodeId }: SelectedNode) => void;
-  focusNodeId: number | null;
-  updateFocusNodeId: (newId: number | null) => void;
 };
 
 const nodeData = {
@@ -207,10 +206,9 @@ const dummy = initializeNodePosition(nodeData);
 export default function NodeListProvider({ children }: { children: ReactNode }) {
   const [data, setData] = useState({ ...dummy });
   const [selectedNode, setSelectedNode] = useState({ nodeId: 0, parentNodeId: 0 });
-  const { saveHistory, undo, redo } = useHistoryState<NodeData>(JSON.stringify(data));
-  const [focusNodeId, setFocusNodeId] = useState(null);
+  const { saveHistory, undo, redo, history } = useHistoryState<NodeData>(JSON.stringify(data));
 
-  function updateNode(id: number, updatedNode: Node) {
+  function updateNode(id: number, updatedNode: Partial<Node>) {
     setData((prevData) => ({
       ...prevData,
       [id]: { ...prevData[id], ...updatedNode },
@@ -240,10 +238,6 @@ export default function NodeListProvider({ children }: { children: ReactNode }) 
     });
   }
 
-  function updateFocusNodeId(newId: number | null) {
-    setFocusNodeId(newId);
-  }
-
   return (
     <NodeListContext.Provider
       value={{
@@ -255,8 +249,7 @@ export default function NodeListProvider({ children }: { children: ReactNode }) 
         saveHistory,
         selectNode,
         selectedNode,
-        focusNodeId,
-        updateFocusNodeId,
+        history,
       }}
     >
       {children}
