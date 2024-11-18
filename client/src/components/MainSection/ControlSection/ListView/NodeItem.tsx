@@ -5,18 +5,34 @@ import deleteIcon from "@/assets/trash2.png";
 import { Input } from "@headlessui/react";
 import useNodeActions from "@/hooks/useNodeActions";
 import bulletPointIcon from "@/assets/bulletPoint.png";
+import { useNodeListContext } from "@/store/NodeListProvider";
+import { deleteNode } from "@/konva_mindmap/events/deleteNode";
+import { addNode } from "@/konva_mindmap/events/addNode";
+import { useEffect, useRef } from "react";
 
 type NodeItemProps = {
+  id: number;
+  parentNodeId?: number;
   content: string;
   depth: number;
   open: boolean;
-  handleAccordian: () => void;
+  handleAccordion: () => void;
+  openAccordion: () => void;
 };
 
-export default function NodeItem({ content, depth, open, handleAccordian }: NodeItemProps) {
+export default function NodeItem({
+  id,
+  parentNodeId,
+  content,
+  depth,
+  open,
+  handleAccordion,
+  openAccordion,
+}: NodeItemProps) {
   const {
     hover,
     isEditing,
+    setIsEditing,
     keyword,
     handleChangeKeyword,
     handleDoubleClick,
@@ -24,28 +40,67 @@ export default function NodeItem({ content, depth, open, handleAccordian }: Node
     handleMouseEnter,
     handleMouseLeave,
     handleKeyDown,
-  } = useNodeActions(content);
+  } = useNodeActions(id, content);
+  const { data, saveHistory, selectedNode, overrideNodeData, focusNodeId, updateFocusNodeId } = useNodeListContext();
+  const inputRef = useRef<HTMLInputElement | null>(null);
+  const isSelected = selectedNode.parentNodeId === id || findParentNodeId(selectedNode.parentNodeId, data) === id;
+
+  useEffect(() => {
+    if (id === focusNodeId) {
+      setIsEditing(true);
+      inputRef.current?.focus();
+    }
+  }, [id, focusNodeId, setIsEditing]);
+
+  useEffect(() => {
+    if (isSelected) openAccordion();
+  }, [isSelected]);
+
+  function findParentNodeId(nodeId, nodeData) {
+    for (const id in nodeData) {
+      const node = nodeData[parseInt(id)];
+      if (node.children.includes(nodeId)) {
+        return node.id;
+      }
+    }
+    return null;
+  }
+
+  function handleAddButton() {
+    saveHistory(JSON.stringify(data));
+    const nodeId = addNode(data, { nodeId: id, parentNodeId: parentNodeId }, overrideNodeData);
+    updateFocusNodeId(nodeId);
+    openAccordion();
+  }
+
+  function handleDeleteButton(id) {
+    saveHistory(JSON.stringify(data));
+    deleteNode(JSON.stringify(data), id, overrideNodeData);
+  }
+
+  const selectedBorder = selectedNode.nodeId === id ? "border-2 border-blue-500" : "border-2 border-grayscale-600";
 
   return (
     <div
-      className="flex cursor-pointer justify-between rounded-xl bg-grayscale-600 p-3"
+      className={`flex justify-between rounded-xl bg-grayscale-600 p-[10px] ${selectedBorder}`}
       style={{ marginLeft: `${(depth - 1) * 30}px` }}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
       <div className="flex min-w-0 flex-1 items-center gap-3">
         {depth < 3 ? (
-          <img
-            src={arrowDown}
-            alt="열기"
-            className={`h-3 w-4 transition-all ${open ? "" : "rotate-[-90deg]"}`}
-            onClick={handleAccordian}
-          />
+          <button
+            className={`flex h-5 w-5 items-center justify-center transition-all ${open ? "" : "rotate-[-90deg]"}`}
+            onClick={handleAccordion}
+          >
+            <img src={arrowDown} alt="열기" className="h-3 w-4" />
+          </button>
         ) : (
           <img src={bulletPointIcon} alt="구분점" className="h-2 w-2" />
         )}
         {isEditing ? (
           <Input
+            ref={inputRef}
             className="flex-grow bg-transparent text-grayscale-200"
             value={keyword}
             onChange={handleChangeKeyword}
@@ -63,9 +118,19 @@ export default function NodeItem({ content, depth, open, handleAccordian }: Node
       <div className="flex items-center gap-1">
         {hover && !isEditing && (
           <>
-            <img src={editIcon} alt="수정하기" className="h-4 w-4" />
-            <img src={plusIcon} alt="추가하기" className="h-4 w-4" />
-            <img src={deleteIcon} alt="삭제하기" className="h-4 w-4" />
+            <button onClick={() => setIsEditing(true)}>
+              <img src={editIcon} alt="수정하기" className="h-4 w-4" />
+            </button>
+            {depth < 3 ? (
+              <button onClick={handleAddButton}>
+                <img src={plusIcon} alt="추가하기" className="h-4 w-4" />
+              </button>
+            ) : (
+              <></>
+            )}
+            <button onClick={() => handleDeleteButton(id)}>
+              <img src={deleteIcon} alt="삭제하기" className="h-4 w-4" />
+            </button>
           </>
         )}
       </div>
