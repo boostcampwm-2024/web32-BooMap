@@ -3,6 +3,7 @@ import { NodeProps } from "@/types/Node";
 import { Circle, Group } from "react-konva";
 import { useNodeListContext } from "@/store/NodeListProvider";
 import { useState } from "react";
+import { SocketSlice } from "@/store/SocketSlice";
 import { checkFollowing, reconcileOffsets, resetSavedOffsets, saveOffsets } from "@/konva_mindmap/utils/following";
 import NewNode from "@/konva_mindmap/components/NewNode";
 import { colors } from "@/constants/color";
@@ -11,6 +12,7 @@ export default function MindMapNode({ data, parentNode, node, depth }: NodeProps
   if (node.newNode) return <NewNode data={data} parentNode={parentNode} node={node} depth={depth} />;
   const { saveHistory, updateNode, selectNode, selectedNode } = useNodeListContext();
   const [isEditing, setIsEditing] = useState(false);
+  const socket = SocketSlice.getState().socket;
 
   function handleDoubleClick() {
     setIsEditing(true);
@@ -22,6 +24,17 @@ export default function MindMapNode({ data, parentNode, node, depth }: NodeProps
 
   function handleMouseLeave() {
     this.setStroke("");
+  }
+
+  function handleDragEnd() {
+    if (socket) {
+      socket.emit("updateNode", data);
+      socket.on("updateNode", (response) => {
+        if (response) {
+          saveHistory(JSON.stringify(data));
+        }
+      });
+    }
   }
 
   function handleClick() {
