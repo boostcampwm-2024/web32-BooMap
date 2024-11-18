@@ -1,10 +1,11 @@
 import NodeList from "@/components/MainSection/ControlSection/ListView/NodeList";
 import { useNodeListContext } from "@/store/NodeListProvider";
+import { Node } from "@/types/Node";
 
 export default function ListView() {
   const { data } = useNodeListContext();
+  if (!Object.keys(data).length) return <p>새로운 브레인스토밍을 시작해보세요</p>;
+  const root: Node = data[Object.keys(data)[0]];
 
-  if (!data) return <p>데이터가 없습니다. 새롭게 추가해주세요!</p>;
-
-  return <div>{Object.keys(data).length >= 1 && <NodeList data={data} id={1} />}</div>;
+  return <div>{Object.keys(data).length >= 1 && <NodeList data={data} root={root} />}</div>;
 }
