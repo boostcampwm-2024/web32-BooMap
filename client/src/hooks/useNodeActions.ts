@@ -1,12 +1,7 @@
 import { useNodeListContext } from "@/store/NodeListProvider";
 import { ChangeEvent, KeyboardEvent, useState } from "react";
 
-interface UseNodeActionsProps {
-  id: number;
-  content: string;
-}
-
-export default function useNodeActions(id, content: string) {
+export default function useNodeActions(id: number, content: string) {
   const [hover, setHover] = useState<boolean>(false);
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [keyword, setKeyword] = useState(content);
