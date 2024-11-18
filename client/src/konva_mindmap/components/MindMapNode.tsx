@@ -4,7 +4,7 @@ import { Circle, Group } from "react-konva";
 import { useNodeListContext } from "@/store/NodeListProvider";
 import { useState } from "react";
 import { checkFollowing, reconcileOffsets, resetSavedOffsets, saveOffsets } from "@/konva_mindmap/utils/following";
-import NewNode from "@/konva_mindmap/components/newNode";
+import NewNode from "@/konva_mindmap/components/NewNode";
 
 export type NodeProps = {
   data: NodeData;
