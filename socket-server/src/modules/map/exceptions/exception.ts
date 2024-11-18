@@ -7,8 +7,8 @@ export class InvalidMindmapIdException extends WsException {
 }
 
 export class NodeNotFoundException extends WsException {
-  constructor() {
-    super('Node not found');
+  constructor(nodeId: number) {
+    super('Node not found : ' + nodeId);
   }
 }
 

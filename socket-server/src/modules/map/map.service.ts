@@ -1,3 +1,4 @@
+import { nodeDeleteDto } from './dto/node.delete.dto';
 import { NodeDto } from './dto/mindmap.update.dto';
 import { Socket } from 'socket.io';
 import { Injectable } from '@nestjs/common';
@@ -28,7 +29,7 @@ export class MapService {
       if (nodeCreateDto.parentId) {
         const parentNode = await this.nodeRepository.findOneBy({ id: nodeCreateDto.parentId });
         if (!parentNode) {
-          throw new NodeNotFoundException();
+          throw new NodeNotFoundException(nodeCreateDto.parentId);
         }
         nodeEntity.parent = parentNode;
       }
@@ -36,27 +37,27 @@ export class MapService {
       nodeEntity.locationX = nodeCreateDto.location.x;
       nodeEntity.locationY = nodeCreateDto.location.y;
 
-      await this.nodeRepository.save(nodeEntity);
-      return plainToInstance(NodeDto, nodeEntity);
+      const savedNode = await this.nodeRepository.save(nodeEntity);
+      return plainToInstance(NodeDto, savedNode);
     } catch (error) {
       if (error instanceof NodeNotFoundException) throw error;
       throw new DatabaseException('노드 생성 실패');
     }
   }
 
-  async deleteNode(client: Socket, nodeId: number) {
-    const nodeEntity = await this.nodeRepository.findOneBy({ id: nodeId });
+  async deleteNode(client: Socket, nodeDeleteDto: nodeDeleteDto) {
+    await this.nodeRepository.manager.transaction(async (transactionalEntityManager) => {
+      for (const nodeId of nodeDeleteDto.id) {
+        const nodeEntity = await transactionalEntityManager.findOneBy(Node, { id: nodeId });
 
-    if (!nodeEntity) {
-      throw new NodeNotFoundException();
-    }
+        if (!nodeEntity) {
+          throw new NodeNotFoundException(nodeId);
+        }
 
-    try {
-      await this.nodeRepository.softDelete(nodeEntity);
-      return 'success';
-    } catch {
-      throw new DatabaseException('노드 삭제 실패');
-    }
+        await transactionalEntityManager.softDelete(Node, nodeEntity);
+      }
+    });
+    return nodeDeleteDto.id;
   }
 
   async updateNodeList(client: Socket, newState: MindmapDto) {
