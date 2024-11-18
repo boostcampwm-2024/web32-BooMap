@@ -1,5 +1,4 @@
-name: cd
-
+name: CD
 on:
   push:
     branches:
@@ -23,5 +22,7 @@ jobs:
           script: |
             cd /root/web32-BooMap
             git pull
+            rm -f .env
+            echo "${{ secrets.ENV }}" > .env
             docker-compose down
             docker-compose up -d --build

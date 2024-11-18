@@ -17,6 +17,7 @@ import { WsExceptionFilter } from 'src/exceptionfilter/ws.exceptionFilter';
 import { MindmapDto, NodeCreateDto } from './dto';
 import { WsValidationPipe } from 'src/pipes/ws.validation.pipe';
 import { MindmapValidationPipe } from 'src/pipes/mindmap.validation.pipe';
+import { nodeDeleteDto } from './dto/node.delete.dto';
 
 @Injectable()
 @WebSocketGateway({ namespace: 'map' })
@@ -34,11 +35,12 @@ export class MapGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   @UsePipes(WsValidationPipe)
-  async handleConnection(@ConnectedSocket() client: Socket): Promise<void> {
-    this.mapService.joinRoom(client);
+  async handleConnection(@ConnectedSocket() client: Socket) {
+    const currentMindMap = this.mapService.joinRoom(client);
+    return { event: 'joinRoom', data: currentMindMap };
   }
   @UsePipes(WsValidationPipe)
-  async handleDisconnect(@ConnectedSocket() client: Socket): Promise<void> {
+  async handleDisconnect(@ConnectedSocket() client: Socket) {
     this.mapService.leaveRoom(client);
   }
 
@@ -49,8 +51,8 @@ export class MapGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   @SubscribeMessage('deleteNode')
-  async handleDeleteNode(@ConnectedSocket() client: Socket, @MessageBody(WsValidationPipe) nodeId: number) {
-    const result = await this.mapService.deleteNode(client, nodeId);
+  async handleDeleteNode(@ConnectedSocket() client: Socket, @MessageBody(WsValidationPipe) nodeDeleteDto: nodeDeleteDto) {
+    const result = await this.mapService.deleteNode(client, nodeDeleteDto);
     return { event: 'deleteNode', data: result };
   }
 
