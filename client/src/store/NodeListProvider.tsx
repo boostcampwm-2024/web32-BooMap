@@ -12,6 +12,8 @@ export type NodeListContextType = {
   undoData: () => void;
   redoData: () => void;
   selectNode: ({ nodeId, parentNodeId }: SelectedNode) => void;
+  focusNodeId: number | null;
+  updateFocusNodeId: (newId: number | null) => void;
 };
 
 const nodeData = {
@@ -206,6 +208,7 @@ export default function NodeListProvider({ children }: { children: ReactNode }) 
   const [data, setData] = useState({ ...dummy });
   const [selectedNode, setSelectedNode] = useState({ nodeId: 0, parentNodeId: 0 });
   const { saveHistory, undo, redo } = useHistoryState<NodeData>(JSON.stringify(data));
+  const [focusNodeId, setFocusNodeId] = useState(null);
 
   function updateNode(id: number, updatedNode: Node) {
     setData((prevData) => ({
@@ -237,6 +240,10 @@ export default function NodeListProvider({ children }: { children: ReactNode }) 
     });
   }
 
+  function updateFocusNodeId(newId: number | null) {
+    setFocusNodeId(newId);
+  }
+
   return (
     <NodeListContext.Provider
       value={{
@@ -248,6 +255,8 @@ export default function NodeListProvider({ children }: { children: ReactNode }) 
         saveHistory,
         selectNode,
         selectedNode,
+        focusNodeId,
+        updateFocusNodeId,
       }}
     >
       {children}
