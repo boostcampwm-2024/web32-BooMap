@@ -1,6 +1,6 @@
 import { Node, NodeData } from "@/types/Node";
 
-export function deleteNode(data: string, selectedNodeId: number, update) {
+export function deleteNode(data: string, selectedNodeId: number, overrideNodeData) {
   if (!selectedNodeId) return;
   const newNodeData: NodeData = JSON.parse(data);
 
@@ -22,5 +22,5 @@ export function deleteNode(data: string, selectedNodeId: number, update) {
   }
 
   deleteNodeAndChildren(selectedNodeId);
-  update(newNodeData);
+  overrideNodeData(newNodeData);
 }
