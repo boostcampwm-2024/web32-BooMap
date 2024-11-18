@@ -73,7 +73,7 @@ export default function NodeItem({
     openAccordion();
   }
 
-  function handleDeleteButton(id) {
+  function handleDeleteButton() {
     saveHistory(JSON.stringify(data));
     deleteNode(JSON.stringify(data), id, overrideNodeData);
   }
@@ -128,7 +128,7 @@ export default function NodeItem({
             ) : (
               <></>
             )}
-            <button onClick={() => handleDeleteButton(id)}>
+            <button onClick={handleDeleteButton}>
               <img src={deleteIcon} alt="삭제하기" className="h-4 w-4" />
             </button>
           </>
