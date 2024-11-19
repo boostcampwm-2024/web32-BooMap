@@ -45,6 +45,6 @@ export class AuthService {
   }
 
   async logout(refreshToken: string) {
-    await this.redis.set(refreshToken, 'true', 'EX', 60 * 30);
+    await this.redis.set(refreshToken, 'true', 'EX', 60 * 60 * 24 * 3);
   }
 }
