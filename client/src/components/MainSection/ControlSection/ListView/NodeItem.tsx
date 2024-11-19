@@ -34,7 +34,8 @@ export default function NodeItem({ node, parentNodeId, open, handleAccordion, op
   } = useNodeActions(node.id, node.keyword);
   const { data, saveHistory, selectedNode, overrideNodeData, selectNode } = useNodeListContext();
   const inputRef = useRef<HTMLInputElement | null>(null);
-  const isSelected = selectedNode.parentNodeId === node.id;
+  const isSelected =
+    selectedNode.parentNodeId === node.id || findParentNodeId(selectedNode.parentNodeId, data) === node.id;
 
   useEffect(() => {
     if (node.newNode) {
@@ -46,6 +47,16 @@ export default function NodeItem({ node, parentNodeId, open, handleAccordion, op
   useEffect(() => {
     if (isSelected) openAccordion();
   }, [isSelected]);
+
+  function findParentNodeId(nodeId, nodeData) {
+    for (const id in nodeData) {
+      const node = nodeData[parseInt(id)];
+      if (node.children.includes(nodeId)) {
+        return node.id;
+      }
+    }
+    return null;
+  }
 
   function handleAddButton() {
     saveHistory(JSON.stringify(data));
