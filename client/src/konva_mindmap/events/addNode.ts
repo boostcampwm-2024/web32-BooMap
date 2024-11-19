@@ -19,7 +19,7 @@ export function showNewNode(
   const socket = SocketSlice.getState().socket;
   // 아무 노드도 없을 때는 임의로 id 생성해서 현재는 넣음
   if (!Object.keys(data).length) {
-    overrideNodeData({
+    const newNode = {
       [1]: {
         id: 1,
         keyword: "제목 없음",
@@ -31,7 +31,16 @@ export function showNewNode(
         children: [],
         newNode: true,
       },
-    });
+    };
+    if (socket) {
+      socket.emit("createNode", newNode[1]);
+      socket.on("createNode", (response) => {
+        if (response) {
+          overrideNodeData(newNode);
+          socket.emit("updateNode", newNode);
+        }
+      });
+    }
     return;
   }
   if (!selectedNode.nodeId || data[selectedNode.nodeId].depth === 3) return;
