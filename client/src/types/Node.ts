@@ -15,3 +15,10 @@ export type SelectedNode = {
   nodeId: number;
   parentNodeId: number;
 };
+
+export type NodeProps = {
+  data: NodeData;
+  parentNode?: Node;
+  node: Node;
+  depth: number;
+};
