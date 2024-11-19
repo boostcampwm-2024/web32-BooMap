@@ -1,19 +1,11 @@
 import EditableText from "@/konva_mindmap/components/EditableText";
-import { Node, NodeData } from "@/types/Node";
+import { NodeProps } from "@/types/Node";
 import { Circle, Group } from "react-konva";
 import { useNodeListContext } from "@/store/NodeListProvider";
 import { useState } from "react";
 import { checkFollowing, reconcileOffsets, resetSavedOffsets, saveOffsets } from "@/konva_mindmap/utils/following";
 import NewNode from "@/konva_mindmap/components/NewNode";
-
-export type NodeProps = {
-  data: NodeData;
-  parentNode?: Node;
-  node: Node;
-  depth: number;
-};
-
-export const colors = ["skyblue", "lightgreen", "lightcoral"];
+import { colors } from "@/constants/color";
 
 export default function MindMapNode({ data, parentNode, node, depth }: NodeProps) {
   if (node.newNode) return <NewNode data={data} parentNode={parentNode} node={node} depth={depth} />;
