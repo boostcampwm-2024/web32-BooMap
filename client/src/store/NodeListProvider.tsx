@@ -36,6 +36,11 @@ export default function NodeListProvider({ children }: { children: ReactNode }) 
     setData({ ...initializeNodePosition(nodeData) });
   });
 
+  socket?.on("updateNode", (updatedNodeData) => {
+    console.log("updateNode", updatedNodeData);
+    overrideNodeData(updatedNodeData);
+  });
+
   function updateNode(id: number, updatedNode: Partial<Node>) {
     setData((prevData) => ({
       ...prevData,
