@@ -8,7 +8,7 @@ export function useAdjustedStage(data: NodeData, containerWidth: number, contain
     const bounds = calculateBounds(data, 1);
     const newDimensions = adjustStageToFit(bounds);
     setAdjustedDimensions(newDimensions);
-  }, [containerWidth, containerHeight]);
+  }, [containerWidth, containerHeight, data]);
 
   //그림이 그려지는 영역 크기 계산
   function calculateBounds(data: NodeData, rootId: number) {
