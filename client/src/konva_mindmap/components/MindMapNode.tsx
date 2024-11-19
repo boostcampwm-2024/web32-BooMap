@@ -1,19 +1,14 @@
 import EditableText from "@/konva_mindmap/components/EditableText";
-import { Node, NodeData } from "@/types/Node";
+import { NodeProps } from "@/types/Node";
 import { Circle, Group } from "react-konva";
 import { useNodeListContext } from "@/store/NodeListProvider";
 import { useState } from "react";
-
-type NodeProps = {
-  data: NodeData;
-  parentNode?: Node;
-  node: Node;
-  depth: number;
-};
-
-const colors = ["skyblue", "lightgreen", "lightcoral"];
+import { checkFollowing, reconcileOffsets, resetSavedOffsets, saveOffsets } from "@/konva_mindmap/utils/following";
+import NewNode from "@/konva_mindmap/components/NewNode";
+import { colors } from "@/constants/color";
 
 export default function MindMapNode({ data, parentNode, node, depth }: NodeProps) {
+  if (node.newNode) return <NewNode data={data} parentNode={parentNode} node={node} depth={depth} />;
   const { saveHistory, updateNode, selectNode, selectedNode } = useNodeListContext();
   const [isEditing, setIsEditing] = useState(false);
 
@@ -41,6 +36,9 @@ export default function MindMapNode({ data, parentNode, node, depth }: NodeProps
       onDblClick={handleDoubleClick}
       name="node"
       id={node.id.toString()}
+      onDragStart={() => {
+        saveOffsets(data, node);
+      }}
       onDragMove={(e) => {
         updateNode(node.id, {
           ...node,
@@ -49,8 +47,13 @@ export default function MindMapNode({ data, parentNode, node, depth }: NodeProps
             y: e.target.y(),
           },
         });
+        checkFollowing(data, node, updateNode);
       }}
-      onDragEnd={() => saveHistory(JSON.stringify(data))}
+      onDragEnd={() => {
+        reconcileOffsets(data, node, updateNode);
+        resetSavedOffsets();
+        saveHistory(JSON.stringify(data));
+      }}
       draggable
       x={node.location.x}
       y={node.location.y}

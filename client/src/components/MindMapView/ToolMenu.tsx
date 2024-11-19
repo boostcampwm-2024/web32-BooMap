@@ -5,7 +5,7 @@ import deleteIcon from "@/assets/trash.png";
 import { Button } from "@headlessui/react";
 import { useNodeListContext } from "@/store/NodeListProvider";
 import { StageDimension } from "@/konva_mindmap/types/dimension";
-import { addNode } from "@/konva_mindmap/events/addNode";
+import { addNode, showNewNode } from "@/konva_mindmap/events/addNode";
 import { deleteNode } from "@/konva_mindmap/events/deleteNode";
 import { useRef } from "react";
 
@@ -30,12 +30,14 @@ export default function ToolMenu({ dimensions, zoomIn, zoomOut }: ToolMenuProps)
 
   function handleAddButton() {
     saveHistory(JSON.stringify(data));
-    addNode(data, selectedNode, overrideNodeData);
+    showNewNode(data, selectedNode, overrideNodeData);
+    // addNode(data, selectedNode, overrideNodeData);
   }
   function handleDeleteButton() {
     saveHistory(JSON.stringify(data));
     deleteNode(JSON.stringify(data), selectedNode.nodeId, overrideNodeData);
     selectNode({ nodeId: 0, parentNodeId: 0 });
+    saveHistory(JSON.stringify(data));
   }
 
   return (

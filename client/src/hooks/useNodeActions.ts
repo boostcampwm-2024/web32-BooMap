@@ -1,11 +1,14 @@
 import { useNodeListContext } from "@/store/NodeListProvider";
-import { ChangeEvent, KeyboardEvent, useState } from "react";
+import { ChangeEvent, KeyboardEvent, useEffect, useState } from "react";
 
 export default function useNodeActions(id: number, content: string) {
   const [hover, setHover] = useState<boolean>(false);
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [keyword, setKeyword] = useState(content);
   const { data, updateNode, saveHistory } = useNodeListContext();
+  useEffect(() => {
+    setKeyword(content);
+  }, [data]);
 
   const originalContent = content;
 

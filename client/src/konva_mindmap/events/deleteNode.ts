@@ -1,20 +1,26 @@
 import { Node, NodeData } from "@/types/Node";
 
-export function deleteNode(data: string, selectedNodeId: number, update) {
+export function deleteNode(data: string, selectedNodeId: number, overrideNodeData) {
   if (!selectedNodeId) return;
-  const nodeData: NodeData = JSON.parse(data);
+  const newNodeData: NodeData = JSON.parse(data);
 
-  // 객체를 복사하여 불변성 유지
-  const targetData = nodeData[selectedNodeId];
+  function deleteNodeAndChildren(nodeId: number) {
+    const node = newNodeData[nodeId];
+    if (node.children) {
+      [...node.children].forEach((childId) => {
+        deleteNodeAndChildren(childId);
+      });
+    }
 
-  Object.values(nodeData).forEach((node: Node) => {
-    node.children = node.children.filter((childId) => childId !== selectedNodeId);
-  });
+    Object.values(newNodeData).forEach((node) => {
+      if (node.children) {
+        node.children = node.children.filter((id) => id !== nodeId);
+      }
+    });
 
-  targetData.children?.forEach((childId) => {
-    deleteNode(data, childId, update);
-  });
+    delete newNodeData[nodeId];
+  }
 
-  delete nodeData[selectedNodeId];
-  update(nodeData);
+  deleteNodeAndChildren(selectedNodeId);
+  overrideNodeData(newNodeData);
 }

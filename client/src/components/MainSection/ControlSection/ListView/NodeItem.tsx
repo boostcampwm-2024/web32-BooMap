@@ -7,28 +7,19 @@ import useNodeActions from "@/hooks/useNodeActions";
 import bulletPointIcon from "@/assets/bulletPoint.png";
 import { useNodeListContext } from "@/store/NodeListProvider";
 import { deleteNode } from "@/konva_mindmap/events/deleteNode";
-import { addNode } from "@/konva_mindmap/events/addNode";
+import { addNode, showNewNode } from "@/konva_mindmap/events/addNode";
 import { useEffect, useRef } from "react";
+import { Node } from "@/types/Node";
 
 type NodeItemProps = {
-  id: number;
+  node: Node;
   parentNodeId?: number;
-  content: string;
-  depth: number;
   open: boolean;
   handleAccordion: () => void;
   openAccordion: () => void;
 };
 
-export default function NodeItem({
-  id,
-  parentNodeId,
-  content,
-  depth,
-  open,
-  handleAccordion,
-  openAccordion,
-}: NodeItemProps) {
+export default function NodeItem({ node, parentNodeId, open, handleAccordion, openAccordion }: NodeItemProps) {
   const {
     hover,
     isEditing,
@@ -40,17 +31,18 @@ export default function NodeItem({
     handleMouseEnter,
     handleMouseLeave,
     handleKeyDown,
-  } = useNodeActions(id, content);
-  const { data, saveHistory, selectedNode, overrideNodeData, focusNodeId, updateFocusNodeId } = useNodeListContext();
+  } = useNodeActions(node.id, node.keyword);
+  const { data, saveHistory, selectedNode, overrideNodeData, selectNode } = useNodeListContext();
   const inputRef = useRef<HTMLInputElement | null>(null);
-  const isSelected = selectedNode.parentNodeId === id || findParentNodeId(selectedNode.parentNodeId, data) === id;
+  const isSelected =
+    selectedNode.parentNodeId === node.id || findParentNodeId(selectedNode.parentNodeId, data) === node.id;
 
   useEffect(() => {
-    if (id === focusNodeId) {
+    if (node.newNode) {
       setIsEditing(true);
       inputRef.current?.focus();
     }
-  }, [id, focusNodeId, setIsEditing]);
+  }, [node.id, setIsEditing]);
 
   useEffect(() => {
     if (isSelected) openAccordion();
@@ -68,27 +60,27 @@ export default function NodeItem({
 
   function handleAddButton() {
     saveHistory(JSON.stringify(data));
-    const nodeId = addNode(data, { nodeId: id, parentNodeId: parentNodeId }, overrideNodeData);
-    updateFocusNodeId(nodeId);
+    selectNode({ nodeId: node.id, parentNodeId: parentNodeId });
+    showNewNode(data, { nodeId: node.id, parentNodeId: parentNodeId }, overrideNodeData);
     openAccordion();
   }
 
   function handleDeleteButton() {
     saveHistory(JSON.stringify(data));
-    deleteNode(JSON.stringify(data), id, overrideNodeData);
+    deleteNode(JSON.stringify(data), node.id, overrideNodeData);
   }
 
-  const selectedBorder = selectedNode.nodeId === id ? "border-2 border-blue-500" : "border-2 border-grayscale-600";
+  const selectedBorder = selectedNode.nodeId === node.id ? "border-2 border-blue-500" : "border-2 border-grayscale-600";
 
   return (
     <div
       className={`flex justify-between rounded-xl bg-grayscale-600 p-[10px] ${selectedBorder}`}
-      style={{ marginLeft: `${(depth - 1) * 30}px` }}
+      style={{ marginLeft: `${(node.depth - 1) * 30}px` }}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
       <div className="flex min-w-0 flex-1 items-center gap-3">
-        {depth < 3 ? (
+        {node.depth < 3 ? (
           <button
             className={`flex h-5 w-5 items-center justify-center transition-all ${open ? "" : "rotate-[-90deg]"}`}
             onClick={handleAccordion}
@@ -121,7 +113,7 @@ export default function NodeItem({
             <button onClick={() => setIsEditing(true)}>
               <img src={editIcon} alt="수정하기" className="h-4 w-4" />
             </button>
-            {depth < 3 ? (
+            {node.depth < 3 ? (
               <button onClick={handleAddButton}>
                 <img src={plusIcon} alt="추가하기" className="h-4 w-4" />
               </button>
