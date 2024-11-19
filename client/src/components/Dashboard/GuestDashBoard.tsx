@@ -6,11 +6,12 @@ import { Button } from "@headlessui/react";
 import { useNavigate } from "react-router-dom";
 
 export default function GuestDashBoard() {
-  const { connectSocket } = SocketSlice();
+  const { socket, connectSocket } = SocketSlice();
   const navigate = useNavigate();
 
   async function handleConnection() {
     try {
+      if (socket) socket.disconnect();
       const response = await createMindmap();
       const newMindMapId = response.data;
       connectSocket(newMindMapId);
