@@ -1,5 +1,7 @@
 import { NodeData } from "./Node";
 
+export type actionType = "createNode" | "deleteNode" | "updateNode";
+
 export type createNodePayload = {
   id: number;
   keyword: string;
