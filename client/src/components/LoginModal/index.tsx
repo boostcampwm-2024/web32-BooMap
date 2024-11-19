@@ -1,8 +1,7 @@
 import { Button } from "@headlessui/react";
-import { Dispatch, SetStateAction } from "react";
 import closeIcon from "@/assets/close.png";
-import gitHubIcon from "@/assets/gitHub.png";
-import googleIcon from "@/assets/google.png";
+import gitHubIcon from "@/assets/github-mark-white.png";
+import kakaoIcon from "@/assets/kakao_login.png";
 
 type LoginModalProps = {
   open: boolean;
@@ -25,14 +24,19 @@ export default function LoginModal({ open, close }: LoginModalProps) {
             </Button>
             <p className="text-2xl font-bold">로그인</p>
             <div className="flex flex-col gap-3">
-              <Button className="flex items-center justify-center gap-3 rounded-xl bg-grayscale-200 p-2">
+              <a
+                href="https://boomap.site/api/auth/github"
+                className="flex items-center justify-center gap-3 rounded-lg bg-black p-3 pl-4 text-white"
+              >
                 <img src={gitHubIcon} alt="Github" className="w-7" />
-                Login with Github
-              </Button>
-              <Button className="flex items-center justify-center gap-3 rounded-xl bg-grayscale-200 p-2">
-                <img src={googleIcon} alt="Google" className="w-7" />
-                Login with Google
-              </Button>
+                <span className="flex-grow">Login with Github</span>
+              </a>
+              <a
+                href="https://boomap.site/api/auth/kakao"
+                className="flex items-center justify-center gap-3 rounded-xl bg-grayscale-200"
+              >
+                <img src={kakaoIcon} alt="kakao" className="w-full" />
+              </a>
             </div>
           </div>
         </div>
