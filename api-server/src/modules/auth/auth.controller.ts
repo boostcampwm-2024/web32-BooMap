@@ -32,20 +32,26 @@ export class AuthController {
     if (!user) {
       user = await this.userService.createGithubUser(email);
     }
-
-    const accessToken = this.authService.generateAccessToken(user);
     const refreshToken = this.authService.generateRefreshToken(user);
     res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true });
-    res.json({ accessToken }).redirect(this.configService.get<string>('CLIENT_URL'));
   }
 
-  @Get('google')
-  @UseGuards(AuthGuard('google'))
+  @Get('kakao')
+  @UseGuards(AuthGuard('kakao'))
   async googleLogin() {}
 
-  @Get('google/callback')
-  @UseGuards(AuthGuard('google'))
-  async googleLoginCallback() {}
+  @Get('kakao/callback')
+  @UseGuards(AuthGuard('kakao'))
+  async googleLoginCallback(@Req() req: AuthenticatedRequest, @Res() res: Response) {
+    const email = req.user.email;
+    let user = await this.userService.findByKakaoEmail(email);
+
+    if (!user) {
+      user = await this.userService.createKakaoUser(email);
+    }
+    const refreshToken = this.authService.generateRefreshToken(user);
+    res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true });
+  }
 
   @Post('refresh')
   async refresh(@Req() req: Request, @Res() res: Response) {

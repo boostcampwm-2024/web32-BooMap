@@ -16,6 +16,15 @@ export class UserService {
     return await this.userRepository.findOne({ where: { email, type: 'github' } });
   }
 
+  async createKakaoUser(email: string) {
+    const user = this.userRepository.create({ email, type: 'kakao' });
+    return await this.userRepository.save(user);
+  }
+
+  async findByKakaoEmail(email: string) {
+    return await this.userRepository.findOne({ where: { email, type: 'kakao' } });
+  }
+
   async findById(id: number) {
     return await this.userRepository.findOne({ where: { id } });
   }
