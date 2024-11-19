@@ -10,6 +10,7 @@ type CalculateNodePositionParams = {
 };
 
 export default function initializeNodePosition(data: NodeData) {
+  if (!Object.keys(data).length) return data;
   calculateNodePosition({
     nodeId: 1,
     length: 0,
