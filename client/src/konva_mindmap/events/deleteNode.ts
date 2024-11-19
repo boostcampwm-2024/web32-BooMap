@@ -36,7 +36,7 @@ export function deleteNode(data: string, selectedNodeId: number, overrideNodeDat
             node.children = node.children.filter((childId) => childId !== nodeId);
           });
           delete nodeData[nodeId];
-          update(nodeData);
+          overrideNodeData(nodeData);
         });
         socket.emit("updateNode", { ...nodeData });
       }
