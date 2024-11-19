@@ -27,6 +27,8 @@ export default function MindMapNode({ data, parentNode, node, depth }: NodeProps
   }
 
   function handleDragEnd() {
+    reconcileOffsets(data, node, updateNode);
+    resetSavedOffsets();
     if (socket) {
       socket.emit("updateNode", data);
       socket.on("updateNode", (response) => {
@@ -62,11 +64,7 @@ export default function MindMapNode({ data, parentNode, node, depth }: NodeProps
         });
         checkFollowing(data, node, updateNode);
       }}
-      onDragEnd={() => {
-        reconcileOffsets(data, node, updateNode);
-        resetSavedOffsets();
-        saveHistory(JSON.stringify(data));
-      }}
+      onDragEnd={handleDragEnd}
       draggable
       x={node.location.x}
       y={node.location.y}
