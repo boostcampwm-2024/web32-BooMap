@@ -1,5 +1,4 @@
-import { useNodeListContext } from "@/store/NodeListProvider";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import QuillEditor from "@/components/Minutes/QuillEditor";
 
 export default function Minutes({ showMinutes, isAnimating, handleIsAnimating }) {
