@@ -1,8 +1,7 @@
 import logo from "@/assets/logo.png";
 import Overview from "@/components/Sidebar/Overview";
-import { Button } from "@headlessui/react";
 import { useNavigate } from "react-router-dom";
-import arrowDown from "@/assets/arrowDown.png";
+import ToggleButton from "./ToggleButton";
 
 type SidebarProps = {
   isSidebarOpen: boolean;
@@ -28,19 +27,7 @@ export default function Sidebar({ isSidebarOpen, toggleSidebar }: SidebarProps) 
         </div>
         <Overview />
       </aside>
-      <Button
-        onClick={toggleSidebar}
-        className={`absolute top-20 h-10 w-10 rounded-r-lg bg-grayscale-600 transition-all duration-300 ${
-          isSidebarOpen ? "left-64" : "left-0"
-        }`}
-      >
-        <div
-          className={`ml-[-2px] flex w-full flex-col items-center justify-center transition-transform duration-300 ${isSidebarOpen ? "rotate-90" : "-rotate-90"} `}
-        >
-          <img className="h-3 w-5" src={arrowDown} alt="토글 화살표" />
-          <img className="h-3 w-5" src={arrowDown} alt="토글 화살표" />
-        </div>
-      </Button>
+      <ToggleButton isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
     </>
   );
 }
