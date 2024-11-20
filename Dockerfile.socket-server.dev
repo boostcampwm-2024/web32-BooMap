@@ -1,0 +1,11 @@
+FROM node:22-alpine AS production
+WORKDIR /app
+
+COPY ./socket-server/package*.json .
+RUN npm install 
+
+COPY ./socket-server .
+
+EXPOSE 4000
+
+CMD ["npm", "run", "start:dev"]

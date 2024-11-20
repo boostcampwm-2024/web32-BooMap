@@ -1,5 +1,2 @@
 .env
-Docker-compose.dev.yml
-Dockerfile.api-server.dev
-Dockerfile.socket-server.dev
-nginx/dev.conf
+.env.dev
