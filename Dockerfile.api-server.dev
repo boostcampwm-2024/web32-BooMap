@@ -1,0 +1,11 @@
+FROM node:22-alpine AS production
+WORKDIR /app
+
+COPY ./api-server/package*.json .
+RUN npm install
+
+COPY ./api-server .
+
+EXPOSE 3000
+
+CMD ["npm", "run", "start:dev"]
