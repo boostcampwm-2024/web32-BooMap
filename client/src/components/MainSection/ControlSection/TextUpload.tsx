@@ -11,7 +11,7 @@ export default function TextUpload() {
         <p>요약할 텍스트</p>
         <Textarea
           className="h-full w-full resize-none rounded-xl bg-grayscale-600 p-4"
-          placeholder="Text를 넣어주세요. (500자 이상 10000자 이하)"
+          placeholder="Text를 넣어주세요. (500자 이상 2000자 이하)"
           onChange={(e) => setContent(e.target.value)}
         />
         <p className="text-right text-grayscale-400">
