@@ -1,6 +1,7 @@
 import Header from "@/components/Header";
 import MainSection from "@/components/MainSection";
 import Sidebar from "@/components/Sidebar";
+import NodeListProvider from "@/store/NodeListProvider";
 
 export default function MainPage() {
   return (
@@ -8,8 +9,10 @@ export default function MainPage() {
       <Sidebar />
       <div className="flex flex-grow">
         <div className="flex h-full w-full flex-col">
-          <Header />
-          <MainSection />
+          <NodeListProvider>
+            <Header />
+            <MainSection />
+          </NodeListProvider>
         </div>
       </div>
     </div>
