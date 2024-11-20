@@ -1,7 +1,7 @@
 import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Mindmap } from '.';
 
-@Entity('user')
+@Entity()
 export class User {
   @PrimaryGeneratedColumn()
   id: number;

@@ -36,8 +36,8 @@ export class MapGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @UsePipes(WsValidationPipe)
   async handleConnection(@ConnectedSocket() client: Socket) {
-    const currentMindMap = this.mapService.joinRoom(client);
-    return { event: 'joinRoom', data: currentMindMap };
+    const currentMindMap = await this.mapService.joinRoom(client);
+    client.emit('joinRoom', currentMindMap);
   }
   @UsePipes(WsValidationPipe)
   async handleDisconnect(@ConnectedSocket() client: Socket) {
