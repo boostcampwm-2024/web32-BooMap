@@ -11,7 +11,7 @@ import { useStageStore } from "@/store/useStageStore";
 import NoNodeInform from "@/components/MindMapView/NoNodeInform";
 import CanvasButtons from "@/components/MindMapView/CanvasButtons";
 
-export default function MindMapView() {
+export default function MindMapView({ showMinutes, handleShowMinutes }) {
   const { data, undoData: undo, redoData: redo, updateNode, overrideNodeData, saveHistory } = useNodeListContext();
   const { dimensions, targetRef, handleWheel, zoomIn, zoomOut } = useDimension(data);
   const registerLayer = useCollisionDetection(data, updateNode);
@@ -39,7 +39,7 @@ export default function MindMapView() {
   });
 
   return (
-    <div ref={targetRef} className="relative h-full min-h-0 w-full min-w-0 rounded-xl bg-white">
+    <div ref={targetRef} className="relative h-full min-h-0 w-full min-w-0 rounded-[20px] bg-white">
       <Stage
         ref={stageRef}
         className="cursor-pointer"
@@ -57,7 +57,15 @@ export default function MindMapView() {
         </Layer>
       </Stage>
       <ToolMenu dimensions={dimensions} zoomIn={zoomIn} zoomOut={zoomOut} />
-      {!Object.keys(data).length ? <NoNodeInform /> : <CanvasButtons handleReArrange={handleReArrange} />}
+      {!Object.keys(data).length ? (
+        <NoNodeInform />
+      ) : (
+        <CanvasButtons
+          handleReArrange={handleReArrange}
+          showMinutes={showMinutes}
+          handleShowMinutes={handleShowMinutes}
+        />
+      )}
     </div>
   );
 }
