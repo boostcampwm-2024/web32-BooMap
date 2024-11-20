@@ -2,7 +2,7 @@ import logo from "@/assets/logo.png";
 import Overview from "@/components/Sidebar/Overview";
 import { Button } from "@headlessui/react";
 import { useNavigate } from "react-router-dom";
-import leftChevron from "@/assets/left-chevron.png";
+import arrowDown from "@/assets/arrowDown.png";
 
 type SidebarProps = {
   isSidebarOpen: boolean;
@@ -30,15 +30,16 @@ export default function Sidebar({ isSidebarOpen, toggleSidebar }: SidebarProps) 
       </aside>
       <Button
         onClick={toggleSidebar}
-        className={`absolute top-20 flex h-10 w-10 items-center justify-center rounded-r-lg bg-grayscale-600 transition-all duration-300 ${
+        className={`absolute top-20 h-10 w-10 rounded-r-lg bg-grayscale-600 transition-all duration-300 ${
           isSidebarOpen ? "left-64" : "left-0"
         }`}
       >
-        <img
-          src={leftChevron}
-          className={`h-5 w-5 transition-transform duration-300 ${isSidebarOpen ? "" : "rotate-180"}`}
-          alt="왼쪽 화살표"
-        />
+        <div
+          className={`ml-[-2px] flex w-full flex-col items-center justify-center transition-transform duration-300 ${isSidebarOpen ? "rotate-90" : "-rotate-90"} `}
+        >
+          <img className="h-3 w-5" src={arrowDown} alt="토글 화살표" />
+          <img className="h-3 w-5" src={arrowDown} alt="토글 화살표" />
+        </div>
       </Button>
     </div>
   );
