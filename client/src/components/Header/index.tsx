@@ -7,10 +7,10 @@ import LoginModal from "@/components/LoginModal";
 import { useStageStore } from "@/store/useStageStore";
 import { downloadURI } from "@/konva_mindmap/utils/download";
 import { useSearchParams } from "react-router-dom";
+import Profile from "@/components/Header/profile";
 
 export default function Header() {
   const mode = useSearchParams();
-  const { open, openModal, closeModal } = useModal();
   const stage = useStageStore((state) => state.stage);
   function handleExport() {
     downloadURI(stage.current.getStage().toDataURL({ mimeType: "image/png", quality: 1 }), "demo");
@@ -30,13 +30,7 @@ export default function Header() {
           Export
         </Button>
       </div>
-      <div className="flex gap-6">
-        <Button className="bg-transparent text-grayscale-100" onClick={openModal}>
-          로그인
-        </Button>
-        <img src={profile} className="h-10 w-10" alt="프로필" />
-      </div>
-      <LoginModal open={open} close={closeModal} />
+      <Profile />
     </header>
   );
 }
