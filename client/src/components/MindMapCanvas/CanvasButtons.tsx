@@ -1,4 +1,4 @@
-import DeleteConfirmModal from "@/components/MindMapView/DeleteConfirmModal";
+import DeleteConfirmModal from "@/components/MindMapCanvas/DeleteConfirmModal";
 import { useNodeListContext } from "@/store/NodeListProvider";
 import { Button } from "@headlessui/react";
 import { useState } from "react";

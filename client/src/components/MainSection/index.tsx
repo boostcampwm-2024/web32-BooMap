@@ -1,9 +1,6 @@
 import DashBoard from "@/components/Dashboard";
-import ControlSection from "@/components/MainSection/ControlSection";
-import MindMapView from "@/components/MindMapView";
 import useSection from "@/hooks/useSection";
-import Minutes from "@/components/Minutes";
-import useMinutes from "@/hooks/useMinutes";
+import MindMapView from "@/components/MainSection/MindMapView";
 
 const modeView = {
   dashboard: "대시보드",
@@ -15,7 +12,6 @@ const modeView = {
 
 export default function MainSection() {
   const mode = useSection().searchParams.get("mode") as keyof typeof modeView;
-  const { showMinutes, handleShowMinutes, isAnimating, handleIsAnimating } = useMinutes();
 
   return (
     <main className="flex h-[90%] w-full flex-col overflow-hidden p-8">
@@ -25,9 +21,7 @@ export default function MainSection() {
           <DashBoard />
         ) : (
           <>
-            <ControlSection />
-            <MindMapView showMinutes={showMinutes} handleShowMinutes={handleShowMinutes} />
-            <Minutes showMinutes={showMinutes} isAnimating={isAnimating} handleIsAnimating={handleIsAnimating} />
+            <MindMapView />
           </>
         )}
       </div>
