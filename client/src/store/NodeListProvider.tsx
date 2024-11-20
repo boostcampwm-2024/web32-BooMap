@@ -14,7 +14,7 @@ export type NodeListContextType = {
   redoData: () => void;
   selectNode: ({ nodeId, parentNodeId }: SelectedNode) => void;
   title: string;
-  handleTitle: (title: string) => void;
+  updateTitle: (title: string) => void;
 };
 
 const nodeData = {
@@ -243,7 +243,7 @@ export default function NodeListProvider({ children }: { children: ReactNode }) 
     });
   }
 
-  function handleTitle(title: string) {
+  function updateTitle(title: string) {
     setTitle(title);
   }
 
@@ -260,7 +260,7 @@ export default function NodeListProvider({ children }: { children: ReactNode }) 
         selectedNode,
         history,
         title,
-        handleTitle,
+        updateTitle,
       }}
     >
       {children}
