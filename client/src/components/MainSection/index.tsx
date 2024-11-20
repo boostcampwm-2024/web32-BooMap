@@ -1,6 +1,7 @@
 import DashBoard from "@/components/Dashboard";
-import useSection from "@/hooks/useSection";
 import MindMapView from "@/components/MainSection/MindMapView";
+import useSection from "@/hooks/useSection";
+import NodeListProvider from "@/store/NodeListProvider";
 
 const modeView = {
   dashboard: "대시보드",
@@ -17,7 +18,7 @@ export default function MainSection() {
     <main className="flex h-[90%] w-full flex-col overflow-hidden p-8">
       <p className="p-3 text-2xl font-bold">{modeView[mode] || modeView.default}</p>
       <div className="relative flex h-[90%] w-full gap-4">
-        {mode === "dashboard" || !mode ? (
+        {mode === "dashboard" || !modeView[mode] ? (
           <DashBoard />
         ) : (
           <>
