@@ -20,7 +20,8 @@ export class KakaoStrategy extends PassportStrategy(Strategy, 'kakao') {
       if (!email) {
         throw new UnauthorizedException('이메일은 필수입니다.');
       }
-      return { email };
+      const name = _json && _json.properties.nickname;
+      return { name, email };
     } catch (error) {
       return done(error, false);
     }

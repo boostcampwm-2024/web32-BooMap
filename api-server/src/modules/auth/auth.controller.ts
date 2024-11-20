@@ -4,12 +4,9 @@ import { AuthGuard } from '@nestjs/passport';
 import { UserService } from '../user/user.service';
 import { Request, Response } from 'express';
 import { ConfigService } from '@nestjs/config';
-
-interface AuthenticatedRequest extends Request {
-  user: {
-    email: string;
-  };
-}
+import { AuthenticatedRequest } from '../../interface';
+import { plainToInstance } from 'class-transformer';
+import { UserCreateDto } from '../user/dto';
 
 @Controller('auth')
 export class AuthController {
@@ -30,8 +27,10 @@ export class AuthController {
     let user = await this.userService.findByGithubEmail(email);
 
     if (!user) {
-      user = await this.userService.createGithubUser(email);
+      const newUser = plainToInstance(UserCreateDto, req.user);
+      user = await this.userService.createGithubUser(newUser);
     }
+
     const refreshToken = this.authService.generateRefreshToken(user);
     res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true });
   }
@@ -47,8 +46,10 @@ export class AuthController {
     let user = await this.userService.findByKakaoEmail(email);
 
     if (!user) {
-      user = await this.userService.createKakaoUser(email);
+      const newUser = plainToInstance(UserCreateDto, req.user);
+      user = await this.userService.createKakaoUser(newUser);
     }
+
     const refreshToken = this.authService.generateRefreshToken(user);
     res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true });
   }
