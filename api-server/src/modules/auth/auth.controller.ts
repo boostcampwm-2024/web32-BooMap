@@ -4,12 +4,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { UserService } from '../user/user.service';
 import { Request, Response } from 'express';
 import { ConfigService } from '@nestjs/config';
-
-interface AuthenticatedRequest extends Request {
-  user: {
-    email: string;
-  };
-}
+import { AuthenticatedRequest } from '../../interface';
 
 @Controller('auth')
 export class AuthController {

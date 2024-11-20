@@ -1,3 +1,4 @@
+import { UserService } from './../user/user.service';
 import { Injectable } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 import { Redis } from 'ioredis';
@@ -7,14 +8,25 @@ import { RedisService } from '@liaoliaots/nestjs-redis';
 export class ConnectionService {
   private readonly redis: Redis | null;
 
-  constructor(private readonly redisService: RedisService) {
+  constructor(
+    private readonly redisService: RedisService,
+    private readonly UserService: UserService,
+  ) {
     this.redis = this.redisService.getOrThrow();
   }
 
   async createMindmap() {
     const uuid = uuidv4();
-    //TODO roomID 만료시간 설정 - 개별 roomID에 대해 만료시간 설정, socket서버에서 데이터 통신시 만료시간 갱신, 만료시간이 지난 roomID는 삭제
+
     await this.redis.sadd('mindmapIds', uuid);
+    //uuid 디비저장 -> 제목없음응로 저장?
+    return uuid;
+  }
+
+  async createGuestMindmap() {
+    const uuid = uuidv4();
+    await this.redis.sadd('mindmapIds', uuid);
+    //uuid 디비저장 -> 제목없음응로 저장?
     return uuid;
   }
 }

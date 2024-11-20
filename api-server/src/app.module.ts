@@ -21,10 +21,13 @@ import { JwtModule } from '@nestjs/jwt';
       inject: [ConfigService],
       useFactory: getWinstonConfig,
     }),
-    RedisModule.forRootAsync({
-      inject: [ConfigService],
-      useFactory: getRedisConfig,
-    }),
+    RedisModule.forRootAsync(
+      {
+        inject: [ConfigService],
+        useFactory: getRedisConfig,
+      },
+      true,
+    ),
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
       useFactory: getTypeOrmConfig,
@@ -32,6 +35,7 @@ import { JwtModule } from '@nestjs/jwt';
     JwtModule.registerAsync({
       inject: [ConfigService],
       useFactory: getJwtConfig,
+      global: true,
     }),
     TestModule,
     ConnectionModule,
