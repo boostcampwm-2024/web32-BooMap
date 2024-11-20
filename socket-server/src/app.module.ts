@@ -8,10 +8,14 @@ import { getWinstonConfig, getTypeOrmConfig, getRedisConfig } from './configs';
 import { MapModule } from './modules/map/map.module';
 
 import { LoggerMiddleware } from './middlewares/logger.middleware';
+import { join } from 'path';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true, envFilePath: '../../.env' }),
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: [join(__dirname, '..', '..', '.env')],
+    }),
     WinstonModule.forRootAsync({
       inject: [ConfigService],
       useFactory: getWinstonConfig,
