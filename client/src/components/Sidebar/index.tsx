@@ -13,7 +13,7 @@ export default function Sidebar({ isSidebarOpen, toggleSidebar }: SidebarProps) 
   const navigate = useNavigate();
 
   return (
-    <div>
+    <>
       <aside
         className={`absolute left-0 top-0 h-full min-w-64 transform bg-grayscale-800 p-4 transition-all duration-300 ease-in-out ${
           isSidebarOpen ? "translate-x-0 opacity-100" : "-translate-x-full opacity-0"
@@ -41,6 +41,6 @@ export default function Sidebar({ isSidebarOpen, toggleSidebar }: SidebarProps) 
           <img className="h-3 w-5" src={arrowDown} alt="토글 화살표" />
         </div>
       </Button>
-    </div>
+    </>
   );
 }
