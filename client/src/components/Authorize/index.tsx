@@ -8,11 +8,11 @@ export default function Authorize() {
   const loginSuccess = searchParams.get("success");
   const navigate = useNavigate();
 
-  const { data } = useSuspenseQuery({
+  useSuspenseQuery({
     queryKey: ["auth"],
     queryFn: tokenRefresh,
+    retry: 2,
   });
-  localStorage.setItem("Bearer", data.accessToken);
 
   useEffect(() => {
     if (loginSuccess === "true") {
