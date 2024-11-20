@@ -1,7 +1,7 @@
 import { useSearchParams } from "react-router-dom";
-import Profile from "@/components/Header/profile";
-import MindMapHeaderButtons from "@/components/Header/mindMapHeaderButtons";
 import { MODEVIEW } from "@/constants/modeview";
+import MindMapHeaderButtons from "@/components/Header/MindMapHeaderButtons";
+import Profile from "@/components/Header/Profile";
 
 export default function Header() {
   const [searchParams] = useSearchParams();
