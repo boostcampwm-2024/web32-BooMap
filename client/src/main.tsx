@@ -6,6 +6,7 @@ import App from "./App";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import NotFound from "@/components/common/NotFound";
 import AuthorizeCallback from "@/pages/auth";
+import { useAuthStore } from "@/store/useAuthStore";
 
 const router = createBrowserRouter([
   {
@@ -25,6 +26,7 @@ const router = createBrowserRouter([
     element: <NotFound />,
   },
 ]);
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -32,6 +34,14 @@ const queryClient = new QueryClient({
     },
   },
 });
+
+queryClient.getQueryCache().subscribe((event) => {
+  if (event?.type === "updated" && event.query.queryKey[0] === "user") {
+    const data = event.query.state.data;
+    useAuthStore.getState().setUser(data?.email, data?.nickname);
+  }
+});
+
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
