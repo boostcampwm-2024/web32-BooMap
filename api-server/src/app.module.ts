@@ -11,11 +11,12 @@ import { LoggerMiddleware } from './middlewares/logger.middleware';
 import { AuthModule } from './modules/auth/auth.module';
 import { UserModule } from './modules/user/user.module';
 import { JwtModule } from '@nestjs/jwt';
+import { join } from 'path';
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: '../../.env',
+      envFilePath: [join(__dirname, '..', '..', '.env')],
     }),
     WinstonModule.forRootAsync({
       inject: [ConfigService],
