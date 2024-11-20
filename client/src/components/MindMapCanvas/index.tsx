@@ -1,17 +1,17 @@
 import useDimension from "@/konva_mindmap/hooks/useDimension";
 import useWindowKeyEventListener from "@/hooks/useWindowKeyEventListener";
 import DrawMindMap from "@/konva_mindmap/components/DrawMindMap";
-import ToolMenu from "@/components/MindMapView/ToolMenu";
+import ToolMenu from "@/components/MindMapCanvas/ToolMenu";
 import initializeNodePosition from "@/konva_mindmap/utils/initializeNodePosition";
 import { Layer, Stage } from "react-konva";
 import { useNodeListContext } from "@/store/NodeListProvider";
 import { useCollisionDetection } from "@/konva_mindmap/hooks/useCollisionDetection";
 import { useEffect, useRef } from "react";
 import { useStageStore } from "@/store/useStageStore";
-import NoNodeInform from "@/components/MindMapView/NoNodeInform";
-import CanvasButtons from "@/components/MindMapView/CanvasButtons";
+import NoNodeInform from "@/components/MindMapCanvas/NoNodeInform";
+import CanvasButtons from "@/components/MindMapCanvas/CanvasButtons";
 
-export default function MindMapView() {
+export default function MindMapCanvas({ showMinutes, handleShowMinutes }) {
   const { data, undoData: undo, redoData: redo, updateNode, overrideNodeData, saveHistory } = useNodeListContext();
   const { dimensions, targetRef, handleWheel, zoomIn, zoomOut } = useDimension(data);
   const registerLayer = useCollisionDetection(data, updateNode);
@@ -39,7 +39,7 @@ export default function MindMapView() {
   });
 
   return (
-    <div ref={targetRef} className="relative h-full min-h-0 w-full min-w-0 rounded-xl bg-white">
+    <div ref={targetRef} className="relative h-full min-h-0 w-full min-w-0 rounded-[20px] bg-white">
       <Stage
         ref={stageRef}
         className="cursor-pointer"
@@ -57,7 +57,15 @@ export default function MindMapView() {
         </Layer>
       </Stage>
       <ToolMenu dimensions={dimensions} zoomIn={zoomIn} zoomOut={zoomOut} />
-      {!Object.keys(data).length ? <NoNodeInform /> : <CanvasButtons handleReArrange={handleReArrange} />}
+      {!Object.keys(data).length ? (
+        <NoNodeInform />
+      ) : (
+        <CanvasButtons
+          handleReArrange={handleReArrange}
+          showMinutes={showMinutes}
+          handleShowMinutes={handleShowMinutes}
+        />
+      )}
     </div>
   );
 }

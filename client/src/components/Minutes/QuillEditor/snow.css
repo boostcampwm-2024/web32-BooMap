@@ -1,0 +1,9 @@
+@import "react-quill-new/dist/quill.snow.css";
+
+.ql-editor {
+  height: calc(100%);
+}
+
+.ql-container {
+  height: calc(100% - 42.84px);
+}

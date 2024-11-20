@@ -1,1 +1,1 @@
-export const TEXT_UPLOAD_LIMIT = 10000;
+export const TEXT_UPLOAD_LIMIT = 2000;

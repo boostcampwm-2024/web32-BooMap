@@ -13,6 +13,8 @@ export type NodeListContextType = {
   undoData: () => void;
   redoData: () => void;
   selectNode: ({ nodeId, parentNodeId }: SelectedNode) => void;
+  title: string;
+  updateTitle: (title: string) => void;
 };
 
 const nodeData = {
@@ -193,6 +195,8 @@ const nodeData = {
   },
 };
 
+const mindMapInfo = { title: "제목 없는 마인드맵" };
+
 const NodeListContext = createContext<NodeListContextType | undefined>(undefined);
 export function useNodeListContext() {
   const context = useContext(NodeListContext);
@@ -207,6 +211,7 @@ export default function NodeListProvider({ children }: { children: ReactNode }) 
   const [data, setData] = useState({ ...dummy });
   const [selectedNode, setSelectedNode] = useState({ nodeId: 0, parentNodeId: 0 });
   const { saveHistory, undo, redo, history } = useHistoryState<NodeData>(JSON.stringify(data));
+  const [title, setTitle] = useState(mindMapInfo.title);
 
   function updateNode(id: number, updatedNode: Partial<Node>) {
     setData((prevData) => ({
@@ -238,6 +243,10 @@ export default function NodeListProvider({ children }: { children: ReactNode }) 
     });
   }
 
+  function updateTitle(title: string) {
+    setTitle(title);
+  }
+
   return (
     <NodeListContext.Provider
       value={{
@@ -250,6 +259,8 @@ export default function NodeListProvider({ children }: { children: ReactNode }) 
         selectNode,
         selectedNode,
         history,
+        title,
+        updateTitle,
       }}
     >
       {children}
