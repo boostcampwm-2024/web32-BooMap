@@ -4,10 +4,11 @@ import { ConnectionService } from './connection.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from '../user/entities';
 import { UserModule } from '../user/user.module';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
   controllers: [ConnectionController],
-  imports: [TypeOrmModule.forFeature([User]), UserModule],
+  imports: [TypeOrmModule.forFeature([User]), UserModule, AuthModule],
   providers: [ConnectionService],
 })
 export class ConnectionModule {}

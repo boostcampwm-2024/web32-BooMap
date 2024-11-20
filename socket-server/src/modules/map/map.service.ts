@@ -38,6 +38,7 @@ export class MapService {
       nodeEntity.locationY = nodeCreateDto.location.y;
 
       const savedNode = await this.nodeRepository.save(nodeEntity);
+
       return plainToInstance(NodeDto, savedNode);
     } catch (error) {
       if (error instanceof NodeNotFoundException) throw error;

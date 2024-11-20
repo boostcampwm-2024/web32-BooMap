@@ -1,19 +1,23 @@
 import { IsNumber, IsObject, IsOptional, IsString, ValidateNested } from 'class-validator';
 import { LocationDto } from '.';
-import { Type } from 'class-transformer';
+import { Expose, Type } from 'class-transformer';
 
 export class NodeCreateDto {
+  @Expose()
   @IsString()
   keyword: string;
 
+  @Expose()
   @IsNumber()
   depth: number;
 
+  @Expose()
   @IsObject()
   @ValidateNested()
   @Type(() => LocationDto)
   location: LocationDto;
 
+  @Expose()
   @IsOptional()
   @IsNumber()
   parentId?: number;
