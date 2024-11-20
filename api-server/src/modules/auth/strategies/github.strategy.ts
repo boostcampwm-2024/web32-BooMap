@@ -10,18 +10,20 @@ export class GithubStrategy extends PassportStrategy(Strategy, 'github') {
       clientID: configService.get<string>('GITHUB_CLIENT_ID'),
       clientSecret: configService.get<string>('GITHUB_CLIENT_SECRET'),
       callbackURL: configService.get<string>('GITHUB_CALLBACK_URL'),
-      Scope: ['user:email'],
+      scope: ['user:email'],
     });
   }
 
   async validate(accessToken: string, refreshToken: string, profile: any, done) {
     try {
-      const { emails } = profile;
+      const { emails, displayName } = profile;
       if (!emails || !emails.length) {
         throw new UnauthorizedException('이메일은 필수입니다.');
       }
+      const name = displayName;
       const email = emails[0].value;
-      return { email };
+
+      return { name, email };
     } catch (error) {
       return done(error, false);
     }
