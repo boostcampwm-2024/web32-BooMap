@@ -21,27 +21,29 @@ services:
 
   api-server:
     build:
-      context: .
-      dockerfile: Dockerfile.api-server.dev
-    container_name: api-server
+      context: ./BE
+      dockerfile: Dockerfile.api.dev
+    container_name: api
     volumes:
-      - ./api-server/src:/app/src
+      - ./BE:/app
+      - /app/node_modules
     env_file:
-      - .env
-    command: ["npm", "run", "start:dev"]
+      - .env.dev
+    command: nest start api-server --watch
     networks:
       - my-network
 
   socket-server:
     build:
-      context: .
-      dockerfile: Dockerfile.socket-server.dev
-    container_name: socket-server
+      context: ./BE
+      dockerfile: Dockerfile.socket.dev
+    container_name: socket
     volumes:
-      - ./socket-server/src:/app/src
+      - ./BE:/app
+      - /app/node_modules
     env_file:
-      - .env
-    command: ["npm", "run", "start:dev"]
+      - .env.dev
+    command: nest start socket-server --watch
     networks:
       - my-network
 
@@ -66,7 +68,7 @@ services:
     volumes:
       - ./client/src:/app/src
     env_file:
-      - .env
+      - .env.dev
     command: ["npm", "run", "dev"]
     networks:
       - my-network

@@ -4,7 +4,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { UserService } from '../user/user.service';
 import { Request, Response } from 'express';
 import { ConfigService } from '@nestjs/config';
-import { AuthenticatedRequest } from '../../interface';
+import { AuthenticatedRequest } from '@app/interface';
 import { plainToInstance } from 'class-transformer';
 import { UserCreateDto } from '../user/dto';
 
@@ -33,7 +33,6 @@ export class AuthController {
 
     const refreshToken = this.authService.generateRefreshToken(user);
     res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true });
-    res.redirect('/auth');
   }
 
   @Get('kakao')
@@ -53,7 +52,6 @@ export class AuthController {
 
     const refreshToken = this.authService.generateRefreshToken(user);
     res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true });
-    res.redirect('/auth');
   }
 
   @Post('refresh')
