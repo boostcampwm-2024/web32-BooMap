@@ -33,7 +33,8 @@ export class UserService {
 
   async getUserInfo(userId: number) {
     const user = await this.userRepository.findOne({ where: { id: userId } });
-    const userInfoDto = instanceToPlain<UserInfoDto>(user, { excludeExtraneousValues: true });
+    // TODO : false 왜 안되는지 확인하기
+    const userInfoDto = instanceToPlain<UserInfoDto>(user, { excludeExtraneousValues: false });
     return userInfoDto;
   }
 }
