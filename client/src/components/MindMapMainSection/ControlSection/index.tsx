@@ -1,6 +1,6 @@
-import ListView from "@/components/MainSection/ControlSection/ListView";
-import TextUpload from "@/components/MainSection/ControlSection/TextUpload";
-import VoiceFileUpload from "@/components/MainSection/ControlSection/VoiceFileUpload";
+import ListView from "@/components/MindMapMainSection/ControlSection/ListView";
+import TextUpload from "@/components/MindMapMainSection/ControlSection/TextUpload";
+import VoiceFileUpload from "@/components/MindMapMainSection/ControlSection/VoiceFileUpload";
 import useSection from "@/hooks/useSection";
 
 export default function ControlSection() {

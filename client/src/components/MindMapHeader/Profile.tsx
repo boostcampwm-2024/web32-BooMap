@@ -4,7 +4,7 @@ import { Button } from "@headlessui/react";
 import { createPortal } from "react-dom";
 import { useAuthStore } from "@/store/useAuthStore";
 import useModal from "@/hooks/useModal";
-import ProfileModal from "@/components/Header/ProfileModal";
+import ProfileModal from "@/components/MindMapHeader/ProfileModal";
 
 export default function Profile() {
   const { open: loginModal, openModal: openLoginModal, closeModal: closeLoginModal } = useModal();
@@ -33,8 +33,8 @@ export default function Profile() {
         <Button onClick={handleProfileModal}>
           <img src={profile} className="h-10 w-10" alt="프로필" />
         </Button>
+        <ProfileModal open={profileModal} close={closeProfileModal} />
       </div>
-      <ProfileModal open={profileModal} close={closeProfileModal} />
       {createPortal(<LoginModal open={loginModal} close={closeLoginModal} />, document.body)}
     </>
   );

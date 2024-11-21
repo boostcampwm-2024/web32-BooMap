@@ -1,4 +1,4 @@
-import NodeItem from "@/components/MainSection/ControlSection/ListView/NodeItem";
+import NodeItem from "@/components/MindMapMainSection/ControlSection/ListView/NodeItem";
 import useAccordion from "@/hooks/useAccordion";
 import { Node, NodeData } from "@/types/Node";
 
