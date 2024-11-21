@@ -9,7 +9,7 @@ export default function App() {
   return (
     <ErrorBoundary fallback={<NotFound />}>
       <Suspense fallback={<Spinner />}>
-        <MainPage />;
+        <MainPage />
       </Suspense>
     </ErrorBoundary>
   );
