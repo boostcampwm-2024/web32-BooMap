@@ -37,12 +37,10 @@ export default function NodeListProvider({ children }: { children: ReactNode }) 
 
   const socket = SocketSlice.getState().socket;
   socket?.on("joinRoom", (nodeData) => {
-    console.log("joinRoom", nodeData);
     setData({ ...initializeNodePosition(nodeData) });
   });
 
   socket?.on("updateNode", (updatedNodeData) => {
-    console.log("updateNode", updatedNodeData);
     overrideNodeData(updatedNodeData);
   });
 
