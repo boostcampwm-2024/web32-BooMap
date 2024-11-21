@@ -1,11 +1,9 @@
-import { tokenRefresh } from "@/api/auth";
 import { getToken, removeToken } from "@/utils/token";
-import { useQuery } from "@tanstack/react-query";
 import { create } from "zustand";
 
 type UserStore = {
   email: null | string;
-  nickname: null | string;
+  name: null | string;
   isAuthenticated: boolean;
   checkAuthenticated: () => void;
   logout: () => void;
@@ -13,7 +11,7 @@ type UserStore = {
 };
 export const useAuthStore = create<UserStore>((set) => ({
   email: null,
-  nickname: null,
+  name: null,
   isAuthenticated: false,
 
   checkAuthenticated: () => {
@@ -25,10 +23,10 @@ export const useAuthStore = create<UserStore>((set) => ({
 
   logout: () => {
     removeToken();
-    set({ email: null, isAuthenticated: false });
+    set({ email: null, name: null, isAuthenticated: false });
   },
 
-  setUser: (email: string, nickname: string) => {
-    set({ email: email, nickname: nickname, isAuthenticated: true });
+  setUser: (email: string, name: string) => {
+    set({ email: email, name: name, isAuthenticated: true });
   },
 }));
