@@ -6,5 +6,6 @@ import { Mindmap, User } from '@app/entity';
 @Module({
   imports: [TypeOrmModule.forFeature([Mindmap, User])],
   providers: [MindmapService],
+  exports: [MindmapService],
 })
 export class MindmapModule {}

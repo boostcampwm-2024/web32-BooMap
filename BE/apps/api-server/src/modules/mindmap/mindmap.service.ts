@@ -1,3 +1,4 @@
+import { InjectRepository } from '@nestjs/typeorm';
 import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { Mindmap, User } from '@app/entity';
@@ -5,7 +6,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class MindmapService {
-  constructor(private mindmapRepository: Repository<Mindmap>) {}
+  constructor(@InjectRepository(Mindmap) private mindmapRepository: Repository<Mindmap>) {}
 
   async create(user: User) {
     const uuid = uuidv4();
