@@ -1,2 +1,6 @@
 .env
 .env.dev
+/BE/apps/api-server/node_modules
+/BE/apps/api-server/dist
+/BE/apps/socket-server/node_modules
+/BE/apps/socket-server/dist
