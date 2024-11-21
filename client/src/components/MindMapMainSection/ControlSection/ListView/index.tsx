@@ -1,4 +1,4 @@
-import NodeList from "@/components/MainSection/ControlSection/ListView/NodeList";
+import NodeList from "@/components/MindMapMainSection/ControlSection/ListView/NodeList";
 import { useNodeListContext } from "@/store/NodeListProvider";
 import { Node } from "@/types/Node";
 

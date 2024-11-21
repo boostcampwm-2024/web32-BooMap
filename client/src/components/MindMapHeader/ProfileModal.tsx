@@ -34,13 +34,13 @@ export default function ProfileModal({ open, close }: ProfileModalProps) {
   return (
     <>
       {open && (
-        <div ref={modalRef} className="absolute right-4 top-20 z-50 flex flex-col items-center bg-gray-900">
-          <img src={profileIcon} alt="프로필" className="m-4 w-11" />
-          <div className="w-full p-3 text-center">
+        <div ref={modalRef} className="absolute right-4 top-20 z-50 flex flex-col items-center rounded-lg bg-gray-900">
+          <img src={profileIcon} alt="프로필" className="m-3 w-11" />
+          <div className="w-full px-5 py-0 text-center">
             <p>{auth.nickname}</p>
             <p className="text-sm text-grayscale-300">{auth.email}</p>
           </div>
-          <Button className="w-full p-3 hover:bg-grayscale-300" onClick={handleLogout}>
+          <Button className="w-full p-3 px-5 hover:bg-grayscale-300" onClick={handleLogout}>
             로그아웃
           </Button>
         </div>
