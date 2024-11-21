@@ -9,12 +9,6 @@ export const tokenRefresh = async (): Promise<TokenRefresh> => {
 };
 
 // export const getUser = async (): Promise<User> => {
-//   return new Promise((resolve) => {
-//     setTimeout(() => {
-//       resolve({ email: "qwrqwrqwr@naver.com", nickname: "민형" });
-//     }, 2000);
-//   });
-// };
 
 export const getUser = async (): Promise<User> => {
   const { data } = await instance.get("user/info");
