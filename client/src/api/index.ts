@@ -4,8 +4,8 @@ import { getToken, setToken } from "@/utils/token";
 import axios, { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from "axios";
 
 export const instance = axios.create({
-  baseURL: "https://boomap.site/api",
-  timeout: 1000,
+  baseURL: import.meta.env.VITE_APP_API_SERVER_BASE_URL,
+  timeout: 3000,
   withCredentials: true,
   headers: {
     "Content-Type": "application/json",
@@ -21,13 +21,12 @@ declare module "axios" {
 
 // 요청 인터셉터
 instance.interceptors.request.use((config: InternalAxiosRequestConfig) => {
-  const { method, url } = config;
-  logOnDev(`🚀 [API Request] ${method?.toUpperCase()} ${url}`);
+  const { method, baseURL, url } = config;
+  logOnDev(`🚀 [API Request] ${method?.toUpperCase()} ${baseURL} ${url}`);
   const accessToken = getToken();
 
   config.headers["Content-Type"] = "application/json";
   config.headers["Authorization"] = `Bearer ${accessToken}`;
-
   return config;
 });
 
