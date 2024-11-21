@@ -1,5 +1,6 @@
 .env
 .env.dev
+.env.development
 /BE/apps/api-server/node_modules
 /BE/apps/api-server/dist
 /BE/apps/socket-server/node_modules
