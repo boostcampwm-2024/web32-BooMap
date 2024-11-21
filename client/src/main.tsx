@@ -9,6 +9,7 @@ import AuthorizeCallback from "@/pages/auth";
 import { useAuthStore } from "@/store/useAuthStore";
 import Layout from "@/pages/layout";
 import MindMap from "@/pages/Mindmap";
+import { ErrorBoundary } from "react-error-boundary";
 
 const router = createBrowserRouter([
   {
@@ -44,16 +45,18 @@ const queryClient = new QueryClient({
 
 queryClient.getQueryCache().subscribe((event) => {
   if (event?.type === "updated" && event.query.queryKey[0] === "user") {
-    console.log(event);
     const data = event.query.state.data;
-    useAuthStore.getState().setUser(data?.email, data?.name);
+    if (data?.email && data?.name) useAuthStore.getState().setUser(data?.email, data?.name);
+    else useAuthStore.getState().logout();
   }
 });
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
-      <RouterProvider router={router} />
+      <ErrorBoundary fallback={<NotFound />}>
+        <RouterProvider router={router} />
+      </ErrorBoundary>
     </QueryClientProvider>
   </StrictMode>,
 );
