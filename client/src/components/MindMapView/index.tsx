@@ -10,6 +10,7 @@ import { useEffect, useRef } from "react";
 import { useStageStore } from "@/store/useStageStore";
 import NoNodeInform from "@/components/MindMapView/NoNodeInform";
 import CanvasButtons from "@/components/MindMapView/CanvasButtons";
+import { findRootNodeKey } from "@/konva_mindmap/utils/findRootNodeKey";
 
 export default function MindMapView() {
   const { data, undoData: undo, redoData: redo, updateNode, overrideNodeData, saveHistory } = useNodeListContext();
@@ -17,6 +18,8 @@ export default function MindMapView() {
   const registerLayer = useCollisionDetection(data, updateNode);
   const stageRef = useRef();
   const { registerStageRef } = useStageStore();
+
+  const rootKey = findRootNodeKey(data);
 
   useEffect(() => {
     registerStageRef(stageRef);
@@ -53,7 +56,7 @@ export default function MindMapView() {
         onWheel={handleWheel}
       >
         <Layer ref={registerLayer}>
-          {Object.keys(data).length >= 1 && <DrawMindMap data={data} root={data[1]} depth={1} />}
+          {Object.keys(data).length >= 1 && <DrawMindMap data={data} root={data[rootKey]} depth={1} />}
         </Layer>
       </Stage>
       <ToolMenu dimensions={dimensions} zoomIn={zoomIn} zoomOut={zoomOut} />
