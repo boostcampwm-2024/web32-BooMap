@@ -7,18 +7,25 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import NotFound from "@/components/common/NotFound";
 import AuthorizeCallback from "@/pages/auth";
 import { useAuthStore } from "@/store/useAuthStore";
+import Layout from "@/pages/layout";
+import MindMap from "@/pages/Mindmap";
 
 const router = createBrowserRouter([
   {
-    path: "/",
-    element: <App />,
+    element: <Layout />,
+    children: [
+      {
+        path: "/",
+        element: <App />,
+      },
+      {
+        path: "/mindmap",
+        element: <MindMap />,
+      },
+    ],
   },
   {
-    path: "/auth/github/callback",
-    element: <AuthorizeCallback />,
-  },
-  {
-    path: "/auth/kakao/callback",
+    path: "/auth",
     element: <AuthorizeCallback />,
   },
   {
@@ -37,8 +44,9 @@ const queryClient = new QueryClient({
 
 queryClient.getQueryCache().subscribe((event) => {
   if (event?.type === "updated" && event.query.queryKey[0] === "user") {
+    console.log(event);
     const data = event.query.state.data;
-    useAuthStore.getState().setUser(data?.email, data?.nickname);
+    useAuthStore.getState().setUser(data?.email, data?.name);
   }
 });
 
