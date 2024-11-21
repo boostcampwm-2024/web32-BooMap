@@ -27,13 +27,13 @@ export default function MindMapNode({ data, parentNode, node, depth }: NodeProps
   }
 
   function handleDragEnd() {
-    reconcileOffsets(data, node, updateNode);
+    const reconciledData = reconcileOffsets(data, node, updateNode);
     resetSavedOffsets();
     if (socket) {
-      socket.emit("updateNode", data);
+      socket.emit("updateNode", reconciledData);
       socket.on("updateNode", (response) => {
         if (response) {
-          saveHistory(JSON.stringify(data));
+          saveHistory(JSON.stringify(reconciledData));
         }
       });
     }
