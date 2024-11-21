@@ -36,8 +36,9 @@ export function showNewNode(
       socket.emit("createNode", newNode[1]);
       socket.on("createNode", (response) => {
         if (response) {
-          overrideNodeData(newNode);
-          socket.emit("updateNode", newNode);
+          const updatedData = { [response.id]: { ...newNode[1], id: response.id } };
+          overrideNodeData(updatedData);
+          socket.emit("updateNode", updatedData);
         }
       });
     }
@@ -71,7 +72,7 @@ export function showNewNode(
             ...data[selectedNode.nodeId],
             children: [...data[selectedNode.nodeId].children, newNodeId],
           },
-          [newNodeId]: newNode,
+          [response.id]: { ...newNode, id: response.id },
         };
         overrideNodeData(updatedData);
         socket.emit("updateNode", updatedData);
