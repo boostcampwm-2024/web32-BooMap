@@ -19,7 +19,7 @@ export const SocketSlice = create<SocketState>((set, get) => ({
 
   connectSocket: (id) => {
     if (get().socket) return;
-    const socket = io("http://localhost:80/map", {
+    const socket = io("https://boomap.site/map", {
       // TODO: change to production URL
       query: {
         mindmapId: id,
