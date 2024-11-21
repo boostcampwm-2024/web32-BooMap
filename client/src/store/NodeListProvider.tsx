@@ -35,11 +35,11 @@ export default function NodeListProvider({ children }: { children: ReactNode }) 
   const { saveHistory, undo, redo, history } = useHistoryState<NodeData>(JSON.stringify(data));
   const [title, setTitle] = useState(mindMapInfo.title);
 
-  const socket = SocketSlice.getState().socket;
-  socket?.on("joinRoom", (nodeData) => {
-    setData({ ...initializeNodePosition(nodeData) });
-  });
+  const socket = SocketSlice((state) => state.socket);
 
+  socket?.on("joinRoom", (initialData) => {
+    setData(initializeNodePosition({ ...initialData }));
+  });
   socket?.on("updateNode", (updatedNodeData) => {
     overrideNodeData(updatedNodeData);
   });
