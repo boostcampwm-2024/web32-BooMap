@@ -5,7 +5,7 @@ export default function NotFound() {
   const navigate = useNavigate();
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center gap-6">
+    <div className="z-50 flex h-full w-full items-center justify-center gap-6">
       <img className="w-96" src={notFoundIcon} alt="notfound" />
       <div className="flex-center flex flex-col items-center">
         <p className="text-[100px] text-white">OOPS!</p>
