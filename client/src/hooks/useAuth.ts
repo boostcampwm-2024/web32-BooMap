@@ -1,11 +1,21 @@
 import { getUser } from "@/api/auth";
 import { useAuthStore } from "@/store/useAuthStore";
-import { getToken } from "@/utils/token";
+import { getToken, removeToken } from "@/utils/token";
 import { useQuery } from "@tanstack/react-query";
+import { useEffect } from "react";
 
 export default function useAuth() {
   const accessToken = getToken();
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const { isLoading } = useQuery({ queryKey: ["user"], queryFn: getUser, enabled: !!(accessToken || isAuthenticated) });
+  const auth = useAuthStore();
+  const { isLoading, isError } = useQuery({
+    queryKey: ["user"],
+    queryFn: getUser,
+    enabled: !!(accessToken || auth.isAuthenticated),
+  });
+  useEffect(() => {
+    if (isError) {
+      removeToken();
+    }
+  }, [isError]);
   return { isLoading };
 }
