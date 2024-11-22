@@ -70,7 +70,7 @@ export function showNewNode(
           ...data,
           [selectedNode.nodeId]: {
             ...data[selectedNode.nodeId],
-            children: [...data[selectedNode.nodeId].children, newNodeId],
+            children: [...data[selectedNode.nodeId].children, response.id],
           },
           [response.id]: { ...newNode, id: response.id },
         };
