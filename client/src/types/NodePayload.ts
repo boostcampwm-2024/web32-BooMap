@@ -13,7 +13,7 @@ export type createNodePayload = {
 };
 
 export type deleteNodePayload = {
-  id: number[];
+  id: string[];
 };
 
 export type updateNodePayload = NodeData;

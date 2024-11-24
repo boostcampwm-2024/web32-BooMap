@@ -6,6 +6,7 @@ type SocketState = {
   socket: Socket | null;
   connectSocket: (id: string) => void;
   disconnectSocket: () => void;
+  handleSocketEvent: (props: HandleSocketEventProps) => void;
 };
 
 type HandleSocketEventProps = {
