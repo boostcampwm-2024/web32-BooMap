@@ -59,35 +59,6 @@ export function resetSavedOffsets(): void {
   offsetManager.reset();
 }
 
-export function reconcileOffsets(
-  data: NodeData,
-  root: Node,
-  updateNode: (id: number, updates: Partial<Node>) => void,
-  updatedParentLocation?: Location,
-): NodeData {
-  let updatedData = { ...data };
-
-  if (!root.children || !root.location) return updatedData;
-
-  root.children.forEach((childNodeId) => {
-    const childNode = updatedData[childNodeId];
-    if (!childNode) return;
-
-    const offset = offsetManager.getOffset(childNodeId);
-    if (!offset) return;
-
-    const newLocation = {
-      x: updatedParentLocation ? updatedParentLocation.x + offset.x : root.location.x + offset.x,
-      y: updatedParentLocation ? updatedParentLocation.y + offset.y : root.location.y + offset.y,
-    };
-
-    updatedData[childNode.id] = { ...childNode, location: newLocation };
-    updatedData = reconcileOffsets(updatedData, childNode, updateNode, newLocation);
-  });
-
-  return updatedData;
-}
-
 export function adjustNodePositions(parentNode: Node, targetNode: Node, currPos: Location): Location {
   if (!parentNode.location || !targetNode.location) return;
 
