@@ -24,10 +24,16 @@ export default function SelectionRect({ stage, dragmode }: { stage: RefObject<Ko
   useEffect(() => {
     if (!stage.current) return;
     const currentStage = stage.current;
+    if (dragmode) {
+      setRectOption({
+        ...rectOption,
+        visible: false,
+      });
+      return;
+    }
 
     const handleMouseDown = (e) => {
-      if (dragmode) return;
-      e.evt.preventDefault();
+      if (dragmode || e.target.getParent()?.attrs.name === "node") return;
       const pos = currentStage.getRelativePointerPosition();
       setStartPoint({ x: pos.x, y: pos.y });
 
@@ -43,8 +49,8 @@ export default function SelectionRect({ stage, dragmode }: { stage: RefObject<Ko
     };
 
     const handleMouseMove = (e) => {
-      if (!currentRectRef.current.visible || dragmode) return;
-
+      if (!currentRectRef.current.visible || dragmode || e.target.getParent()?.attrs.name === "node") return;
+      e.evt.preventDefault();
       const pos = currentStage.getRelativePointerPosition();
       const newRectOption = {
         ...currentRectRef.current,
@@ -62,19 +68,35 @@ export default function SelectionRect({ stage, dragmode }: { stage: RefObject<Ko
       if (currentRectRef.current.width > 0 && currentRectRef.current.height > 0) {
         const selectedNodes = getSelectedNodes(currentStage.children[0], currentRectRef.current);
         groupSelect(selectedNodes as Konva.Group[]);
-      } else groupRelease();
+      }
 
-      setRectOption((prev) => ({ ...prev, visible: false }));
+      setStartPoint({ x: 0, y: 0 });
+      setRectOption({
+        visible: false,
+        x: 0,
+        y: 0,
+        width: 0,
+        height: 0,
+      });
+      currentRectRef.current = {
+        visible: false,
+        x: 0,
+        y: 0,
+        width: 0,
+        height: 0,
+      };
     };
 
     currentStage.on("mousedown touchstart", handleMouseDown);
     currentStage.on("mousemove touchmove", handleMouseMove);
     currentStage.on("mouseup touchend", handleMouseUp);
+    currentStage.on("click", groupRelease);
 
     return () => {
       currentStage.off("mousedown touchstart", handleMouseDown);
       currentStage.off("mousemove touchmove", handleMouseMove);
       currentStage.off("mouseup touchend", handleMouseUp);
+      currentStage.off("click", groupRelease);
     };
   }, [stage, startPoint, groupSelect, dragmode]);
 
