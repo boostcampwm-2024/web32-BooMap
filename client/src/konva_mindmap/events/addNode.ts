@@ -33,6 +33,7 @@ export function showNewNode(
       },
     };
     if (socket) {
+      socket.off("createNode");
       socket.emit("createNode", newNode[1]);
       socket.on("createNode", (response) => {
         if (response) {
