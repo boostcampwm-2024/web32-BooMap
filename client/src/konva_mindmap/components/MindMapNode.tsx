@@ -3,11 +3,10 @@ import EditableText from "@/konva_mindmap/components/EditableText";
 import { NodeProps } from "@/types/Node";
 import { Circle, Group } from "react-konva";
 import { useNodeListContext } from "@/store/NodeListProvider";
-import React, { useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { SocketSlice } from "@/store/SocketSlice";
-import { checkFollowing, reconcileOffsets, resetSavedOffsets, saveOffsets } from "@/konva_mindmap/utils/following";
+import { checkFollowing, resetSavedOffsets, saveOffsets } from "@/konva_mindmap/utils/following";
 import { colors } from "@/constants/color";
-import ConnectedLine from "@/konva_mindmap/components/ConnectedLine";
 import Konva from "konva";
 import { getMovedNodesLocation } from "@/konva_mindmap/utils/select";
 
@@ -24,19 +23,19 @@ export default function MindMapNode({ data, parentNode, node, depth, parentRef, 
   }
 
   function handleDragEnd() {
-    const reconciledData = reconcileOffsets(data, node, updateNode);
     resetSavedOffsets();
     if (socket) {
-      socket.emit("updateNode", reconciledData);
+      socket.emit("updateNode", data);
       socket.on("updateNode", (response) => {
         if (response) {
-          saveHistory(JSON.stringify(reconciledData));
+          saveHistory(JSON.stringify(data));
         }
       });
     }
   }
 
-  function handleClick() {
+  function handleClick(e) {
+    e.evt.preventDefault();
     if (selectedNode.nodeId === node.id) {
       selectNode({ nodeId: 0, parentNodeId: 0 });
       return;
@@ -47,6 +46,7 @@ export default function MindMapNode({ data, parentNode, node, depth, parentRef, 
   const NodeStroke = selectedGroup.includes(node.id.toString()) ? "red" : "";
 
   const handleDragMove = (e: Konva.KonvaEventObject<DragEvent>) => {
+    e.evt.preventDefault();
     const currentPos = { x: e.target.x(), y: e.target.y() };
     const dx = currentPos.x - node.location.x;
     const dy = currentPos.y - node.location.y;
@@ -65,8 +65,6 @@ export default function MindMapNode({ data, parentNode, node, depth, parentRef, 
     if (e.evt.ctrlKey || e.evt.metaKey) {
       checkFollowing(data, node, currentPos, updateNode);
     }
-
-    // 현재 노드 업데이트
   };
 
   return (
@@ -76,15 +74,12 @@ export default function MindMapNode({ data, parentNode, node, depth, parentRef, 
         onDblClick={handleDoubleClick}
         name="node"
         id={node.id.toString()}
-        onDragStart={() => {
+        onDragStart={(e) => {
+          e.evt.preventDefault();
           saveOffsets(data, node);
         }}
         onDragMove={handleDragMove}
-        onDragEnd={() => {
-          // reconcileOffsets(data, node, updateNode);
-          resetSavedOffsets();
-          saveHistory(JSON.stringify(data));
-        }}
+        onDragEnd={handleDragEnd}
         draggable={!dragmode}
         x={node.location.x}
         y={node.location.y}
@@ -110,26 +105,6 @@ export default function MindMapNode({ data, parentNode, node, depth, parentRef, 
           setIsEditing={setIsEditing}
         />
       </Group>
-      {parentNode && (
-        <ConnectedLine
-          from={parentNode.location}
-          to={node.location}
-          fromRadius={70 - depth * 10}
-          toRadius={60 - depth * 10}
-        />
-      )}
-      {node.children?.map((childNode, index) => (
-        <React.Fragment key={index}>
-          <MindMapNode
-            data={data}
-            node={data[childNode]}
-            depth={depth + 1}
-            parentNode={node}
-            parentRef={nodeRef}
-            dragmode={dragmode}
-          />
-        </React.Fragment>
-      ))}
     </>
   );
 }
