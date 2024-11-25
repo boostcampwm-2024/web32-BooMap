@@ -5,8 +5,8 @@ import { useStageStore } from "@/store/useStageStore";
 import { Button } from "@headlessui/react";
 
 export default function MindMapHeaderButtons() {
+  const stage = useStageStore((state) => state.stage);
   function handleExport() {
-    const stage = useStageStore((state) => state.stage);
     downloadURI(stage.current.getStage().toDataURL({ mimeType: "image/png", quality: 1 }), "demo");
   }
   return (
