@@ -55,6 +55,6 @@ export class MapGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @SubscribeMessage('updateNode')
   handleMessage(@ConnectedSocket() client: Socket, @MessageBody(MindmapValidationPipe) mindmapDto: UpdateMindmapDto) {
     this.mapService.updateNodeList(client, mindmapDto);
-    this.server.to(client.data.mindmapId).emit('updateNode', mindmapDto);
+    this.server.to(client.data.connectionId).emit('updateNode', mindmapDto);
   }
 }
