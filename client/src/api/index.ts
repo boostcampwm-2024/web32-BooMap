@@ -1,6 +1,6 @@
 import { tokenRefresh } from "@/api/auth";
 import { logOnDev } from "@/utils/logging";
-import { getToken, setToken } from "@/utils/token";
+import { getToken } from "@/utils/token";
 import axios, { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from "axios";
 
 export const instance = axios.create({
@@ -49,13 +49,16 @@ instance.interceptors.response.use(
         return Promise.reject(error);
       }
 
-      if (error.response.status === 401 && !originalRequest._retry) {
-        originalRequest._retry = true;
+      if (error.response.status === 401) {
+        if (!originalRequest._retry) {
+          originalRequest._retry = true;
 
-        const newAccessToken = await tokenRefresh();
-        originalRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
+          const newAccessToken = await tokenRefresh();
+          originalRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
 
-        return instance(originalRequest);
+          return instance(originalRequest);
+        }
+        return Promise.reject(error);
       }
 
       return Promise.reject(error);
