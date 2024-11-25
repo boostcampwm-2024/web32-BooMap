@@ -23,6 +23,10 @@ const router = createBrowserRouter([
         path: "/mindmap",
         element: <MindMap />,
       },
+      {
+        path: "/mindmap/:mindMapId",
+        element: <MindMap />,
+      },
     ],
   },
   {
@@ -32,10 +36,6 @@ const router = createBrowserRouter([
   {
     path: "*",
     element: <NotFound />,
-  },
-  {
-    path: "/mindmap/:mindMapId",
-    element: <App />,
   },
 ]);
 
