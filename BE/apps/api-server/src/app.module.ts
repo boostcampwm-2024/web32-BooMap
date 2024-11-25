@@ -10,6 +10,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { UserModule } from './modules/user/user.module';
 import { JwtModule } from '@nestjs/jwt';
 import { join } from 'path';
+import { MindmapModule } from './modules/mindmap/mindmap.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -39,6 +40,7 @@ import { join } from 'path';
     ConnectionModule,
     UserModule,
     AuthModule,
+    MindmapModule,
   ],
   controllers: [],
   providers: [],

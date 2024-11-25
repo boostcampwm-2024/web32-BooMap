@@ -1,8 +1,8 @@
 import { WsException } from '@nestjs/websockets';
 
-export class InvalidMindmapIdException extends WsException {
+export class InvalidConnectionIdException extends WsException {
   constructor() {
-    super('Invalid mindmap id');
+    super('Invalid connection id');
   }
 }
 

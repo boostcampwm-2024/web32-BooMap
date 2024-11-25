@@ -1,12 +1,11 @@
 import { Expose } from 'class-transformer';
 import { IsString } from 'class-validator';
 
-export class UserCreateDto {
-  @Expose()
+export class createMindmapDto {
   @IsString()
-  email: string;
+  @Expose()
+  title: string;
 
   @Expose()
-  @IsString()
-  name: string;
+  aiCount: 5;
 }

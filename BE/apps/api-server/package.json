@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "license": "ISC",
   "dependencies": {
-    "@nestjs/jwt": "^10.2.0",
     "@nestjs/passport": "^10.0.3",
     "passport": "^0.7.0",
     "passport-github2": "^0.1.12",
