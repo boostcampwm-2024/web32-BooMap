@@ -10,9 +10,6 @@ COPY tsconfig*.json ./
 COPY apps/socket-server/package*.json ./apps/socket-server/
 COPY libs ./libs
 
-# Install the new dependency
-RUN npm install @nestjs/jwt
-
 RUN npm install
 
 EXPOSE 4000
