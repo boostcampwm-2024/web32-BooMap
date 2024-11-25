@@ -23,7 +23,7 @@ export const SocketSlice = create<SocketState>((set, get) => ({
     const socket = io("http://localhost/map", {
       // TODO: change to production URL
       query: {
-        mindmapId: id,
+        connectionId: id,
       },
     });
     set({ socket });
