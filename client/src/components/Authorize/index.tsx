@@ -10,14 +10,17 @@ export default function Authorize() {
   // const loginSuccess = searchParams.get("success");
   const navigate = useNavigate();
 
-  const { isPending } = useTokenRefresh();
+  const refresh = useTokenRefresh();
 
   useEffect(() => {
+    refresh.mutate(undefined, {
+      onSuccess: () => navigate("/"),
+      onError: () => navigate("/error"),
+    });
     // if (loginSuccess === "true") {
-    navigate("/");
+    // navigate("/");
     // }
   }, [navigate]);
 
-  if (isPending) return <Spinner />;
-  return <p className="text-white">Authenticated</p>;
+  return <p className="text-white">Authenticating</p>;
 }
