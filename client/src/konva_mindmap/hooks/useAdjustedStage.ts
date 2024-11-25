@@ -8,10 +8,11 @@ export function useAdjustedStage(data: NodeData, containerWidth: number, contain
   const rootKey = findRootNodeKey(data);
 
   useEffect(() => {
+    if (!Object.keys(data).length) return;
     const bounds = calculateBounds(data, rootKey);
     const newDimensions = adjustStageToFit(bounds);
     setAdjustedDimensions(newDimensions);
-  }, [containerWidth, containerHeight, data]);
+  }, [containerWidth, containerHeight]);
 
   //그림이 그려지는 영역 크기 계산
   function calculateBounds(data: NodeData, rootId: number) {
