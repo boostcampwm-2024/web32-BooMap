@@ -5,7 +5,6 @@
   "description": "",
   "dependencies": {
     "@nestjs/platform-socket.io": "^10.4.8",
-    "@nestjs/websockets": "^10.4.8",
-    "@nestjs/jwt": "^10.2.0"
+    "@nestjs/websockets": "^10.4.8"
   }
 }
