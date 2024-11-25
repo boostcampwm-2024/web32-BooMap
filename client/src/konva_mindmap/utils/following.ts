@@ -23,16 +23,16 @@ const maxDistance = 400;
 export function checkFollowing(
   data: NodeData,
   root: Node,
+  currPos: Location,
   updateNode: (id: number, updates: Partial<Node>) => void,
-): void {
+): NodeData {
   if (!root.children || root.children.length === 0) return;
-
   root.children.forEach((childId) => {
     const childNode = data[childId];
     if (!childNode) return;
-
-    adjustNodePositions(root, childNode, updateNode);
-    checkFollowing(data, childNode, updateNode);
+    const newLocation = adjustNodePositions(root, childNode, currPos);
+    updateNode(childId, { location: newLocation });
+    checkFollowing(data, childNode, newLocation, updateNode);
   });
 }
 
@@ -88,26 +88,17 @@ export function reconcileOffsets(
   return updatedData;
 }
 
-export function adjustNodePositions(
-  parentNode: Node,
-  targetNode: Node,
-  updateNode: (id: number, updates: Partial<Node>) => void,
-): void {
+export function adjustNodePositions(parentNode: Node, targetNode: Node, currPos: Location): Location {
   if (!parentNode.location || !targetNode.location) return;
 
-  const dx = targetNode.location.x - parentNode.location.x;
-  const dy = targetNode.location.y - parentNode.location.y;
-  const distance = Math.sqrt(dx * dx + dy * dy);
+  // 저장된 오프셋 가져오기
+  const offset = offsetManager.getOffset(targetNode.id);
+  if (!offset) return;
 
-  if (distance > maxDistance) {
-    const directionX = dx / distance;
-    const directionY = dy / distance;
-
-    const newLocation: Location = {
-      x: parentNode.location.x + directionX * maxDistance,
-      y: parentNode.location.y + directionY * maxDistance,
-    };
-
-    updateNode(targetNode.id, { location: newLocation });
-  }
+  // 부모 노드의 현재 위치에 저장된 오프셋을 더해서 자식 노드의 위치 계산
+  const newLocation: Location = {
+    x: currPos.x + offset.x,
+    y: currPos.y + offset.y,
+  };
+  return newLocation;
 }
