@@ -5,7 +5,7 @@ import deleteIcon from "@/assets/trash.png";
 import { Button } from "@headlessui/react";
 import { useNodeListContext } from "@/store/NodeListProvider";
 import { StageDimension } from "@/konva_mindmap/types/dimension";
-import { addNode, showNewNode } from "@/konva_mindmap/events/addNode";
+import { showNewNode } from "@/konva_mindmap/events/addNode";
 import { deleteNode } from "@/konva_mindmap/events/deleteNode";
 import { useRef } from "react";
 

@@ -64,26 +64,28 @@ export function reconcileOffsets(
   root: Node,
   updateNode: (id: number, updates: Partial<Node>) => void,
   updatedParentLocation?: Location,
-): void {
-  if (!root.children || !root.location) return;
+): NodeData {
+  let updatedData = { ...data };
+
+  if (!root.children || !root.location) return updatedData;
 
   root.children.forEach((childNodeId) => {
-    const childNode = data[childNodeId];
+    const childNode = updatedData[childNodeId];
     if (!childNode) return;
 
     const offset = offsetManager.getOffset(childNodeId);
     if (!offset) return;
 
-    const newLocation: Location = {
+    const newLocation = {
       x: updatedParentLocation ? updatedParentLocation.x + offset.x : root.location.x + offset.x,
       y: updatedParentLocation ? updatedParentLocation.y + offset.y : root.location.y + offset.y,
     };
 
-    updateNode(childNode.id, { location: newLocation });
-
-    // 재귀적으로 자식 노드들의 위치 조정
-    reconcileOffsets(data, childNode, updateNode, newLocation);
+    updatedData[childNode.id] = { ...childNode, location: newLocation };
+    updatedData = reconcileOffsets(updatedData, childNode, updateNode, newLocation);
   });
+
+  return updatedData;
 }
 
 export function adjustNodePositions(

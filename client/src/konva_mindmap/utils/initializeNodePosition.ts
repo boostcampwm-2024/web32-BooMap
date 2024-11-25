@@ -1,4 +1,5 @@
 import { NodeData } from "@/types/Node";
+import { findRootNodeKey } from "./findRootNodeKey";
 
 type CalculateNodePositionParams = {
   nodeId: number;
@@ -10,8 +11,9 @@ type CalculateNodePositionParams = {
 };
 
 export default function initializeNodePosition(data: NodeData) {
+  if (!Object.keys(data).length) return data;
   calculateNodePosition({
-    nodeId: 1,
+    nodeId: findRootNodeKey(data),
     length: 0,
     index: 0,
     xPos: 0,

@@ -45,8 +45,17 @@
 //     layer.add(nodeB);
 //     const updateMock = vi.fn();
 //     const layerRef = { current: layer };
+// it("checkCollision의 내부 로직을 통해서 조정된 x,y좌표가 setter 함수 안에 들어간 후 실행된다.", () => {
+//   const layer = new Konva.Layer();
+//   const nodeA = createMockNode({ id: "1", name: "node", x: 0, y: 0, width: 20, height: 20 });
+//   const nodeB = createMockNode({ id: "2", name: "node", x: 0, y: 0, width: 40, height: 40 });
+//   layer.add(nodeA);
+//   layer.add(nodeB);
+//   const updateMock = vi.fn();
+//   const layerRef = { current: layer };
 
 //     checkCollision(layerRef, updateMock);
+//   checkCollision(layerRef, updateMock);
 
 //     expect(updateMock).toHaveBeenCalled();
 //     expect(updateMock).toHaveBeenCalledWith(2, {
@@ -57,6 +66,15 @@
 //     });
 //   });
 
+//   it("요소들이 충돌되지 않을 경우 노드들의 상태는 업데이트되지 않는다", () => {
+//     const layer = new Konva.Layer({
+//       current: {
+//         children: [
+//           createMockNode({ id: "1", name: "node", x: 0, y: 0, width: 20, height: 20 }),
+//           createMockNode({ id: "2", name: "node", x: 10, y: 10, width: 40, height: 40 }),
+//         ],
+//       },
+//     });
 //   it("요소들이 충돌되지 않을 경우 노드들의 상태는 업데이트되지 않는다", () => {
 //     const layer = new Konva.Layer({
 //       current: {

@@ -1,23 +1,18 @@
-import { Controller, Post, Req, UseGuards } from '@nestjs/common';
-import { AuthenticatedRequest } from '@app/interface';
+import { OptionalJwtGuard } from './../../guards';
+import { Controller, Post, UseGuards } from '@nestjs/common';
 import { ConnectionService } from './connection.service';
-import { AuthGuard } from '@nestjs/passport';
-import { UserService } from '../user/user.service';
+import { User } from '../../decorators';
 
 @Controller('connection')
 export class ConnectionController {
-  constructor(
-    private readonly connectionService: ConnectionService,
-    private readonly userService: UserService,
-  ) {}
+  constructor(private readonly connectionService: ConnectionService) {}
 
   @Post()
-  @UseGuards(AuthGuard('jwt'))
-  async createMindMap(@Req() req: AuthenticatedRequest) {
-    const user = await this.userService.findById(req.user.id);
+  @UseGuards(OptionalJwtGuard)
+  async createMindMap(@User() user) {
     if (!user) {
-      return this.connectionService.createGuestMindmap();
+      return await this.connectionService.createGuestConnection();
     }
-    return this.connectionService.createMindmap(user);
+    return await this.connectionService.createConnection(user.id);
   }
 }

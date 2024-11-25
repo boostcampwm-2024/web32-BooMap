@@ -30,6 +30,7 @@ export class WsValidationPipe implements PipeTransform {
     const object = plainToInstance(metadata.metatype, parsedValue, {
       excludeExtraneousValues: true,
     });
+
     const errors = await validate(object);
 
     if (errors.length > 0) {

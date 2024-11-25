@@ -18,7 +18,7 @@ export class WsExceptionFilter extends BaseWsExceptionFilter {
       timestamp: new Date().toISOString(),
     };
 
-    this.logger.error(`WebSocket Error: ${JSON.stringify(errorResponse)}`);
+    this.logger.error(`WebSocket Error: ${JSON.stringify(errorResponse)} - ${exception.stack}`);
     client.emit('error', errorResponse);
   }
 }
