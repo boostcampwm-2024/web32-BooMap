@@ -62,7 +62,7 @@ export default function MindMapNode({ data, parentNode, node, depth, parentRef, 
       location: currentPos,
     });
 
-    if (e.evt.ctrlKey || e.evt.metaKey) {
+    if (e.evt.shiftKey) {
       checkFollowing(data, node, currentPos, updateNode);
     }
   };
