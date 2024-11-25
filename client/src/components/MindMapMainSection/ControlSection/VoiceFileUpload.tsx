@@ -1,4 +1,4 @@
-import UploadBox from "@/components/MainSection/ControlSection/UploadBox";
+import UploadBox from "@/components/MindMapMainSection/ControlSection/UploadBox";
 import { Button } from "@headlessui/react";
 import { useState } from "react";
 

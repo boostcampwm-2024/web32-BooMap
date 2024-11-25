@@ -1,5 +1,5 @@
-import ControlSection from "@/components/MainSection/ControlSection";
 import MindMapCanvas from "@/components/MindMapCanvas";
+import ControlSection from "@/components/MindMapMainSection/ControlSection";
 import Minutes from "@/components/Minutes";
 import useMinutes from "@/hooks/useMinutes";
 

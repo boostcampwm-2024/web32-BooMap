@@ -1,8 +1,12 @@
 import dashboardIcon from "@/assets/dashbordIcon.png";
 import plusIcon from "@/assets/plus.png";
+import LoginModal from "@/components/LoginModal";
 import { Button } from "@headlessui/react";
+import { useState } from "react";
+import { createPortal } from "react-dom";
 
 export default function GuestDashBoard() {
+  const [loginModal, setLoginModal] = useState(false);
   return (
     <>
       <div className="flex h-full w-full flex-col items-center justify-center rounded-[20px] bg-grayscale-700">
@@ -16,10 +20,14 @@ export default function GuestDashBoard() {
           <img className="w-6 group-hover:brightness-0 group-hover:invert" src={plusIcon} alt="추가하기 아이콘" />
           <p className="text-xl text-grayscale-200 group-hover:text-white">새로운 마인드맵 만들기</p>
         </Button>
-        <Button className="mt-4 w-[300px] rounded-[10px] bg-grayscale-600 px-24 py-2 text-xl text-grayscale-200 hover:text-white">
+        <Button
+          className="mt-4 w-[300px] rounded-[10px] bg-grayscale-600 px-24 py-2 text-xl text-grayscale-200 hover:text-white"
+          onClick={() => setLoginModal(true)}
+        >
           로그인하기
         </Button>
       </div>
+      {loginModal && createPortal(<LoginModal open={loginModal} close={() => setLoginModal(false)} />, document.body)}
     </>
   );
 }
