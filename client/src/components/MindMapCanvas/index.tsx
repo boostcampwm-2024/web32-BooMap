@@ -10,6 +10,7 @@ import { useEffect, useRef } from "react";
 import { useStageStore } from "@/store/useStageStore";
 import NoNodeInform from "@/components/MindMapCanvas/NoNodeInform";
 import CanvasButtons from "@/components/MindMapCanvas/CanvasButtons";
+import ShowShortCut from "./ShowShortCut";
 
 export default function MindMapCanvas({ showMinutes, handleShowMinutes }) {
   const { data, undoData: undo, redoData: redo, updateNode, overrideNodeData, saveHistory } = useNodeListContext();
@@ -56,6 +57,7 @@ export default function MindMapCanvas({ showMinutes, handleShowMinutes }) {
           {Object.keys(data).length >= 1 && <DrawMindMap data={data} root={data[1]} depth={1} />}
         </Layer>
       </Stage>
+      <ShowShortCut />
       <ToolMenu dimensions={dimensions} zoomIn={zoomIn} zoomOut={zoomOut} />
       {!Object.keys(data).length ? (
         <NoNodeInform />
