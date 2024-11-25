@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <symbol id="textfile" viewBox="0 0 33 36">
+    <path fill="#565868" d="M17.366 32.184V36h3.682l8.978-9.306-3.682-3.816-8.978 9.306zM27.785 10.8L17.366 0H3.473C1.563 0 .017 1.62.017 3.6L0 32.4C0 34.38 1.546 36 3.456 36h10.437v-5.31l13.892-14.4V10.8zM15.63 12.6V2.7l9.552 9.9H15.63zm16.862 9l-1.233-1.278a1.687 1.687 0 0 0-2.448 0L27.578 21.6l3.681 3.816 1.233-1.278a1.84 1.84 0 0 0 0-2.538z" />
+  </symbol>
+  <symbol id="pencil" viewBox="0 0 60 60">
+    <path fill="url(#a)" d="M0 0h60v60H0z" />
+    <defs>
+      <pattern id="a" width="1" height="1" patternContentUnits="objectBoundingBox">
+        <use transform="scale(.01042)" xlink:href="#b" />
+      </pattern>
+    </defs>
+  </symbol>
+  <symbol id="bulb" viewBox="0 0 63 63">
+    <g clip-path="url(#a)">
+      <mask id="b" width="63" height="63" x="0" y="0" maskUnits="userSpaceOnUse" style="mask-type:luminance">
+        <path fill="#fff" d="M0 0h63v63H0V0z" />
+      </mask>
+      <g mask="url(#b)">
+        <path fill="#8391FF" d="M49.737 19.994c0 10.675-8.29 12.333-8.29 22.282 0 5.136-5.177 5.57-9.118 5.57-3.404 0-10.919-1.292-10.919-5.573 0-9.946-8.147-11.604-8.147-22.279 0-9.999 8.762-18.104 18.375-18.104 9.615 0 18.099 8.105 18.099 18.104z" />
+        <path fill="#CCCEDD" d="M38.408 55.54c0 1.372-3.703 4.144-6.908 4.144-3.205 0-6.907-2.772-6.907-4.144 0-1.373 3.702-.83 6.907-.83s6.908-.543 6.908.83z" />
+        <path fill="#4D61FF" d="M39.304 18.723a1.659 1.659 0 0 0-2.344 0l-5.46 5.46-5.46-5.46a1.657 1.657 0 1 0-2.343 2.344l6.145 6.146v17.55a1.658 1.658 0 1 0 3.316 0v-17.55l6.146-6.146a1.657 1.657 0 0 0 0-2.344z" />
+        <path fill="#565868" d="M41.447 53.053a3.316 3.316 0 0 1-3.315 3.316H24.869a3.316 3.316 0 0 1-3.316-3.316v-9.947h19.894v9.947z" />
+        <path fill="#CCCEDD" d="M21.55 54.71a1.658 1.658 0 0 1-.271-3.292l19.896-3.316a1.648 1.648 0 0 1 1.907 1.363 1.655 1.655 0 0 1-1.363 1.907l-19.893 3.316c-.09.015-.183.023-.275.023zm0-6.63a1.658 1.658 0 0 1-.271-3.294l19.896-3.315a1.651 1.651 0 0 1 1.887 2.009 1.656 1.656 0 0 1-1.343 1.26l-19.893 3.316c-.09.016-.183.024-.275.023z" />
+      </g>
+    </g>
+    <defs>
+      <clipPath id="a">
+        <path fill="#fff" d="M0 0h63v63H0z" />
+      </clipPath>
+    </defs>
+  </symbol>
+  <symbol id="cloud" viewBox="0 0 466 435">
+    <path fill="url(#a)" d="M0 0h466v435H0z" />
+    <defs>
+      <pattern id="a" width="1" height="1" patternContentUnits="objectBoundingBox">
+        <use transform="matrix(.00222 0 0 .00238 0 -.036)" xlink:href="#b" />
+      </pattern>
+    </defs>
+  </symbol>
+  <symbol id="boomap" viewBox="0 0 72 72">
+    <path fill="url(#a)" d="M0 0h72v72H0z" />
+    <defs>
+      <pattern id="a" width="1" height="1" patternContentUnits="objectBoundingBox">
+        <use transform="scale(.00195)" xlink:href="#b" />
+      </pattern>
+    </defs>
+  </symbol>
+</svg>
