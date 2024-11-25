@@ -7,7 +7,7 @@ type UserStore = {
   isAuthenticated: boolean;
   checkAuthenticated: () => void;
   logout: () => void;
-  setUser: (email: string, nickname: string) => void;
+  setUser: (email: string, name: string) => void;
 };
 export const useAuthStore = create<UserStore>((set) => ({
   email: null,

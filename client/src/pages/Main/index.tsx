@@ -1,9 +1,13 @@
+import Spinner from "@/components/common/Spinner";
 import DashBoard from "@/components/Dashboard";
 import Profile from "@/components/MindMapHeader/Profile";
+import useAuth from "@/hooks/useAuth";
 
 export default function MainPage() {
+  const { isLoading } = useAuth();
   return (
     <>
+      {isLoading && <Spinner />}
       <header className={`flex w-full justify-end bg-transparent p-4`}>
         <Profile />
       </header>
