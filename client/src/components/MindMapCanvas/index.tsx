@@ -30,10 +30,9 @@ export default function MindMapCanvas({ showMinutes, handleShowMinutes }) {
     selectedNode,
   } = useNodeListContext();
   const { dimensions, targetRef, handleWheel, zoomIn, zoomOut } = useDimension(data);
-  const { registerStageRef } = useStageStore();
   const registerLayer = useCollisionDetection(data, updateNode);
-  const stageRef = useRef<Konva.Stage>(null);
-  const [isDragMode, setDragMode] = useState(false);
+  const stageRef = useRef();
+  const { registerStageRef } = useStageStore();
   const handleSocketEvent = useSocketStore.getState().handleSocketEvent;
 
   const rootKey = findRootNodeKey(data);
