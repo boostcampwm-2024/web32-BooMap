@@ -1,7 +1,7 @@
 import useHistoryState from "@/hooks/useHistoryState";
 import initializeNodePosition from "@/konva_mindmap/utils/initializeNodePosition";
 import { Node, NodeData, SelectedNode } from "@/types/Node";
-import { createContext, ReactNode, useContext, useState } from "react";
+import { createContext, ReactNode, useContext, useEffect, useState } from "react";
 import { SocketSlice } from "./SocketSlice";
 
 export type NodeListContextType = {
@@ -16,6 +16,7 @@ export type NodeListContextType = {
   selectNode: ({ nodeId, parentNodeId }: SelectedNode) => void;
   title: string;
   updateTitle: (title: string) => void;
+  loading: boolean;
 };
 
 const mindMapInfo = { title: "제목 없는 마인드맵" };
@@ -34,12 +35,19 @@ export default function NodeListProvider({ children }: { children: ReactNode }) 
   const [selectedNode, setSelectedNode] = useState({ nodeId: 0, parentNodeId: 0 });
   const { saveHistory, undo, redo, history } = useHistoryState<NodeData>(JSON.stringify(data));
   const [title, setTitle] = useState(mindMapInfo.title);
+  const [loading, setLoading] = useState(true);
 
   const socket = SocketSlice((state) => state.socket);
 
   socket?.on("joinRoom", (initialData) => {
-    setData(initializeNodePosition({ ...initialData }));
+    setLoading(true);
+    setTimeout(() => {
+      const initializedData = initializeNodePosition({ ...initialData });
+      setData(initializedData);
+      setLoading(false);
+    }, 0);
   });
+
   socket?.on("updateNode", (updatedNodeData) => {
     overrideNodeData(updatedNodeData);
   });
@@ -92,6 +100,7 @@ export default function NodeListProvider({ children }: { children: ReactNode }) 
         history,
         title,
         updateTitle,
+        loading,
       }}
     >
       {children}
