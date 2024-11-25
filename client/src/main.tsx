@@ -23,6 +23,10 @@ const router = createBrowserRouter([
         path: "/mindmap",
         element: <MindMap />,
       },
+      {
+        path: "/mindmap/:mindMapId",
+        element: <MindMap />,
+      },
     ],
   },
   {

@@ -7,7 +7,7 @@ import useNodeActions from "@/hooks/useNodeActions";
 import bulletPointIcon from "@/assets/bulletPoint.png";
 import { useNodeListContext } from "@/store/NodeListProvider";
 import { deleteNode } from "@/konva_mindmap/events/deleteNode";
-import { addNode, showNewNode } from "@/konva_mindmap/events/addNode";
+import { showNewNode } from "@/konva_mindmap/events/addNode";
 import { useEffect, useRef } from "react";
 import { Node } from "@/types/Node";
 
