@@ -42,8 +42,7 @@ export default function NodeListProvider({ children }: { children: ReactNode }) 
   socket?.on("joinRoom", (initialData) => {
     setLoading(true);
     setTimeout(() => {
-      const initializedData = initializeNodePosition({ ...initialData });
-      setData(initializedData);
+      setData({ ...initialData });
       setLoading(false);
     }, 0);
   });
