@@ -14,11 +14,15 @@ export class MindmapService {
     mindmap.aiCount = 5;
     mindmap.title = '제목없음';
     mindmap.user = user;
+    mindmap.connectionId = uuid;
+    await this.mindmapRepository.save(mindmap);
+
     return uuid;
   }
 
-  findAll() {
-    return `This action returns all mindmap`;
+  createGuest() {
+    const uuid = uuidv4();
+    return uuid;
   }
 
   findOne(id: number) {

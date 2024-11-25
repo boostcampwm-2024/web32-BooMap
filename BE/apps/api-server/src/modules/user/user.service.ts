@@ -3,7 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '@app/entity';
 import { Repository } from 'typeorm';
 import { UserCreateDto, UserInfoDto } from './dto';
-import { instanceToPlain } from 'class-transformer';
 
 @Injectable()
 export class UserService {
@@ -33,8 +32,10 @@ export class UserService {
 
   async getUserInfo(userId: number) {
     const user = await this.userRepository.findOne({ where: { id: userId } });
-    // TODO : false 왜 안되는지 확인하기
-    const userInfoDto = instanceToPlain<UserInfoDto>(user, { excludeExtraneousValues: false });
-    return userInfoDto;
+
+    return {
+      name: user.name,
+      email: user.email,
+    } as UserInfoDto;
   }
 }
