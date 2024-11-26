@@ -31,13 +31,11 @@ export default function ToolMenu({ dimensions, zoomIn, zoomOut }: ToolMenuProps)
   function handleAddButton() {
     saveHistory(JSON.stringify(data));
     showNewNode(data, selectedNode, overrideNodeData);
-    // addNode(data, selectedNode, overrideNodeData);
   }
   function handleDeleteButton() {
     saveHistory(JSON.stringify(data));
     deleteNode(JSON.stringify(data), selectedNode.nodeId, overrideNodeData);
     selectNode({ nodeId: 0, parentNodeId: 0 });
-    saveHistory(JSON.stringify(data));
   }
 
   return (

@@ -1,4 +1,4 @@
-import { SocketSlice } from "@/store/SocketSlice";
+import { useSocketStore } from "@/store/useSocketStore";
 import { NodeData } from "@/types/Node";
 
 export function deleteNode(data: string, selectedNodeId: number, overrideNodeData) {
@@ -23,7 +23,7 @@ export function deleteNode(data: string, selectedNodeId: number, overrideNodeDat
   }
 
   deleteNodeAndChildren(selectedNodeId);
-  const socket = SocketSlice.getState().socket;
+  const socket = useSocketStore.getState().socket;
   if (socket) {
     socket.off("updateNode");
     socket.emit("updateNode", newNodeData);
