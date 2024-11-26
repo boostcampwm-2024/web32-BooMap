@@ -3,6 +3,9 @@ import addIcon from "@/assets/whitePlus.png";
 import searchIcon from "@/assets/search.png";
 import { Button, Input } from "@headlessui/react";
 import { useState } from "react";
+import { FaPlus } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+import { useSocketStore } from "@/store/useSocketStore";
 
 const apiData = {
   mindMaps: [
@@ -120,6 +123,8 @@ const apiData = {
 export default function UserDashBoard() {
   const [data, setData] = useState(apiData.mindMaps);
   const [searchContent, setSearchContent] = useState("");
+  const navigate = useNavigate();
+  const handleConnection = useSocketStore((state) => state.handleConnection);
   localStorage.setItem("user", "강민주");
 
   function handleDeleteData(id: number) {
@@ -152,9 +157,9 @@ export default function UserDashBoard() {
       <div className="absolute bottom-8 right-8">
         <Button
           className="flex items-center justify-center gap-2 rounded-xl bg-bm-blue px-5 py-3"
-          onClick={() => console.log("마인드 맵 추가")}
+          onClick={() => handleConnection(navigate, "textupload")}
         >
-          <img className="h-4 w-4" src={addIcon} alt="마인드 맵 추가 버튼" />
+          <FaPlus className="h-4 w-4" />
           <p>새로운 마인드맵 만들기</p>
         </Button>
       </div>
