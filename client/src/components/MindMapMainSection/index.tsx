@@ -24,13 +24,11 @@ export default function MindMapMainSection() {
     };
   }, [mindMapId, connectSocket, disconnectSocket]);
 
-  if (!modeView[mode]) return <NotFound />;
-
   return (
     <>
       <MindMapHeader />
       <main className="flex h-[90%] w-full flex-col overflow-hidden p-8">
-        <p className="p-3 text-2xl font-bold">{modeView[mode]}</p>
+        <p className="p-3 text-2xl font-bold">{modeView[mode] || modeView.listview}</p>
         <div className="relative flex h-[90%] w-full gap-4">
           <MindMapView />
         </div>
