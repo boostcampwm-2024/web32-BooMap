@@ -4,6 +4,7 @@ import { Node, NodeData, SelectedNode } from "@/types/Node";
 import Konva from "konva";
 import { createContext, ReactNode, useContext, useState } from "react";
 import { useSocketStore } from "./useSocketStore";
+import { deleteNodes } from "@/konva_mindmap/events/deleteNode";
 
 export type NodeListContextType = {
   data: NodeData | null;
@@ -21,6 +22,7 @@ export type NodeListContextType = {
   groupRelease: () => void;
   selectedGroup: string[];
   loading: boolean;
+  deleteSelectedNodes: () => void;
 };
 
 const mindMapInfo = { title: "제목 없는 마인드맵" };
@@ -40,7 +42,7 @@ export default function NodeListProvider({ children }: { children: ReactNode }) 
   const { saveHistory, overrideHistory, undo, redo, history } = useHistoryState<NodeData>(JSON.stringify(data));
   const [title, setTitle] = useState(mindMapInfo.title);
   const [loading, setLoading] = useState(true);
-
+  const { selectedGroup, groupRelease, groupSelect } = useGroupSelect();
   const socket = useSocketStore((state) => state.socket);
 
   socket?.on("joinRoom", (initialData) => {
@@ -55,7 +57,6 @@ export default function NodeListProvider({ children }: { children: ReactNode }) 
   socket?.on("updateNode", (updatedNodeData) => {
     overrideNodeData(updatedNodeData);
   });
-  const { selectedGroup, groupRelease, groupSelect } = useGroupSelect();
 
   function updateNode(id: number, updatedNode: Partial<Node>) {
     setData((prevData) => ({
@@ -91,6 +92,13 @@ export default function NodeListProvider({ children }: { children: ReactNode }) 
     setTitle(title);
   }
 
+  function deleteSelectedNodes() {
+    if (selectedGroup.length) {
+      deleteNodes(JSON.stringify(data), selectedGroup.map(Number), overrideNodeData);
+    }
+    if (selectedNode.nodeId) deleteNodes(JSON.stringify(data), selectedNode.nodeId, overrideNodeData);
+  }
+
   return (
     <NodeListContext.Provider
       value={{
@@ -109,6 +117,7 @@ export default function NodeListProvider({ children }: { children: ReactNode }) 
         groupRelease,
         selectedGroup,
         loading,
+        deleteSelectedNodes,
       }}
     >
       {children}
