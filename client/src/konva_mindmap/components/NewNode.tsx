@@ -53,6 +53,7 @@ export default function NewNode({ data, node, depth }: NodeProps) {
         shadowBlur={5}
       />
       <EditableTextInput
+        focus={selectedNode.addTo === "canvas"}
         value={keyword}
         offsetX={70 - depth * 10}
         offsetY={8 * depth - 60}

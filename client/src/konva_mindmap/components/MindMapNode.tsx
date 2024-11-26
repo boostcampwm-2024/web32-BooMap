@@ -38,10 +38,10 @@ export default function MindMapNode({ data, parentNode, node, depth, parentRef, 
   function handleClick(e) {
     e.evt.preventDefault();
     if (selectedNode.nodeId === node.id) {
-      selectNode({ nodeId: 0, parentNodeId: 0 });
+      selectNode({ nodeId: 0, parentNodeId: 0, addTo: "canvas" });
       return;
     }
-    selectNode({ nodeId: node.id, parentNodeId: parentNode ? parentNode.id : null });
+    selectNode({ nodeId: node.id, parentNodeId: parentNode ? parentNode.id : null, addTo: "canvas" });
   }
 
   const NodeStroke = selectedGroup.includes(node.id.toString()) ? "red" : "";

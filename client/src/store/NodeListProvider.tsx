@@ -9,14 +9,14 @@ import { deleteNodes } from "@/konva_mindmap/events/deleteNode";
 
 export type NodeListContextType = {
   data: NodeData | null;
-  selectedNode: { nodeId: number; parentNodeId: number } | null;
+  selectedNode: SelectedNode | null;
   history: string[];
   updateNode: (id: number, node: Partial<Node>) => void;
   overrideNodeData: (node: NodeData | ((newData: NodeData) => void)) => void;
   saveHistory: (newState: string) => void;
   undoData: () => void;
   redoData: () => void;
-  selectNode: ({ nodeId, parentNodeId }: SelectedNode) => void;
+  selectNode: ({ nodeId, parentNodeId, addTo }: SelectedNode) => void;
   title: string;
   updateTitle: (title: string) => void;
   groupSelect: (group: Konva.Group[]) => void;
@@ -39,7 +39,7 @@ export function useNodeListContext() {
 
 export default function NodeListProvider({ children }: { children: ReactNode }) {
   const [data, setData] = useState({});
-  const [selectedNode, setSelectedNode] = useState({ nodeId: 0, parentNodeId: 0 });
+  const [selectedNode, setSelectedNode] = useState<SelectedNode>({ nodeId: 0, parentNodeId: 0, addTo: "canvas" });
   const { saveHistory, overrideHistory, undo, redo, history } = useHistoryState<NodeData>(JSON.stringify(data));
   const [title, setTitle] = useState(mindMapInfo.title);
   const [loading, setLoading] = useState(true);
@@ -83,14 +83,15 @@ export default function NodeListProvider({ children }: { children: ReactNode }) 
     redo(setData);
   }
 
-  function selectNode({ nodeId, parentNodeId }: SelectedNode) {
+  function selectNode({ nodeId, parentNodeId, addTo }: SelectedNode) {
     if (!nodeId) {
-      setSelectedNode({ nodeId: 0, parentNodeId: 0 });
+      setSelectedNode({ nodeId: 0, parentNodeId: 0, addTo: addTo });
       return;
     }
     setSelectedNode({
       nodeId,
       parentNodeId,
+      addTo,
     });
   }
 
