@@ -105,8 +105,8 @@
 /* menuBar */
 .bubble-menu {
   display: flex;
-  gap: 2px;
-  padding: 4px;
+  gap: 7px;
+  padding: 5px 15px;
   border: 1px solid #2e2b29;
   border-radius: 20px;
   background-color: white;
@@ -114,8 +114,6 @@
 
 .buttons {
   color: #424358;
-  width: 30px;
-  aspect-ratio: 1/1;
 }
 
 /* text */
