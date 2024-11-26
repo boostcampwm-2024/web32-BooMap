@@ -26,10 +26,12 @@ export default function MindMapCanvas({ showMinutes, handleShowMinutes }) {
     overrideNodeData,
     saveHistory,
     loading,
+    selectedGroup,
     deleteSelectedNodes,
     selectedNode,
   } = useNodeListContext();
   const { dimensions, targetRef, handleWheel, zoomIn, zoomOut } = useDimension(data);
+  const [isDragMode, setDragMode] = useState(false);
   const registerLayer = useCollisionDetection(data, updateNode);
   const stageRef = useRef();
   const { registerStageRef } = useStageStore();
