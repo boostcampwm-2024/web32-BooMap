@@ -16,6 +16,7 @@ import DrawMindMap from "@/konva_mindmap/components/DrawMindMap";
 import ShowShortCut from "./ShowShortCut";
 import { findRootNodeKey } from "@/konva_mindmap/utils/findRootNodeKey";
 import { useSocketStore } from "@/store/useSocketStore";
+import { showNewNode } from "@/konva_mindmap/events/addNode";
 
 export default function MindMapCanvas({ showMinutes, handleShowMinutes }) {
   const {
@@ -26,6 +27,9 @@ export default function MindMapCanvas({ showMinutes, handleShowMinutes }) {
     overrideNodeData,
     saveHistory,
     loading,
+    selectedGroup,
+    deleteSelectedNodes,
+    selectedNode,
   } = useNodeListContext();
   const { dimensions, targetRef, handleWheel, zoomIn, zoomOut } = useDimension(data);
   const { registerStageRef } = useStageStore();
@@ -40,10 +44,6 @@ export default function MindMapCanvas({ showMinutes, handleShowMinutes }) {
     registerStageRef(stageRef);
   }, [stageRef]);
 
-  const commandKeyMap = {
-    z: undo,
-    y: redo,
-  };
   function handleReArrange() {
     handleSocketEvent({
       actionType: "updateNode",
@@ -58,11 +58,32 @@ export default function MindMapCanvas({ showMinutes, handleShowMinutes }) {
   }
 
   useWindowKeyEventListener("keydown", (e) => {
-    if (e.ctrlKey || e.metaKey) {
-      commandKeyMap[e.key]?.();
+    e.preventDefault();
+    if (e.metaKey || e.ctrlKey) {
+      if (e.shiftKey && e.code) redo();
+      switch (e.code) {
+        case "KeyZ":
+          undo();
+          break;
+        case "KeyR":
+          const url = window.location;
+          location.href = url.pathname;
+          break;
+      }
     }
-    if (e.code === "Space") {
-      setDragMode(true);
+
+    switch (e.code) {
+      case "Space":
+        setDragMode(true);
+        break;
+      case "Backspace":
+        deleteSelectedNodes();
+        break;
+      case "Equal":
+        showNewNode(data, selectedNode, overrideNodeData);
+        break;
+      default:
+        break;
     }
   });
 
