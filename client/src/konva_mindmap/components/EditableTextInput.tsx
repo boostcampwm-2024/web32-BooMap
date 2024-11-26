@@ -1,6 +1,7 @@
 import { Html } from "react-konva-utils";
 
 interface EditableTextInputProps {
+  ref?: React.RefObject<HTMLInputElement>;
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void;
