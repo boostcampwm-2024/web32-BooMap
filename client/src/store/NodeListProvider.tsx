@@ -1,6 +1,6 @@
 import useHistoryState from "@/hooks/useHistoryState";
 import { Node, NodeData, SelectedNode } from "@/types/Node";
-import { createContext, ReactNode, useContext, useState } from "react";
+import { createContext, ReactNode, useContext, useEffect, useState } from "react";
 import { useSocketStore } from "./useSocketStore";
 
 export type NodeListContextType = {
@@ -49,6 +49,11 @@ export default function NodeListProvider({ children }: { children: ReactNode }) 
 
   socket?.on("updateNode", (updatedNodeData) => {
     overrideNodeData(updatedNodeData);
+  });
+
+  socket?.on("disconnect", () => {
+    setData({});
+    overrideHistory(JSON.stringify({}));
   });
 
   function updateNode(id: number, updatedNode: Partial<Node>) {
