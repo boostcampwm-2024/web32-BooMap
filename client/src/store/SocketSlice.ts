@@ -12,7 +12,7 @@ type SocketState = {
 type HandleSocketEventProps = {
   actionType: actionType;
   payload: createNodePayload | updateNodePayload | deleteNodePayload;
-  callback?: () => void;
+  callback?: (response?: any) => void;
 };
 
 export const SocketSlice = create<SocketState>((set, get) => ({
@@ -43,7 +43,7 @@ export const SocketSlice = create<SocketState>((set, get) => ({
     socket.emit(actionType, payload);
 
     socket.on(actionType, (response) => {
-      if (response && callback) callback();
+      if (response && callback) callback(response);
     });
   },
 }));
