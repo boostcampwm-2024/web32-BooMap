@@ -1,10 +1,10 @@
-import { SocketSlice } from "@/store/SocketSlice";
-import { useState, useCallback, useEffect } from "react";
+import { useSocketStore } from "@/store/useSocketStore";
+import { useState, useCallback } from "react";
 
 export default function useHistoryState<T>(data: string) {
   const [history, setHistory] = useState([data]);
   const [pointer, setPointer] = useState(0);
-  const handleSocketEvent = SocketSlice.getState().handleSocketEvent;
+  const handleSocketEvent = useSocketStore.getState().handleSocketEvent;
 
   const saveHistory = useCallback(
     (data: string) => {

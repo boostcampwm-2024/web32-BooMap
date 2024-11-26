@@ -2,7 +2,7 @@ import { colors } from "@/constants/color";
 import EditableTextInput from "@/konva_mindmap/components/EditableTextInput";
 import { addNode } from "@/konva_mindmap/events/addNode";
 import { useNodeListContext } from "@/store/NodeListProvider";
-import { SocketSlice } from "@/store/SocketSlice";
+import { useSocketStore } from "@/store/useSocketStore";
 import { NodeProps } from "@/types/Node";
 import { useEffect, useState } from "react";
 import { Circle, Group } from "react-konva";
@@ -14,7 +14,7 @@ export default function NewNode({ data, node, depth }: NodeProps) {
     setKeyword(keyword);
   }, [keyword]);
 
-  const handleSocketEvent = SocketSlice.getState().handleSocketEvent;
+  const handleSocketEvent = useSocketStore.getState().handleSocketEvent;
 
   function handleTextChange(e: React.ChangeEvent<HTMLInputElement>) {
     setKeyword(e.target.value);

@@ -1,5 +1,5 @@
 import { unitVector } from "@/konva_mindmap/utils/vector";
-import { SocketSlice } from "@/store/SocketSlice";
+import { useSocketStore } from "@/store/useSocketStore";
 import { Node, NodeData, SelectedNode } from "@/types/Node";
 
 //newNode 플래그를 바꿔 실제 노드들과 상호작용할 수 있는 노드로 변환
@@ -16,7 +16,7 @@ export function showNewNode(
   selectedNode: SelectedNode,
   overrideNodeData: React.Dispatch<React.SetStateAction<NodeData>>,
 ) {
-  const handleSocketEvent = SocketSlice.getState().handleSocketEvent;
+  const handleSocketEvent = useSocketStore.getState().handleSocketEvent;
   // 아무 노드도 없을 때는 임의로 id 생성해서 현재는 넣음
   if (!Object.keys(data).length) {
     const newNode = {

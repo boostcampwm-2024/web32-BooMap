@@ -6,12 +6,12 @@ import textIcon from "@/assets/textFile.png";
 import OverviewButton from "@/components/Sidebar/OverviewButton";
 import useSection from "@/hooks/useSection";
 import { useNavigate } from "react-router-dom";
-import { SocketSlice } from "@/store/SocketSlice";
+import { useSocketStore } from "@/store/useSocketStore";
 
 export default function Overview() {
   const navigate = useNavigate();
   const { getmode, handleViewMode } = useSection();
-  const { socket, handleConnection } = SocketSlice();
+  const { socket, handleConnection } = useSocketStore();
 
   const navigateMindmap = (mode: "listview" | "voiceupload" | "textupload") => {
     if (socket) {

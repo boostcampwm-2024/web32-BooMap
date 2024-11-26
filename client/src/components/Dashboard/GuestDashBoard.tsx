@@ -1,7 +1,7 @@
 import dashboardIcon from "@/assets/dashbordIcon.png";
 import plusIcon from "@/assets/plus.png";
 import LoginModal from "@/components/LoginModal";
-import { SocketSlice } from "@/store/SocketSlice";
+import { useSocketStore } from "@/store/useSocketStore";
 import { Button } from "@headlessui/react";
 import { useState } from "react";
 import { createPortal } from "react-dom";
@@ -11,7 +11,7 @@ export default function GuestDashBoard() {
   const [loginModal, setLoginModal] = useState(false);
 
   const navigate = useNavigate();
-  const { handleConnection } = SocketSlice();
+  const { handleConnection } = useSocketStore();
 
   return (
     <>

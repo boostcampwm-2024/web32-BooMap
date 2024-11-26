@@ -1,8 +1,7 @@
 import useHistoryState from "@/hooks/useHistoryState";
-import initializeNodePosition from "@/konva_mindmap/utils/initializeNodePosition";
 import { Node, NodeData, SelectedNode } from "@/types/Node";
-import { createContext, ReactNode, useContext, useEffect, useState } from "react";
-import { SocketSlice } from "./SocketSlice";
+import { createContext, ReactNode, useContext, useState } from "react";
+import { useSocketStore } from "./useSocketStore";
 
 export type NodeListContextType = {
   data: NodeData | null;
@@ -37,7 +36,7 @@ export default function NodeListProvider({ children }: { children: ReactNode }) 
   const [title, setTitle] = useState(mindMapInfo.title);
   const [loading, setLoading] = useState(true);
 
-  const socket = SocketSlice((state) => state.socket);
+  const socket = useSocketStore((state) => state.socket);
 
   socket?.on("joinRoom", (initialData) => {
     setLoading(true);

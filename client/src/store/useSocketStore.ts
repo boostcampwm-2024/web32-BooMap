@@ -18,7 +18,7 @@ type HandleSocketEventProps = {
   callback?: (response?: any) => void;
 };
 
-export const SocketSlice = create<SocketState>((set, get) => ({
+export const useSocketStore = create<SocketState>((set, get) => ({
   socket: null,
 
   connectSocket: (id) => {
