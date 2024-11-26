@@ -38,6 +38,7 @@ export default function EditableText({
   }
 
   function saveContent() {
+    console.log("saveContent");
     if (keyword.trim()) {
       handleSocketEvent({
         actionType: "updateNode",
@@ -54,7 +55,7 @@ export default function EditableText({
   }
 
   function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
-    if (e.key === "Enter") saveContent();
+    if (e.key === "Enter") setIsEditing(false);
   }
 
   function handleBlur() {
