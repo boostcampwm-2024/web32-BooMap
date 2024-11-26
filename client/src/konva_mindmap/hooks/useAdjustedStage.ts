@@ -8,7 +8,6 @@ export function useAdjustedStage(data: NodeData, containerWidth: number, contain
   const rootKey = findRootNodeKey(data);
 
   useEffect(() => {
-    if (!Object.keys(data).length) return;
     const bounds = calculateBounds(data, rootKey);
     const newDimensions = adjustStageToFit(bounds);
     setAdjustedDimensions(newDimensions);
@@ -44,7 +43,9 @@ export function useAdjustedStage(data: NodeData, containerWidth: number, contain
 
     const scaleX = containerWidth / width;
     const scaleY = containerHeight / height;
-    const scale = Math.min(scaleX, scaleY);
+    let scale = Math.min(scaleX, scaleY);
+    if (scale >= 1.5) scale = 1.5;
+    else if (scale <= 0.5) scale = 0.5;
 
     return {
       scale,

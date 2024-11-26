@@ -62,6 +62,7 @@ export default function EditableText({
     <>
       {isEditing ? (
         <EditableTextInput
+          focus={true}
           value={keyword}
           onChange={handleTextChange}
           onKeyDown={handleKeyDown}

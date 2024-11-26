@@ -40,7 +40,6 @@ export default function NodeItem({ node, parentNodeId, open, handleAccordion, op
   useEffect(() => {
     if (node.newNode) {
       setIsEditing(true);
-      inputRef.current?.focus();
     }
   }, [node.id, setIsEditing]);
 
@@ -60,8 +59,8 @@ export default function NodeItem({ node, parentNodeId, open, handleAccordion, op
 
   function handleAddButton() {
     saveHistory(JSON.stringify(data));
-    selectNode({ nodeId: node.id, parentNodeId: parentNodeId });
-    showNewNode(data, { nodeId: node.id, parentNodeId: parentNodeId }, overrideNodeData);
+    selectNode({ nodeId: node.id, parentNodeId: parentNodeId, addTo: "list" });
+    showNewNode(data, { nodeId: node.id, parentNodeId: parentNodeId, addTo: "list" }, overrideNodeData);
     openAccordion();
   }
 
@@ -92,13 +91,13 @@ export default function NodeItem({ node, parentNodeId, open, handleAccordion, op
         )}
         {isEditing ? (
           <Input
+            autoFocus={selectedNode.addTo === "list"}
             ref={inputRef}
             className="flex-grow bg-transparent text-grayscale-200"
             value={keyword}
             onChange={handleChangeKeyword}
             onBlur={handleBlur}
             onKeyDown={handleKeyDown}
-            autoFocus
             maxLength={30}
           />
         ) : (

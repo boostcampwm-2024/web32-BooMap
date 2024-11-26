@@ -9,7 +9,6 @@ import { useEffect, useRef, useState } from "react";
 import { useStageStore } from "@/store/useStageStore";
 import NoNodeInform from "@/components/MindMapCanvas/NoNodeInform";
 import CanvasButtons from "@/components/MindMapCanvas/CanvasButtons";
-import Konva from "konva";
 import SelectionRect from "@/konva_mindmap/components/selectionRect";
 import DrawMindMap from "@/konva_mindmap/components/DrawMindMap";
 import ShowShortCut from "./ShowShortCut";
@@ -26,14 +25,15 @@ export default function MindMapCanvas({ showMinutes, handleShowMinutes }) {
     overrideNodeData,
     saveHistory,
     loading,
+    selectedGroup,
     deleteSelectedNodes,
     selectedNode,
   } = useNodeListContext();
-  const { dimensions, targetRef, handleWheel, zoomIn, zoomOut } = useDimension(data);
-  const { registerStageRef } = useStageStore();
-  const registerLayer = useCollisionDetection(data, updateNode);
-  const stageRef = useRef<Konva.Stage>(null);
   const [isDragMode, setDragMode] = useState(false);
+  const { dimensions, targetRef, handleWheel, zoomIn, zoomOut } = useDimension(data);
+  const registerLayer = useCollisionDetection(data, updateNode);
+  const stageRef = useRef();
+  const { registerStageRef } = useStageStore();
   const handleSocketEvent = useSocketStore.getState().handleSocketEvent;
 
   const rootKey = findRootNodeKey(data);
@@ -65,7 +65,7 @@ export default function MindMapCanvas({ showMinutes, handleShowMinutes }) {
           break;
         case "KeyR":
           const url = window.location;
-          location.href = url.pathname;
+          location.href = url.pathname + url.search;
           break;
       }
     }

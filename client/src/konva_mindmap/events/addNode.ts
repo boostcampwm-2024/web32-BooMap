@@ -1,6 +1,7 @@
-import { unitVector } from "@/konva_mindmap/utils/vector";
+import { calculateVector } from "@/konva_mindmap/utils/vector";
 import { useSocketStore } from "@/store/useSocketStore";
 import { Node, NodeData, SelectedNode } from "@/types/Node";
+import { findRootNodeKey } from "../utils/findRootNodeKey";
 
 //newNode 플래그를 바꿔 실제 노드들과 상호작용할 수 있는 노드로 변환
 export function addNode(keyword: string, newNodeId: number, updateNode: (id: number, node: Partial<Node>) => void) {
@@ -90,14 +91,21 @@ export function showNewNode(
 // 수직벡터 -> 벡터 구한 다음에 벡터의 y값이 x값으로 가고 x값의 반대 부호값이 y좌표
 // 단위벡터 * 내가 원하는 만큼 떼놓을 거리값을 마지막 요소의 x와 y좌표에 더한다,
 function getNewNodePosition(children: number[], data: NodeData, parentNode: Node) {
+  const rootKey = findRootNodeKey(data);
+
   if (!children.length) {
-    return parentNode ? { x: parentNode.location.x + 30, y: parentNode.location.y + 30 } : { x: 0, y: 0 };
+    if (parentNode.id === rootKey)
+      return {
+        x: parentNode.location.x + 110,
+        y: parentNode.location.y,
+      };
+    const { x, y } = calculateVector(data[rootKey].location, parentNode.location, -80, 140);
+    return parentNode ? { x: parentNode.location.x + x, y: parentNode.location.y + y } : { x: 0, y: 0 };
   }
   const lastChildren = data[children[children.length - 1]];
-  const uv = unitVector(parentNode.location, lastChildren.location);
-
+  const uv = calculateVector(parentNode.location, lastChildren.location, 110);
   return {
-    x: lastChildren.location.x + uv.x * 50,
-    y: lastChildren.location.y + uv.y * 50,
+    x: lastChildren.location.x + uv.x * 100,
+    y: lastChildren.location.y + uv.y * 100,
   };
 }
