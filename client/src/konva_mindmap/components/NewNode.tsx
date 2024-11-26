@@ -4,16 +4,12 @@ import { addNode } from "@/konva_mindmap/events/addNode";
 import { useNodeListContext } from "@/store/NodeListProvider";
 import { useSocketStore } from "@/store/useSocketStore";
 import { NodeProps } from "@/types/Node";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Circle, Group } from "react-konva";
 
 export default function NewNode({ data, node, depth }: NodeProps) {
   const { saveHistory, selectedNode, updateNode } = useNodeListContext();
   const [keyword, setKeyword] = useState("제목없음");
-  useEffect(() => {
-    setKeyword(keyword);
-  }, [keyword]);
-
   const handleSocketEvent = useSocketStore.getState().handleSocketEvent;
 
   function handleTextChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -25,8 +21,8 @@ export default function NewNode({ data, node, depth }: NodeProps) {
       handleSocketEvent({
         actionType: "updateNode",
         payload: { ...data, [node.id]: { ...data[node.id], keyword: keyword, newNode: false } },
-        callback: () => {
-          saveHistory(JSON.stringify(data));
+        callback: (response) => {
+          saveHistory(JSON.stringify(response));
           addNode(keyword, node.id, updateNode);
         },
       });
@@ -35,7 +31,7 @@ export default function NewNode({ data, node, depth }: NodeProps) {
 
   function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
     e.stopPropagation();
-    if (e.key === "Enter") saveContent();
+    if (e.key === "Enter" && e.nativeEvent.isComposing == false) e.currentTarget.blur();
   }
 
   function handleBlur() {
