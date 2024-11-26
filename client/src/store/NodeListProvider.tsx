@@ -60,6 +60,11 @@ export default function NodeListProvider({ children }: { children: ReactNode }) 
   });
   const { selectedGroup, groupRelease, groupSelect } = useGroupSelect();
 
+  socket?.on("disconnect", () => {
+    setData({});
+    overrideHistory(JSON.stringify({}));
+  });
+
   function updateNode(id: number, updatedNode: Partial<Node>) {
     setData((prevData) => ({
       ...prevData,
