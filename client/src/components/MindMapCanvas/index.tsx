@@ -84,7 +84,6 @@ export default function MindMapCanvas({ showMinutes, handleShowMinutes }) {
         break;
       default:
         break;
-    }
   });
 
   useWindowKeyEventListener("keyup", (e) => {
@@ -114,6 +113,13 @@ export default function MindMapCanvas({ showMinutes, handleShowMinutes }) {
           <SelectionRect stage={stageRef} dragmode={isDragMode} />
         </Layer>
       </Stage>
+      <ToolMenu
+        dimensions={dimensions}
+        zoomIn={zoomIn}
+        zoomOut={zoomOut}
+        dragmode={isDragMode}
+        setDragmode={setDragMode}
+      />
       <ShowShortCut />
       <ToolMenu
         dimensions={dimensions}

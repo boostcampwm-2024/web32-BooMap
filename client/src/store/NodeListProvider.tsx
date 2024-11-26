@@ -3,6 +3,7 @@ import useHistoryState from "@/hooks/useHistoryState";
 import { Node, NodeData, SelectedNode } from "@/types/Node";
 import Konva from "konva";
 import { createContext, ReactNode, useContext, useState } from "react";
+
 import { useSocketStore } from "./useSocketStore";
 import { deleteNodes } from "@/konva_mindmap/events/deleteNode";
 
@@ -57,6 +58,7 @@ export default function NodeListProvider({ children }: { children: ReactNode }) 
   socket?.on("updateNode", (updatedNodeData) => {
     overrideNodeData(updatedNodeData);
   });
+  const { selectedGroup, groupRelease, groupSelect } = useGroupSelect();
 
   function updateNode(id: number, updatedNode: Partial<Node>) {
     setData((prevData) => ({
