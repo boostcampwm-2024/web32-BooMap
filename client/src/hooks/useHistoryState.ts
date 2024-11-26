@@ -24,7 +24,7 @@ export default function useHistoryState<T>(data: string) {
 
   const undo = useCallback(
     (setData) => {
-      if (!history[0] || pointer < 0) return;
+      if (!history[0] || pointer <= 0) return;
       const parsedData = JSON.parse(history[pointer - 1]);
       if (socket) {
         socket.emit("updateNode", parsedData);
