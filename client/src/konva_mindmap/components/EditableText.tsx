@@ -27,7 +27,7 @@ export default function EditableText({
   const originalContent = text;
   const [keyword, setKeyword] = useState(originalContent);
   const { data, updateNode, saveHistory } = useNodeListContext();
-  const socket = SocketSlice.getState().socket;
+  const handleSocketEvent = SocketSlice.getState().handleSocketEvent;
 
   useEffect(() => {
     setKeyword(text);
@@ -39,16 +39,14 @@ export default function EditableText({
 
   function saveContent() {
     if (keyword.trim()) {
-      if (socket) {
-        socket.off("updateNode");
-        socket.emit("updateNode", { ...data, [id]: { ...data[id], keyword: keyword } });
-        socket.on("updateNode", (response) => {
-          if (response) {
-            saveHistory(JSON.stringify(data));
-            updateNode(id, { keyword: keyword });
-          }
-        });
-      }
+      handleSocketEvent({
+        actionType: "updateNode",
+        payload: { ...data, [id]: { ...data[id], keyword: keyword } },
+        callback: () => {
+          saveHistory(JSON.stringify(data));
+          updateNode(id, { keyword: keyword });
+        },
+      });
     } else {
       setKeyword(originalContent);
     }
