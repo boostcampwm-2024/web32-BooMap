@@ -1,16 +1,19 @@
 import { Location } from "@/konva_mindmap/types/location";
 
-// 두 점 사이의 벡터 구하기
-export function vector(a: Location, b: Location) {
-  return { x: b.x - a.x, y: b.y - a.y };
-}
+export function calculateVector(rootNodeLocation: Location, parentNodeLocation: Location, angleDegrees, magnitude = 1) {
+  const dx = parentNodeLocation.x - rootNodeLocation.x;
+  const dy = parentNodeLocation.y - rootNodeLocation.y;
 
-export function perpendicularVector(a: Location, b: Location) {
-  return { x: a.y - b.y, y: b.x - a.x };
-}
+  const length = Math.sqrt(dx ** 2 + dy ** 2);
+  const unitX = dx / length;
+  const unitY = dy / length;
 
-export function unitVector(a: Location, b: Location) {
-  const v = perpendicularVector(a, b);
-  const vectorLength = Math.sqrt(v.x ** 2 + v.y ** 2);
-  return { x: v.x / vectorLength, y: v.y / vectorLength };
+  const angleRadians = (angleDegrees * Math.PI) / 180;
+  const rotatedX = unitX * Math.cos(angleRadians) - unitY * Math.sin(angleRadians);
+  const rotatedY = unitX * Math.sin(angleRadians) + unitY * Math.cos(angleRadians);
+
+  return {
+    x: rotatedX * magnitude,
+    y: rotatedY * magnitude,
+  };
 }
