@@ -6,13 +6,17 @@ import textIcon from "@/assets/textFile.png";
 import OverviewButton from "@/components/Sidebar/OverviewButton";
 import useSection from "@/hooks/useSection";
 import { useNavigate } from "react-router-dom";
+import { useSocketStore } from "@/store/useSocketStore";
 
 export default function Overview() {
   const navigate = useNavigate();
   const { getmode, handleViewMode } = useSection();
+  const { socket, handleConnection } = useSocketStore();
+
   const navigateMindmap = (mode: "listview" | "voiceupload" | "textupload") => {
-    navigate("/mindmap");
-    handleViewMode(mode);
+    if (socket) {
+      handleViewMode(mode);
+    } else handleConnection(navigate, mode);
   };
   return (
     <div className="mt-14 flex flex-col text-base">

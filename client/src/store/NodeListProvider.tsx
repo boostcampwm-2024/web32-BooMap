@@ -1,10 +1,9 @@
 import useGroupSelect from "@/hooks/useGroupSelect";
 import useHistoryState from "@/hooks/useHistoryState";
-import initializeNodePosition from "@/konva_mindmap/utils/initializeNodePosition";
 import { Node, NodeData, SelectedNode } from "@/types/Node";
 import Konva from "konva";
 import { createContext, ReactNode, useContext, useEffect, useState } from "react";
-import { SocketSlice } from "./SocketSlice";
+import { useSocketStore } from "./useSocketStore";
 
 export type NodeListContextType = {
   data: NodeData | null;
@@ -38,16 +37,17 @@ export function useNodeListContext() {
 export default function NodeListProvider({ children }: { children: ReactNode }) {
   const [data, setData] = useState({});
   const [selectedNode, setSelectedNode] = useState({ nodeId: 0, parentNodeId: 0 });
-  const { saveHistory, undo, redo, history } = useHistoryState<NodeData>(JSON.stringify(data));
+  const { saveHistory, overrideHistory, undo, redo, history } = useHistoryState<NodeData>(JSON.stringify(data));
   const [title, setTitle] = useState(mindMapInfo.title);
   const [loading, setLoading] = useState(true);
 
-  const socket = SocketSlice((state) => state.socket);
+  const socket = useSocketStore((state) => state.socket);
 
   socket?.on("joinRoom", (initialData) => {
     setLoading(true);
     setTimeout(() => {
       setData({ ...initialData });
+      overrideHistory(JSON.stringify(initialData));
       setLoading(false);
     }, 0);
   });

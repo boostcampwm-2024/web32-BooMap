@@ -1,26 +1,23 @@
 import DeleteConfirmModal from "@/components/MindMapCanvas/DeleteConfirmModal";
 import { useNodeListContext } from "@/store/NodeListProvider";
-import { SocketSlice } from "@/store/SocketSlice";
+import { useSocketStore } from "@/store/useSocketStore";
 import { Button } from "@headlessui/react";
 import { useState } from "react";
 import { createPortal } from "react-dom";
 
 export default function CanvasButtons({ handleReArrange, showMinutes, handleShowMinutes }) {
-  const { handleSocketEvent } = SocketSlice();
-  const { data, overrideNodeData } = useNodeListContext();
+  const { handleSocketEvent } = useSocketStore();
+  const { overrideNodeData } = useNodeListContext();
   const [showDeleteConfirmModal, setShowDeleteConfirmModal] = useState(false);
   const resetAllNode = () => {
     handleSocketEvent({
-      actionType: "deleteNode",
-      payload: { id: Object.keys(data) },
-      callback: () =>
-        handleSocketEvent({
-          actionType: "updateNode",
-          payload: {},
-        }),
+      actionType: "updateNode",
+      payload: {},
+      callback: () => {
+        overrideNodeData({});
+        setShowDeleteConfirmModal(false);
+      },
     });
-    overrideNodeData({});
-    setShowDeleteConfirmModal(false);
   };
   return (
     <div className="absolute right-0 top-[-50px] flex gap-3">

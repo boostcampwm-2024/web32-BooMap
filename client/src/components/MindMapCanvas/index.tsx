@@ -13,7 +13,9 @@ import MindMapNode from "@/konva_mindmap/components/MindMapNode";
 import Konva from "konva";
 import SelectionRect from "@/konva_mindmap/components/selectionRect";
 import DrawMindMap from "@/konva_mindmap/components/DrawMindMap";
+import ShowShortCut from "./ShowShortCut";
 import { findRootNodeKey } from "@/konva_mindmap/utils/findRootNodeKey";
+import { useSocketStore } from "@/store/useSocketStore";
 
 export default function MindMapCanvas({ showMinutes, handleShowMinutes }) {
   const {
@@ -27,9 +29,11 @@ export default function MindMapCanvas({ showMinutes, handleShowMinutes }) {
   } = useNodeListContext();
   const { dimensions, targetRef, handleWheel, zoomIn, zoomOut } = useDimension(data);
   const { registerStageRef } = useStageStore();
+
   const registerLayer = useCollisionDetection(data, updateNode);
   const stageRef = useRef<Konva.Stage>(null);
   const [isDragMode, setDragMode] = useState(false);
+  const handleSocketEvent = useSocketStore.getState().handleSocketEvent;
 
   const rootKey = findRootNodeKey(data);
 
@@ -42,9 +46,16 @@ export default function MindMapCanvas({ showMinutes, handleShowMinutes }) {
     y: redo,
   };
   function handleReArrange() {
-    const savedData = JSON.stringify(data);
-    saveHistory(savedData);
-    overrideNodeData(initializeNodePosition(JSON.parse(savedData)));
+    handleSocketEvent({
+      actionType: "updateNode",
+      payload: initializeNodePosition(data),
+      callback: (response) => {
+        if (response) {
+          saveHistory(JSON.stringify(data));
+          overrideNodeData(response);
+        }
+      },
+    });
   }
 
   useWindowKeyEventListener("keydown", (e) => {
@@ -90,6 +101,8 @@ export default function MindMapCanvas({ showMinutes, handleShowMinutes }) {
         dragmode={isDragMode}
         setDragmode={setDragMode}
       />
+      <ShowShortCut />
+      <ToolMenu dimensions={dimensions} zoomIn={zoomIn} zoomOut={zoomOut} />
       {!Object.keys(data).length && !loading ? (
         <NoNodeInform />
       ) : (

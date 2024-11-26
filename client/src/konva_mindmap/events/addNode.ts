@@ -1,5 +1,5 @@
 import { unitVector } from "@/konva_mindmap/utils/vector";
-import { SocketSlice } from "@/store/SocketSlice";
+import { useSocketStore } from "@/store/useSocketStore";
 import { Node, NodeData, SelectedNode } from "@/types/Node";
 
 //newNode 플래그를 바꿔 실제 노드들과 상호작용할 수 있는 노드로 변환
@@ -16,7 +16,7 @@ export function showNewNode(
   selectedNode: SelectedNode,
   overrideNodeData: React.Dispatch<React.SetStateAction<NodeData>>,
 ) {
-  const socket = SocketSlice.getState().socket;
+  const handleSocketEvent = useSocketStore.getState().handleSocketEvent;
   // 아무 노드도 없을 때는 임의로 id 생성해서 현재는 넣음
   if (!Object.keys(data).length) {
     const newNode = {
@@ -32,17 +32,22 @@ export function showNewNode(
         newNode: true,
       },
     };
-    if (socket) {
-      socket.off("createNode");
-      socket.emit("createNode", newNode[1]);
-      socket.on("createNode", (response) => {
+    handleSocketEvent({
+      actionType: "createNode",
+      payload: newNode[1],
+      callback: (response) => {
         if (response) {
-          const updatedData = { [response.id]: { ...newNode[1], id: response.id } };
+          const updatedData = {
+            [response.id]: { ...newNode[1], id: response.id },
+          };
           overrideNodeData(updatedData);
-          socket.emit("updateNode", updatedData);
+          handleSocketEvent({
+            actionType: "updateNode",
+            payload: updatedData,
+          });
         }
-      });
-    }
+      },
+    });
     return;
   }
   if (!selectedNode.nodeId || data[selectedNode.nodeId].depth === 3) return;
@@ -58,14 +63,10 @@ export function showNewNode(
     newNode: true,
   };
 
-  if (socket) {
-    // 기존에 있던 리스너 제거
-    socket.off("createNode");
-    // 서버에 새로운 노드 생성 요청
-    socket.emit("createNode", { ...newNode, parentId: selectedNode.nodeId });
-
-    // 서버에서 응답이 오면 updateNode 이벤트 발생, 전체 데이터 전송
-    socket.on("createNode", (response) => {
+  handleSocketEvent({
+    actionType: "createNode",
+    payload: { ...newNode, parentId: selectedNode.nodeId },
+    callback: (response) => {
       if (response) {
         const updatedData = {
           ...data,
@@ -76,10 +77,13 @@ export function showNewNode(
           [response.id]: { ...newNode, id: response.id },
         };
         overrideNodeData(updatedData);
-        socket.emit("updateNode", updatedData);
+        handleSocketEvent({
+          actionType: "updateNode",
+          payload: updatedData,
+        });
       }
-    });
-  }
+    },
+  });
   return newNodeId;
 }
 
