@@ -12,7 +12,7 @@ export default function LoginModal({ open, close }: LoginModalProps) {
     <>
       {open && (
         <div
-          className="fixed inset-0 z-10 flex items-center justify-center bg-black bg-opacity-30 text-black"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-30 text-black"
           onClick={close}
         >
           <div
