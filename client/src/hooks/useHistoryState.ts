@@ -1,5 +1,5 @@
 import { SocketSlice } from "@/store/SocketSlice";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 
 export default function useHistoryState<T>(data: string) {
   const [history, setHistory] = useState([data]);
@@ -10,6 +10,14 @@ export default function useHistoryState<T>(data: string) {
     (data: string) => {
       setHistory((prevHistory) => [...prevHistory.slice(0, pointer + 1), data]);
       setPointer((p) => p + 1);
+    },
+    [pointer],
+  );
+
+  const overrideHistory = useCallback(
+    (data: string) => {
+      setHistory([data]);
+      setPointer(0);
     },
     [pointer],
   );
@@ -48,5 +56,5 @@ export default function useHistoryState<T>(data: string) {
     [history, pointer],
   );
 
-  return { saveHistory, undo, redo, history };
+  return { saveHistory, overrideHistory, undo, redo, history };
 }

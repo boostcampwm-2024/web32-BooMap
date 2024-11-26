@@ -33,7 +33,7 @@ export function useNodeListContext() {
 export default function NodeListProvider({ children }: { children: ReactNode }) {
   const [data, setData] = useState({});
   const [selectedNode, setSelectedNode] = useState({ nodeId: 0, parentNodeId: 0 });
-  const { saveHistory, undo, redo, history } = useHistoryState<NodeData>(JSON.stringify(data));
+  const { saveHistory, overrideHistory, undo, redo, history } = useHistoryState<NodeData>(JSON.stringify(data));
   const [title, setTitle] = useState(mindMapInfo.title);
   const [loading, setLoading] = useState(true);
 
@@ -43,6 +43,7 @@ export default function NodeListProvider({ children }: { children: ReactNode }) 
     setLoading(true);
     setTimeout(() => {
       setData({ ...initialData });
+      overrideHistory(JSON.stringify(initialData));
       setLoading(false);
     }, 0);
   });
