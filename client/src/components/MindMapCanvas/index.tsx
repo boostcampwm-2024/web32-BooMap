@@ -12,6 +12,7 @@ import NoNodeInform from "@/components/MindMapCanvas/NoNodeInform";
 import CanvasButtons from "@/components/MindMapCanvas/CanvasButtons";
 import ShowShortCut from "./ShowShortCut";
 import { findRootNodeKey } from "@/konva_mindmap/utils/findRootNodeKey";
+import { SocketSlice } from "@/store/SocketSlice";
 
 export default function MindMapCanvas({ showMinutes, handleShowMinutes }) {
   const {
@@ -27,6 +28,7 @@ export default function MindMapCanvas({ showMinutes, handleShowMinutes }) {
   const registerLayer = useCollisionDetection(data, updateNode);
   const stageRef = useRef();
   const { registerStageRef } = useStageStore();
+  const handleSocketEvent = SocketSlice.getState().handleSocketEvent;
 
   const rootKey = findRootNodeKey(data);
 
@@ -39,9 +41,16 @@ export default function MindMapCanvas({ showMinutes, handleShowMinutes }) {
     y: redo,
   };
   function handleReArrange() {
-    const savedData = JSON.stringify(data);
-    saveHistory(savedData);
-    overrideNodeData(initializeNodePosition(JSON.parse(savedData)));
+    handleSocketEvent({
+      actionType: "updateNode",
+      payload: initializeNodePosition(data),
+      callback: (response) => {
+        if (response) {
+          saveHistory(JSON.stringify(data));
+          overrideNodeData(response);
+        }
+      },
+    });
   }
 
   useWindowKeyEventListener("keydown", (e) => {
