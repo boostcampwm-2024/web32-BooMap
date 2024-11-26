@@ -34,6 +34,7 @@ export default function NewNode({ data, node, depth }: NodeProps) {
   }
 
   function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
+    e.stopPropagation();
     if (e.key === "Enter") saveContent();
   }
 
