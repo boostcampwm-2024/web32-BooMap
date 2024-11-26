@@ -58,7 +58,6 @@ export default function NodeListProvider({ children }: { children: ReactNode }) 
   socket?.on("updateNode", (updatedNodeData) => {
     overrideNodeData(updatedNodeData);
   });
-  const { selectedGroup, groupRelease, groupSelect } = useGroupSelect();
 
   socket?.on("disconnect", () => {
     setData({});

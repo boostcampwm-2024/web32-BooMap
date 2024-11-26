@@ -31,11 +31,11 @@ export default function ShowShortCut() {
                   {i < keys.length - 1 && " + "}
                 </React.Fragment>
               ))}
-              : {description}
+              <span> : </span>
+              {description}
             </p>
           ))}
         </div>
-        ;
       </div>
     </div>
   );
