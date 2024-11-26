@@ -65,7 +65,7 @@ export default function MindMapCanvas({ showMinutes, handleShowMinutes }) {
           break;
         case "KeyR":
           const url = window.location;
-          location.href = url.pathname;
+          location.href = url.pathname + url.search;
           break;
       }
     }
