@@ -27,15 +27,14 @@ export function deleteNodes(data: string, selectedNodeIds: number | number[], ov
 
   nodeIds.forEach((nodeId) => deleteNodeAndChildren(nodeId));
 
-  const socket = useSocketStore.getState().socket;
-  if (socket) {
-    socket.off("updateNode");
-    socket.emit("updateNode", newNodeData);
-    socket.on("updateNode", (response) => {
+  const handleSocketEvent = useSocketStore.getState().handleSocketEvent;
+  handleSocketEvent({
+    actionType: "updateNode",
+    payload: newNodeData,
+    callback: (response) => {
       if (response) {
         overrideNodeData(response);
       }
-      return;
-    });
-  }
+    },
+  });
 }
