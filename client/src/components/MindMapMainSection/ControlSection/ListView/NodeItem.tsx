@@ -31,6 +31,7 @@ export default function NodeItem({ node, parentNodeId, open, handleAccordion, op
     handleMouseEnter,
     handleMouseLeave,
     handleKeyDown,
+    handleDelete,
   } = useNodeActions(node.id, node.keyword);
   const { data, saveHistory, selectedNode, overrideNodeData, selectNode } = useNodeListContext();
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -60,11 +61,6 @@ export default function NodeItem({ node, parentNodeId, open, handleAccordion, op
     selectNode({ nodeId: node.id, parentNodeId: parentNodeId, addTo: "list" });
     showNewNode(data, { nodeId: node.id, parentNodeId: parentNodeId, addTo: "list" }, overrideNodeData);
     openAccordion();
-  }
-
-  function handleDeleteButton() {
-    saveHistory(JSON.stringify(data));
-    deleteNodes(JSON.stringify(data), node.id, overrideNodeData);
   }
 
   const selectedBorder = selectedNode.nodeId === node.id ? "border-2 border-blue-500" : "border-2 border-grayscale-600";
@@ -117,7 +113,7 @@ export default function NodeItem({ node, parentNodeId, open, handleAccordion, op
             ) : (
               <></>
             )}
-            <button onClick={handleDeleteButton}>
+            <button onClick={handleDelete}>
               <img src={deleteIcon} alt="삭제하기" className="h-4 w-4" />
             </button>
           </>
