@@ -13,6 +13,7 @@ export default function Minutes({ showMinutes, isAnimating, handleIsAnimating })
 
   function handleMouseDown(e: React.MouseEvent) {
     e.preventDefault();
+    e.stopPropagation();
     handleIsAnimating();
     startXRef.current = e.clientX;
     startWidthRef.current = width;

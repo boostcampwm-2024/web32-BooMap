@@ -43,6 +43,7 @@ export default function useNodeActions(id: number, content: string) {
   }
 
   function handleKeyDown(e: KeyboardEvent<HTMLInputElement>) {
+    e.stopPropagation();
     if (e.key == "Enter") saveContent();
   }
 

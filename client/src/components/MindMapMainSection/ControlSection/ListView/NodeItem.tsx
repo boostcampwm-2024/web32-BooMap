@@ -6,7 +6,7 @@ import { Input } from "@headlessui/react";
 import useNodeActions from "@/hooks/useNodeActions";
 import bulletPointIcon from "@/assets/bulletPoint.png";
 import { useNodeListContext } from "@/store/NodeListProvider";
-import { deleteNode } from "@/konva_mindmap/events/deleteNode";
+import { deleteNodes } from "@/konva_mindmap/events/deleteNode";
 import { showNewNode } from "@/konva_mindmap/events/addNode";
 import { useEffect, useRef } from "react";
 import { Node } from "@/types/Node";
@@ -67,7 +67,7 @@ export default function NodeItem({ node, parentNodeId, open, handleAccordion, op
 
   function handleDeleteButton() {
     saveHistory(JSON.stringify(data));
-    deleteNode(JSON.stringify(data), node.id, overrideNodeData);
+    deleteNodes(JSON.stringify(data), node.id, overrideNodeData);
   }
 
   const selectedBorder = selectedNode.nodeId === node.id ? "border-2 border-blue-500" : "border-2 border-grayscale-600";

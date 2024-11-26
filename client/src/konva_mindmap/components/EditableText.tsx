@@ -55,7 +55,8 @@ export default function EditableText({
   }
 
   function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
-    if (e.key === "Enter") setIsEditing(false);
+    e.stopPropagation();
+    if (e.key === "Enter") saveContent();
   }
 
   function handleBlur() {
