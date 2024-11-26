@@ -22,6 +22,9 @@ export default function ShowShortCut() {
             <Btn>Click</Btn> + <Btn>=</Btn> : 노드 추가
           </p>
           <p>
+            <Btn>Shift</Btn> + <Btn>Drag</Btn> : 노드 다중 선택
+          </p>
+          <p>
             <Btn>Spacebar</Btn> : 손모양 전환
           </p>
         </div>
