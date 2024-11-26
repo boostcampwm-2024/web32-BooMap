@@ -10,6 +10,7 @@ import { useEffect, useRef } from "react";
 import { useStageStore } from "@/store/useStageStore";
 import NoNodeInform from "@/components/MindMapCanvas/NoNodeInform";
 import CanvasButtons from "@/components/MindMapCanvas/CanvasButtons";
+import ShowShortCut from "./ShowShortCut";
 import { findRootNodeKey } from "@/konva_mindmap/utils/findRootNodeKey";
 
 export default function MindMapCanvas({ showMinutes, handleShowMinutes }) {
@@ -67,6 +68,7 @@ export default function MindMapCanvas({ showMinutes, handleShowMinutes }) {
           {Object.keys(data).length >= 1 && <DrawMindMap data={data} root={data[rootKey]} depth={1} />}
         </Layer>
       </Stage>
+      <ShowShortCut />
       <ToolMenu dimensions={dimensions} zoomIn={zoomIn} zoomOut={zoomOut} />
       {!Object.keys(data).length && !loading ? (
         <NoNodeInform />
