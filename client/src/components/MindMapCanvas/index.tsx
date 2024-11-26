@@ -9,7 +9,6 @@ import { useEffect, useRef, useState } from "react";
 import { useStageStore } from "@/store/useStageStore";
 import NoNodeInform from "@/components/MindMapCanvas/NoNodeInform";
 import CanvasButtons from "@/components/MindMapCanvas/CanvasButtons";
-import MindMapNode from "@/konva_mindmap/components/MindMapNode";
 import Konva from "konva";
 import SelectionRect from "@/konva_mindmap/components/selectionRect";
 import DrawMindMap from "@/konva_mindmap/components/DrawMindMap";
@@ -27,7 +26,6 @@ export default function MindMapCanvas({ showMinutes, handleShowMinutes }) {
     overrideNodeData,
     saveHistory,
     loading,
-    selectedGroup,
     deleteSelectedNodes,
     selectedNode,
   } = useNodeListContext();
@@ -84,6 +82,7 @@ export default function MindMapCanvas({ showMinutes, handleShowMinutes }) {
         break;
       default:
         break;
+    }
   });
 
   useWindowKeyEventListener("keyup", (e) => {

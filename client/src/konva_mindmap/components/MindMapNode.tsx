@@ -24,14 +24,7 @@ export default function MindMapNode({ data, parentNode, node, depth, parentRef, 
 
   function handleDragEnd() {
     resetSavedOffsets();
-    if (socket) {
-      socket.emit("updateNode", data);
-      socket.on("updateNode", (response) => {
-        if (response) {
-          saveHistory(JSON.stringify(data));
-        }
-      });
-    }
+
     handleSocketEvent({
       actionType: "updateNode",
       payload: data,
