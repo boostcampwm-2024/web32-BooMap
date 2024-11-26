@@ -38,9 +38,7 @@ export default function NodeItem({ node, parentNodeId, open, handleAccordion, op
     selectedNode.parentNodeId === node.id || findParentNodeId(selectedNode.parentNodeId, data) === node.id;
 
   useEffect(() => {
-    if (node.newNode) {
-      setIsEditing(true);
-    }
+    node.newNode ? setIsEditing(true) : setIsEditing(false);
   }, [node.id, setIsEditing]);
 
   useEffect(() => {

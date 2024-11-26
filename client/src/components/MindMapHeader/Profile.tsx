@@ -5,33 +5,24 @@ import { createPortal } from "react-dom";
 import { useAuthStore } from "@/store/useAuthStore";
 import useModal from "@/hooks/useModal";
 import ProfileModal from "@/components/MindMapHeader/ProfileModal";
+import { FaUserCircle } from "react-icons/fa";
 
 export default function Profile() {
   const { open: loginModal, openModal: openLoginModal, closeModal: closeLoginModal } = useModal();
   const { open: profileModal, openModal: openProfileModal, closeModal: closeProfileModal } = useModal();
   const auth = useAuthStore();
-  const handleLoginAndOut = () => {
-    if (auth.isAuthenticated) {
-      auth.logout();
-      return;
-    }
-    openLoginModal();
-  };
-  const handleProfileModal = () => {
+  function handleProfileModal() {
     if (auth.isAuthenticated) {
       openProfileModal();
       return;
     }
     openLoginModal();
-  };
+  }
   return (
     <>
       <div className="relative flex items-center gap-6">
-        <Button className="bg-transparent text-grayscale-100" onClick={handleLoginAndOut}>
-          {auth.isAuthenticated ? "로그아웃" : "로그인"}
-        </Button>
         <Button onClick={handleProfileModal}>
-          <img src={profile} className="h-10 w-10" alt="프로필" />
+          <FaUserCircle className="h-10 w-10" color="#93C5FD" />
         </Button>
         <ProfileModal open={profileModal} close={closeProfileModal} />
       </div>
