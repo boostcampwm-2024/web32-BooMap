@@ -1,5 +1,7 @@
+import useGroupSelect from "@/hooks/useGroupSelect";
 import useHistoryState from "@/hooks/useHistoryState";
 import { Node, NodeData, SelectedNode } from "@/types/Node";
+import Konva from "konva";
 import { createContext, ReactNode, useContext, useEffect, useState } from "react";
 import { useSocketStore } from "./useSocketStore";
 
@@ -15,6 +17,9 @@ export type NodeListContextType = {
   selectNode: ({ nodeId, parentNodeId }: SelectedNode) => void;
   title: string;
   updateTitle: (title: string) => void;
+  groupSelect: (group: Konva.Group[]) => void;
+  groupRelease: () => void;
+  selectedGroup: string[];
   loading: boolean;
 };
 
@@ -50,6 +55,7 @@ export default function NodeListProvider({ children }: { children: ReactNode }) 
   socket?.on("updateNode", (updatedNodeData) => {
     overrideNodeData(updatedNodeData);
   });
+  const { selectedGroup, groupRelease, groupSelect } = useGroupSelect();
 
   socket?.on("disconnect", () => {
     setData({});
@@ -104,6 +110,9 @@ export default function NodeListProvider({ children }: { children: ReactNode }) 
         history,
         title,
         updateTitle,
+        groupSelect,
+        groupRelease,
+        selectedGroup,
         loading,
       }}
     >

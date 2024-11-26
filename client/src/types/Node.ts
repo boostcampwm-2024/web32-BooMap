@@ -1,4 +1,6 @@
 import { Location } from "@/konva_mindmap/types/location";
+import Konva from "konva";
+import { RefObject } from "react";
 
 export type Node = {
   id: number;
@@ -21,4 +23,6 @@ export type NodeProps = {
   parentNode?: Node;
   node: Node;
   depth: number;
+  parentRef?: RefObject<Konva.Group>;
+  dragmode: boolean;
 };
