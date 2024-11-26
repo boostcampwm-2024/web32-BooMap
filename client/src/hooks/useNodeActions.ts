@@ -53,7 +53,7 @@ export default function useNodeActions(nodeId: number, content: string) {
 
   function handleKeyDown(e: KeyboardEvent<HTMLInputElement>) {
     e.stopPropagation();
-    if (e.key == "Enter" && !e.nativeEvent.isComposing) saveContent();
+    if (e.key == "Enter" && !e.nativeEvent.isComposing) setIsEditing(false);
   }
 
   function handleDelete() {
