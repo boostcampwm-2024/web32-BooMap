@@ -1,5 +1,5 @@
 import { Text } from "react-konva";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNodeListContext } from "@/store/NodeListProvider";
 import EditableTextInput from "@/konva_mindmap/components/EditableTextInput";
 import { useSocketStore } from "@/store/useSocketStore";
@@ -28,6 +28,9 @@ export default function EditableText({
   const [keyword, setKeyword] = useState(originalContent);
   const { data, updateNode, saveHistory } = useNodeListContext();
   const handleSocketEvent = useSocketStore.getState().handleSocketEvent;
+  useEffect(() => {
+    setKeyword(text);
+  }, [text]);
 
   function handleTextChange(e: React.ChangeEvent<HTMLInputElement>) {
     setKeyword(e.target.value);
