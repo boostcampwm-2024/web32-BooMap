@@ -4,10 +4,13 @@ import { ConnectionService } from './connection.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from '@app/entity';
 import { UserModule } from '../user/user.module';
+import { MindmapModule } from '../mindmap/mindmap.module';
+import { OptionalJwtGuard } from '../../guards';
+import { JwtStrategy } from '../../strategies';
 
 @Module({
   controllers: [ConnectionController],
-  imports: [TypeOrmModule.forFeature([User]), UserModule],
-  providers: [ConnectionService],
+  imports: [TypeOrmModule.forFeature([User]), UserModule, MindmapModule],
+  providers: [ConnectionService, OptionalJwtGuard, JwtStrategy],
 })
 export class ConnectionModule {}

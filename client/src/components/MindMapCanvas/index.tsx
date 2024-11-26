@@ -11,13 +11,24 @@ import { useStageStore } from "@/store/useStageStore";
 import NoNodeInform from "@/components/MindMapCanvas/NoNodeInform";
 import CanvasButtons from "@/components/MindMapCanvas/CanvasButtons";
 import ShowShortCut from "./ShowShortCut";
+import { findRootNodeKey } from "@/konva_mindmap/utils/findRootNodeKey";
 
 export default function MindMapCanvas({ showMinutes, handleShowMinutes }) {
-  const { data, undoData: undo, redoData: redo, updateNode, overrideNodeData, saveHistory } = useNodeListContext();
+  const {
+    data,
+    undoData: undo,
+    redoData: redo,
+    updateNode,
+    overrideNodeData,
+    saveHistory,
+    loading,
+  } = useNodeListContext();
   const { dimensions, targetRef, handleWheel, zoomIn, zoomOut } = useDimension(data);
   const registerLayer = useCollisionDetection(data, updateNode);
   const stageRef = useRef();
   const { registerStageRef } = useStageStore();
+
+  const rootKey = findRootNodeKey(data);
 
   useEffect(() => {
     registerStageRef(stageRef);
@@ -54,12 +65,12 @@ export default function MindMapCanvas({ showMinutes, handleShowMinutes }) {
         onWheel={handleWheel}
       >
         <Layer ref={registerLayer}>
-          {Object.keys(data).length >= 1 && <DrawMindMap data={data} root={data[1]} depth={1} />}
+          {Object.keys(data).length >= 1 && <DrawMindMap data={data} root={data[rootKey]} depth={1} />}
         </Layer>
       </Stage>
       <ShowShortCut />
       <ToolMenu dimensions={dimensions} zoomIn={zoomIn} zoomOut={zoomOut} />
-      {!Object.keys(data).length ? (
+      {!Object.keys(data).length && !loading ? (
         <NoNodeInform />
       ) : (
         <CanvasButtons
