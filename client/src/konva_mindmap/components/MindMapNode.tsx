@@ -12,7 +12,7 @@ export default function MindMapNode({ data, parentNode, node, depth }: NodeProps
   if (node.newNode) return <NewNode data={data} parentNode={parentNode} node={node} depth={depth} />;
   const { saveHistory, updateNode, selectNode, selectedNode } = useNodeListContext();
   const [isEditing, setIsEditing] = useState(false);
-  const socket = SocketSlice.getState().socket;
+  const handleSocketEvent = SocketSlice.getState().handleSocketEvent;
 
   function handleDoubleClick() {
     setIsEditing(true);
@@ -29,14 +29,13 @@ export default function MindMapNode({ data, parentNode, node, depth }: NodeProps
   function handleDragEnd() {
     const reconciledData = reconcileOffsets(data, node, updateNode);
     resetSavedOffsets();
-    if (socket) {
-      socket.emit("updateNode", reconciledData);
-      socket.on("updateNode", (response) => {
-        if (response) {
-          saveHistory(JSON.stringify(reconciledData));
-        }
-      });
-    }
+    handleSocketEvent({
+      actionType: "updateNode",
+      payload: reconciledData,
+      callback: () => {
+        saveHistory(JSON.stringify(reconciledData));
+      },
+    });
   }
 
   function handleClick() {
