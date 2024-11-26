@@ -1,12 +1,15 @@
 import { useSocketStore } from "@/store/useSocketStore";
 import { NodeData } from "@/types/Node";
 
-export function deleteNode(data: string, selectedNodeId: number, overrideNodeData) {
-  if (!selectedNodeId) return;
+export function deleteNodes(data: string, selectedNodeIds: number | number[], overrideNodeData) {
   const newNodeData: NodeData = JSON.parse(data);
+
+  const nodeIds = Array.isArray(selectedNodeIds) ? selectedNodeIds : [selectedNodeIds];
+  if (nodeIds.some((id) => !id || !newNodeData[id])) return;
 
   function deleteNodeAndChildren(nodeId: number) {
     const node = newNodeData[nodeId];
+    if (!node) return;
     if (node.children) {
       [...node.children].forEach((childId) => {
         deleteNodeAndChildren(childId);
@@ -22,7 +25,8 @@ export function deleteNode(data: string, selectedNodeId: number, overrideNodeDat
     delete newNodeData[nodeId];
   }
 
-  deleteNodeAndChildren(selectedNodeId);
+  nodeIds.forEach((nodeId) => deleteNodeAndChildren(nodeId));
+
   const socket = useSocketStore.getState().socket;
   if (socket) {
     socket.off("updateNode");
@@ -31,6 +35,7 @@ export function deleteNode(data: string, selectedNodeId: number, overrideNodeDat
       if (response) {
         overrideNodeData(response);
       }
+      return;
     });
   }
 }

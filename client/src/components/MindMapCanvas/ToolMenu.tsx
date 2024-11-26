@@ -2,7 +2,7 @@ import { Button } from "@headlessui/react";
 import { useNodeListContext } from "@/store/NodeListProvider";
 import { StageDimension } from "@/konva_mindmap/types/dimension";
 import { showNewNode } from "@/konva_mindmap/events/addNode";
-import { deleteNode } from "@/konva_mindmap/events/deleteNode";
+import { deleteNodes } from "@/konva_mindmap/events/deleteNode";
 import { useRef } from "react";
 import { FaRegHandPaper } from "react-icons/fa";
 import { PiCursorFill } from "react-icons/pi";
@@ -38,7 +38,7 @@ export default function ToolMenu({ dimensions, zoomIn, zoomOut, dragmode, setDra
   }
   function handleDeleteButton() {
     saveHistory(JSON.stringify(data));
-    deleteNode(JSON.stringify(data), selectedNode.nodeId, overrideNodeData);
+    deleteNodes(JSON.stringify(data), selectedNode.nodeId, overrideNodeData);
     selectNode({ nodeId: 0, parentNodeId: 0 });
   }
 
