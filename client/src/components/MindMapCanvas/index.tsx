@@ -9,7 +9,6 @@ import { useEffect, useRef, useState } from "react";
 import { useStageStore } from "@/store/useStageStore";
 import NoNodeInform from "@/components/MindMapCanvas/NoNodeInform";
 import CanvasButtons from "@/components/MindMapCanvas/CanvasButtons";
-import Konva from "konva";
 import SelectionRect from "@/konva_mindmap/components/selectionRect";
 import DrawMindMap from "@/konva_mindmap/components/DrawMindMap";
 import ShowShortCut from "./ShowShortCut";
@@ -30,8 +29,8 @@ export default function MindMapCanvas({ showMinutes, handleShowMinutes }) {
     deleteSelectedNodes,
     selectedNode,
   } = useNodeListContext();
-  const { dimensions, targetRef, handleWheel, zoomIn, zoomOut } = useDimension(data);
   const [isDragMode, setDragMode] = useState(false);
+  const { dimensions, targetRef, handleWheel, zoomIn, zoomOut } = useDimension(data);
   const registerLayer = useCollisionDetection(data, updateNode);
   const stageRef = useRef();
   const { registerStageRef } = useStageStore();

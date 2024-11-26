@@ -17,6 +17,7 @@ export default function MindMapNode({ data, parentNode, node, depth, parentRef, 
   const { saveHistory, updateNode, selectNode, selectedNode, selectedGroup, overrideNodeData } = useNodeListContext();
   const [isEditing, setIsEditing] = useState(false);
   const handleSocketEvent = useSocketStore.getState().handleSocketEvent;
+  const socket = useSocketStore.getState().socket;
 
   function handleDoubleClick() {
     setIsEditing(true);
