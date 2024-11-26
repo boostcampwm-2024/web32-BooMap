@@ -21,7 +21,7 @@ export default function Tiptap({ text, setText }) {
         placeholder: "회의록을 입력해주세요...",
       }),
       TextAlign.configure({
-        types: ["heading"],
+        types: ["heading", "paragraph"],
       }),
       Highlight,
       Typography,
@@ -38,10 +38,15 @@ export default function Tiptap({ text, setText }) {
     <>
       <div
         className="h-full cursor-text overflow-hidden rounded-[20px] border border-solid border-grayscale-500 p-3"
-        onClick={() => editor?.commands.focus()}
+        onClick={() => {
+          if (editor) {
+            const endPoint = editor.state.selection.to;
+            editor.chain().focus().setTextSelection(endPoint).run();
+          }
+        }}
       >
         <MenuBar editor={editor} />
-        <EditorContent editor={editor} />
+        <EditorContent editor={editor} onClick={(e) => e.stopPropagation()} />
       </div>
     </>
   );

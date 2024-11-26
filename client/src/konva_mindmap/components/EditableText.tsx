@@ -38,6 +38,7 @@ export default function EditableText({
   }
 
   function saveContent() {
+    console.log("saveContent");
     if (keyword.trim()) {
       handleSocketEvent({
         actionType: "updateNode",
