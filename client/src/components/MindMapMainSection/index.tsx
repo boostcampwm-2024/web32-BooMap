@@ -2,6 +2,7 @@ import NotFound from "@/components/common/NotFound";
 import MindMapHeader from "@/components/MindMapHeader";
 import MindMapView from "@/components/MindMapMainSection/MindMapView";
 import useSection from "@/hooks/useSection";
+import { useNodeListContext } from "@/store/NodeListProvider";
 import { useSocketStore } from "@/store/useSocketStore";
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
@@ -15,10 +16,14 @@ const modeView = {
 export default function MindMapMainSection() {
   const mode = useSection().searchParams.get("mode") as keyof typeof modeView;
   const { mindMapId } = useParams<{ mindMapId: string }>();
+  const { updateMindMapId } = useNodeListContext();
   const { connectSocket, disconnectSocket } = useSocketStore();
 
   useEffect(() => {
-    if (mindMapId) connectSocket(mindMapId);
+    if (mindMapId) {
+      connectSocket(mindMapId);
+      updateMindMapId(mindMapId);
+    }
     return () => {
       disconnectSocket();
     };

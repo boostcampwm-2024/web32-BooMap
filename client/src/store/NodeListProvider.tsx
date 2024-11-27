@@ -6,6 +6,7 @@ import { createContext, ReactNode, useContext, useState } from "react";
 
 import { useSocketStore } from "./useSocketStore";
 import { deleteNodes } from "@/konva_mindmap/events/deleteNode";
+import { checkOwner } from "@/utils/localstorage";
 
 export type NodeListContextType = {
   data: NodeData | null;
@@ -24,6 +25,8 @@ export type NodeListContextType = {
   selectedGroup: string[];
   loading: boolean;
   deleteSelectedNodes: () => void;
+  updateMindMapId: (mindMapId: string) => void;
+  isOwner: boolean;
 };
 
 const mindMapInfo = { title: "제목 없는 마인드맵" };
@@ -43,6 +46,8 @@ export default function NodeListProvider({ children }: { children: ReactNode }) 
   const { saveHistory, overrideHistory, undo, redo, history } = useHistoryState<NodeData>(JSON.stringify(data));
   const [title, setTitle] = useState(mindMapInfo.title);
   const [loading, setLoading] = useState(true);
+  const [mindMapId, setMindMapId] = useState("");
+  const [isOwner, setOwner] = useState(false);
   const { selectedGroup, groupRelease, groupSelect } = useGroupSelect();
   const socket = useSocketStore((state) => state.socket);
 
@@ -53,6 +58,7 @@ export default function NodeListProvider({ children }: { children: ReactNode }) 
       overrideHistory(JSON.stringify(initialData));
       setLoading(false);
     }, 0);
+    if (!initialData.isOwner) setOwner(checkOwner(mindMapId));
   });
 
   socket?.on("updateNode", (updatedNodeData) => {
@@ -105,6 +111,9 @@ export default function NodeListProvider({ children }: { children: ReactNode }) 
     }
     if (selectedNode.nodeId) deleteNodes(JSON.stringify(data), selectedNode.nodeId, overrideNodeData);
   }
+  function updateMindMapId(mindMapId: string) {
+    setMindMapId(mindMapId);
+  }
 
   return (
     <NodeListContext.Provider
@@ -125,6 +134,8 @@ export default function NodeListProvider({ children }: { children: ReactNode }) 
         selectedGroup,
         loading,
         deleteSelectedNodes,
+        updateMindMapId,
+        isOwner,
       }}
     >
       {children}
