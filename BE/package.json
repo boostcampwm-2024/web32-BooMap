@@ -30,6 +30,7 @@
     "@nestjs/core": "^10.0.0",
     "@nestjs/jwt": "^10.2.0",
     "@nestjs/mapped-types": "^2.0.6",
+    "@nestjs/passport": "^10.0.3",
     "@nestjs/platform-express": "^10.0.0",
     "@nestjs/typeorm": "^10.0.2",
     "class-transformer": "^0.5.1",
@@ -92,10 +93,9 @@
     ],
     "moduleNameMapper": {
       "^@app/config(|/.*)$": "<rootDir>/libs/config/src/$1",
-      "^@app/typeorm(|/.*)$": "<rootDir>/libs/typeorm/src/$1",
-      "^@app/logger(|/.*)$": "<rootDir>/libs/logger/src/$1",
       "^@app/entity(|/.*)$": "<rootDir>/libs/entity/src/$1",
-      "^@app/interface(|/.*)$": "<rootDir>/libs/interface/src/$1"
+      "^@app/interface(|/.*)$": "<rootDir>/libs/interface/src/$1",
+      "^@app/jwt(|/.*)$": "<rootDir>/libs/jwt/src/$1"
     }
   }
 }
