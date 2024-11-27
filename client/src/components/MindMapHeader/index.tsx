@@ -3,19 +3,26 @@ import Profile from "@/components/MindMapHeader/Profile";
 import { useNodeListContext } from "@/store/NodeListProvider";
 import { Input } from "@headlessui/react";
 import { useState } from "react";
-import { RiMindMap } from "react-icons/ri";
+import { FaPencilAlt } from "react-icons/fa";
 
 export default function MindMapHeader() {
-  const { title, updateTitle } = useNodeListContext();
+  const { title, updateTitle, isOwner } = useNodeListContext();
   const [editMode, setEditMode] = useState(false);
 
   function handleInputBlur() {
+    if (!title.length) return;
     setEditMode(false);
   }
+
+  function changeToEditMode() {
+    if (!isOwner) return;
+    setEditMode(true);
+  }
+
   function handleInputKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
     e.stopPropagation();
     if (e.key === "Enter") {
-      setEditMode(false);
+      handleInputBlur();
     }
   }
 
@@ -24,17 +31,17 @@ export default function MindMapHeader() {
       <MindMapHeaderButtons />
       {editMode ? (
         <Input
-          className="flex items-center bg-transparent text-center"
+          className="flex w-80 items-center bg-transparent text-center"
           value={title}
           onChange={(e) => updateTitle(e.target.value)}
           onBlur={handleInputBlur}
           onKeyDown={handleInputKeyDown}
-          autoFocus
+          maxLength={32}
         />
       ) : (
-        <span onDoubleClick={() => setEditMode(true)} className="flex cursor-pointer items-center gap-3 text-lg">
-          <RiMindMap className="h-5 w-5" />
+        <span onDoubleClick={changeToEditMode} className="flex cursor-pointer items-center gap-3 text-lg">
           {title}
+          <FaPencilAlt onClick={changeToEditMode} />
         </span>
       )}
       <Profile />
