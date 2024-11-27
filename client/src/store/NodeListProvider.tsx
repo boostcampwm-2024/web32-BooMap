@@ -57,8 +57,8 @@ export default function NodeListProvider({ children }: { children: ReactNode }) 
       setData({ ...initialData });
       overrideHistory(JSON.stringify(initialData));
       setLoading(false);
+      if (!initialData.isOwner) setOwner(checkOwner(mindMapId));
     }, 0);
-    if (!initialData.isOwner) setOwner(checkOwner(mindMapId));
   });
 
   socket?.on("updateNode", (updatedNodeData) => {
