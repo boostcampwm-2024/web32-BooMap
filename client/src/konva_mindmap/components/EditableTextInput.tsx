@@ -28,10 +28,10 @@ export default function EditableTextInput({
         autoFocus={focus}
         value={value}
         onChange={onChange}
-        className={`w-full resize-none bg-transparent text-center text-sm font-semibold text-black ${value.trim() === "" ? "border border-red-500" : ""}`}
+        className={`w-full resize-none bg-transparent text-center text-lg font-semibold text-black ${value.trim() === "" ? "border border-red-500" : ""}`}
         onKeyDown={onKeyDown}
         onBlur={onBlur}
-        maxLength={14}
+        maxLength={50}
         style={{ width }}
       />
     </Html>

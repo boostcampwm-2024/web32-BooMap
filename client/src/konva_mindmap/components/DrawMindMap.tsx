@@ -2,6 +2,7 @@ import MindMapNode from "@/konva_mindmap/components/MindMapNode";
 import ConnectedLine from "@/konva_mindmap/components/ConnectedLine";
 import { Node, NodeData } from "@/types/Node";
 import React from "react";
+import { CONNECTED_LINE_FROM, CONNECTED_LINE_TO } from "@/konva_mindmap/utils/nodeAttrs";
 
 type MindMapProps = {
   data: NodeData;
@@ -19,8 +20,8 @@ export default function DrawMindMap({ data, root, depth = 0, parentNode, dragmod
         <ConnectedLine
           from={parentNode.location}
           to={root.location}
-          fromRadius={70 - depth * 10}
-          toRadius={60 - depth * 10}
+          fromRadius={CONNECTED_LINE_FROM(depth)}
+          toRadius={CONNECTED_LINE_TO(depth)}
         />
       )}
       <MindMapNode data={data} depth={depth} parentNode={parentNode} node={root} dragmode={dragmode} />
