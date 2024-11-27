@@ -9,8 +9,10 @@ import MenuBar from "./MenuBar";
 import { Indent } from "./utils/indent";
 import CustomCodeBlockLowlight from "./utils/codeBlockIndent";
 import Placeholder from "@tiptap/extension-placeholder";
+import { useNodeListContext } from "@/store/NodeListProvider";
 
 export default function Tiptap({ text, setText }) {
+  const { isOwner } = useNodeListContext();
   const editor = useEditor({
     extensions: [
       StarterKit.configure({
@@ -30,6 +32,7 @@ export default function Tiptap({ text, setText }) {
     ],
     content: text,
     onUpdate({ editor }) {
+      if (!isOwner) return;
       setText(editor.getHTML());
     },
   });
