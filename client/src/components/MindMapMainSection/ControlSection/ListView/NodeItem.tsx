@@ -6,10 +6,10 @@ import { Input } from "@headlessui/react";
 import useNodeActions from "@/hooks/useNodeActions";
 import bulletPointIcon from "@/assets/bulletPoint.png";
 import { useNodeListContext } from "@/store/NodeListProvider";
-import { deleteNodes } from "@/konva_mindmap/events/deleteNode";
 import { showNewNode } from "@/konva_mindmap/events/addNode";
 import { useEffect, useRef } from "react";
 import { Node } from "@/types/Node";
+import { NODE_DEPTH_LIMIT } from "@/constants/node";
 
 type NodeItemProps = {
   node: Node;
@@ -68,12 +68,12 @@ export default function NodeItem({ node, parentNodeId, open, handleAccordion, op
   return (
     <div
       className={`flex justify-between rounded-xl bg-grayscale-600 p-[10px] ${selectedBorder}`}
-      style={{ marginLeft: `${(node.depth - 1) * 30}px` }}
+      style={{ marginLeft: `${(node.depth - 1) * 20}px` }}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
       <div className="flex min-w-0 flex-1 items-center gap-3">
-        {node.depth < 3 ? (
+        {node.depth < NODE_DEPTH_LIMIT ? (
           <button
             className={`flex h-5 w-5 items-center justify-center transition-all ${open ? "" : "rotate-[-90deg]"}`}
             onClick={handleAccordion}
@@ -106,7 +106,7 @@ export default function NodeItem({ node, parentNodeId, open, handleAccordion, op
             <button onClick={() => setIsEditing(true)}>
               <img src={editIcon} alt="수정하기" className="h-4 w-4" />
             </button>
-            {node.depth < 3 ? (
+            {node.depth < NODE_DEPTH_LIMIT ? (
               <button onClick={handleAddButton}>
                 <img src={plusIcon} alt="추가하기" className="h-4 w-4" />
               </button>
