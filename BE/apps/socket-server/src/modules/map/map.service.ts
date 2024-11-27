@@ -1,5 +1,5 @@
 import { Socket } from 'socket.io';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { RedisService } from '@liaoliaots/nestjs-redis';
 import { plainToInstance } from 'class-transformer';
 import { Redis } from 'ioredis';
@@ -7,7 +7,12 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UpdateMindmapDto, CreateNodeDto } from './dto';
 import { Node } from '@app/entity';
-import { NodeNotFoundException, DatabaseException, InvalidConnectionIdException } from './exceptions';
+import {
+  NodeNotFoundException,
+  DatabaseException,
+  InvalidConnectionIdException,
+  JoinRoomException,
+} from './exceptions';
 
 @Injectable()
 export class MapService {
@@ -43,21 +48,6 @@ export class MapService {
     }
   }
 
-  // async deleteNode(client: Socket, deleteNodeDto: DeleteNodeDto) {
-  //   await this.nodeRepository.manager.transaction(async (transactionalEntityManager) => {
-  //     for (const nodeId of deleteNodeDto.id) {
-  //       const nodeEntity = await transactionalEntityManager.findOneBy(Node, { id: nodeId });
-
-  //       if (!nodeEntity) {
-  //         throw new NodeNotFoundException(nodeId);
-  //       }
-
-  //       await transactionalEntityManager.softDelete(Node, nodeEntity);
-  //     }
-  //   });
-  //   return deleteNodeDto.id;
-  // }
-
   async updateNodeList(client: Socket, newState: UpdateMindmapDto) {
     try {
       await this.redis.set(`mindmapState:${client.data.connectionId}`, JSON.stringify(newState));
@@ -69,17 +59,43 @@ export class MapService {
   async joinRoom(client: Socket) {
     const connectionId = this.extractMindmapId(client);
 
-    const isConnectionIdValid = await this.redis.sismember('connectionIds', connectionId as string);
-    if (!isConnectionIdValid) {
-      throw new InvalidConnectionIdException();
-    }
+    try {
+      const type = await this.redis.hget(connectionId, 'type');
 
-    client.join(connectionId);
-    client.data.connectionId = connectionId;
+      if (!type) {
+        throw new InvalidConnectionIdException();
+      }
 
-    const currentMindmap = await this.redis.get(`mindmapState:${connectionId}`);
-    if (currentMindmap) {
-      return JSON.parse(currentMindmap);
+      client.join(connectionId);
+      client.data.connectionId = connectionId;
+
+      const curruntData: Record<string, any> = {};
+
+      const [currentState, currentContent, currentTitle, currentAiCount] = await Promise.all([
+        this.redis.get(`mindmapState:${connectionId}`),
+        this.redis.get(`content:${connectionId}`),
+        this.redis.hget(connectionId, 'title'),
+        this.redis.hget(connectionId, 'aiCount'),
+        this.redis.hget(connectionId, 'owner'),
+      ]);
+
+      if (currentState) {
+        curruntData['nodeData'] = JSON.parse(currentState);
+      }
+      if (currentContent) {
+        curruntData['content'] = currentContent;
+      }
+      if (currentTitle) {
+        curruntData['title'] = currentTitle;
+      }
+      if (currentAiCount) {
+        curruntData['aiCount'] = currentAiCount;
+      }
+
+      return curruntData;
+    } catch (error) {
+      Logger.error(error);
+      throw new JoinRoomException();
     }
   }
 

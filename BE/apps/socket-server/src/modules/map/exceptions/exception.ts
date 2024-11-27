@@ -17,3 +17,9 @@ export class DatabaseException extends WsException {
     super(message);
   }
 }
+
+export class JoinRoomException extends WsException {
+  constructor() {
+    super('Join room failed');
+  }
+}
