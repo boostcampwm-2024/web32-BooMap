@@ -9,20 +9,20 @@ interface ShareModalProps {
 }
 
 export default function ShareModal({ open, closeModal }: ShareModalProps) {
-  const [copySuccess, setCopySuccess] = useState("");
+  const [copySuccess, setCopySuccess] = useState(false);
 
   const currentUrl = window.location.href;
 
   async function copyLink() {
     try {
       await navigator.clipboard.writeText(currentUrl);
-      setCopySuccess("success");
-      setTimeout(() => setCopySuccess(""), 2000);
+      setCopySuccess(false);
+      setTimeout(() => setCopySuccess(false), 2000);
     } catch (error) {
       console.error("링크 복사 실패!!!");
     }
 
-    setTimeout(() => setCopySuccess(""), 2000);
+    setTimeout(() => setCopySuccess(false), 2000);
   }
 
   return (
@@ -39,8 +39,8 @@ export default function ShareModal({ open, closeModal }: ShareModalProps) {
           onClick={copyLink}
           className="mt-2 flex h-10 w-full items-center justify-center gap-2 rounded-lg bg-bm-blue transition hover:brightness-90"
         >
-          {copySuccess === "success" ? <FiCheck size={18} /> : <FiCopy size={18} />}
-          <p className="text-sm">{copySuccess === "success" ? "복사 완료" : "링크 복사"}</p>
+          {copySuccess === true ? <FiCheck size={18} /> : <FiCopy size={18} />}
+          <p className="text-sm">{copySuccess === true ? "복사 완료" : "링크 복사"}</p>
         </button>
         <p className="mt-3 border-t pt-1 text-[10px] text-grayscale-400">
           복사된 링크를 통해 팀원들과 브레인스토밍을 해보세요
