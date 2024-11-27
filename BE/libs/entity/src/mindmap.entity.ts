@@ -3,20 +3,20 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
-  JoinColumn,
-  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { User, Node } from '.';
+
+import { UserMindmapRole } from './user.mindmap.role';
+import { Node } from './node.entity';
 
 @Entity('mindmap')
 export class Mindmap {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'varchar', length: 32 })
+  @Column({ type: 'varchar', length: 32, default: '제목없음' })
   title: string;
 
   @Column({ type: 'text' })
@@ -25,24 +25,20 @@ export class Mindmap {
   @Column({ name: 'ai_content', type: 'text' })
   aiContent: string;
 
-  @Column({ name: 'ai_count' })
+  @Column({ name: 'ai_count', default: 5 })
   aiCount: number;
 
-  @ManyToOne(() => User, (user) => user.mindmaps, { onDelete: 'CASCADE', nullable: false })
-  @JoinColumn({ name: 'user_id' })
-  user: User;
+  @OneToMany(() => UserMindmapRole, (userMindmapRole) => userMindmapRole.mindmap)
+  userMindmapRoles: UserMindmapRole[];
 
   @Column({ name: 'connection_id' })
   connectionId: string;
-
-  @Column({ name: 'root_node_id' })
-  rootNodeId: number;
 
   @OneToMany(() => Node, (node) => node.mindmap)
   nodes: Node[];
 
   @CreateDateColumn({ type: 'timestamp', name: 'create_date' })
-  createDate: Date;
+  createdDate: Date;
 
   @UpdateDateColumn({ type: 'timestamp', name: 'modified_date' })
   modifiedDate: Date;

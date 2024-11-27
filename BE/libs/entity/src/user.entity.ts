@@ -1,5 +1,5 @@
 import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { Mindmap } from '.';
+import { UserMindmapRole } from './user.mindmap.role';
 
 @Entity('user')
 export class User {
@@ -18,6 +18,6 @@ export class User {
   @CreateDateColumn({ type: 'timestamp', name: 'create_date' })
   createDate: Date;
 
-  @OneToMany(() => Mindmap, (mindmap) => mindmap.user)
-  mindmaps: Mindmap[];
+  @OneToMany(() => UserMindmapRole, (userMindmapRole) => userMindmapRole.user)
+  userMindmapRoles: UserMindmapRole[];
 }
