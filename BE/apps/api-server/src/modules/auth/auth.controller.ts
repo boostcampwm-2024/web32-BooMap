@@ -3,7 +3,6 @@ import { AuthService } from './auth.service';
 import { AuthGuard } from '@nestjs/passport';
 import { UserService } from '../user/user.service';
 import { Request, Response } from 'express';
-import { ConfigService } from '@nestjs/config';
 import { AuthenticatedRequest } from '@app/interface';
 import { plainToInstance } from 'class-transformer';
 import { UserCreateDto } from '../user/dto';
@@ -13,7 +12,6 @@ export class AuthController {
   constructor(
     private readonly authService: AuthService,
     private readonly userService: UserService,
-    private readonly configService: ConfigService,
   ) {}
 
   @Get('github')
@@ -33,8 +31,7 @@ export class AuthController {
 
     const refreshToken = this.authService.generateRefreshToken(user);
     res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true });
-    const url = this.configService.get('CLIENT_URL');
-    res.redirect(`${url}/auth`);
+    res.redirect(`/auth`);
   }
 
   @Get('kakao')
@@ -54,8 +51,7 @@ export class AuthController {
 
     const refreshToken = this.authService.generateRefreshToken(user);
     res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true });
-    const url = this.configService.get('CLIENT_URL');
-    res.redirect(`${url}/auth`);
+    res.redirect(`/auth`);
   }
 
   @Post('refresh')
