@@ -27,7 +27,7 @@ export default function EditableText({
   const originalContent = text;
   const [keyword, setKeyword] = useState(originalContent);
   const { data, updateNode, saveHistory } = useNodeListContext();
-  const handleSocketEvent = useSocketStore.getState().handleSocketEvent;
+  const { handleSocketEvent, currentJobStatus } = useSocketStore();
 
   useEffect(() => {
     setKeyword(text);
@@ -47,6 +47,7 @@ export default function EditableText({
           updateNode(id, { keyword: keyword });
         },
       });
+      if (currentJobStatus === "error") setKeyword(originalContent);
     } else {
       setKeyword(originalContent);
     }
