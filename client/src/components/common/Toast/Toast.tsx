@@ -16,11 +16,11 @@ export default function Toast({ message, status, onClose }) {
       clearInterval(progressInterval);
     };
   }, []);
-  const textColor = status === "success" ? "text-blue-500" : "text-red-500";
-  const bgColor = status === "success" ? "bg-blue-500" : "bg-red-500";
+  const textColor = status === "success" ? "text-blue-500" : "text-red-400";
+  const bgColor = status === "success" ? "bg-blue-500" : "bg-red-400";
 
   return (
-    <div className={`${textColor} relative mb-2 w-64 rounded-md bg-grayscale-600 px-4 py-3 text-sm`}>
+    <div className={`${textColor} relative mb-2 w-64 bg-grayscale-600 px-4 py-3 text-sm`}>
       <p>{message}</p>
       <div className="absolute bottom-0 left-0 h-1 w-full bg-gray-300">
         <div className={`h-full ${bgColor} transition-all duration-75`} style={{ width: `${progress}%` }}></div>

@@ -11,6 +11,8 @@ type SocketState = {
   disconnectSocket: () => void;
   handleSocketEvent: (props: HandleSocketEventProps) => void;
   handleConnection: (navigate: NavigateFunction, targetMode: string, isAuthenticated: boolean) => void;
+  wsError: string[];
+  currentJobStatus: string;
 };
 
 type HandleSocketEventProps = {
@@ -21,6 +23,8 @@ type HandleSocketEventProps = {
 
 export const useSocketStore = create<SocketState>((set, get) => ({
   socket: null,
+  wsError: [],
+  currentJobStatus: "",
 
   connectSocket: (id) => {
     if (get().socket) return;
@@ -29,6 +33,10 @@ export const useSocketStore = create<SocketState>((set, get) => ({
       query: {
         connectionId: id,
       },
+    });
+    socket.on("error", () => {
+      set({ wsError: [...get().wsError, "작업 중 에러가 발생했어요"] });
+      set({ currentJobStatus: "error" });
     });
     set({ socket });
   },
@@ -48,6 +56,7 @@ export const useSocketStore = create<SocketState>((set, get) => ({
 
     socket.on(actionType, (response) => {
       if (response && callback) callback(response);
+      set({ currentJobStatus: "success" });
     });
   },
 
