@@ -46,7 +46,7 @@ export default function Tiptap({ text, setText }) {
         }}
       >
         <MenuBar editor={editor} />
-        <EditorContent editor={editor} onClick={(e) => e.stopPropagation()} />
+        <EditorContent editor={editor} onClick={(e) => e.stopPropagation()} onKeyDown={(e) => e.stopPropagation()} />
       </div>
     </>
   );

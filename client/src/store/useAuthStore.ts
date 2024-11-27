@@ -1,4 +1,4 @@
-import { getToken, removeToken } from "@/utils/token";
+import { getToken, removeToken } from "@/utils/localstorage";
 import { create } from "zustand";
 
 type UserStore = {

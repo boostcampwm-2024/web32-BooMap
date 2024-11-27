@@ -9,6 +9,13 @@ import { checkFollowing, resetSavedOffsets, saveOffsets } from "@/konva_mindmap/
 import { colors } from "@/constants/color";
 import Konva from "konva";
 import { getMovedNodesLocation } from "@/konva_mindmap/utils/select";
+import {
+  NODE_RADIUS,
+  NODE_WIDTH_AND_HEIGHT,
+  TEXT_OFFSET_X,
+  TEXT_OFFSET_Y,
+  TEXT_WIDTH,
+} from "@/konva_mindmap/utils/nodeAttrs";
 
 export default function MindMapNode({ data, parentNode, node, depth, parentRef, dragmode }: NodeProps) {
   if (node.newNode)
@@ -89,19 +96,19 @@ export default function MindMapNode({ data, parentNode, node, depth, parentRef, 
         <Circle
           stroke={NodeStroke}
           fill={selectedNode?.nodeId === node.id ? "orange" : colors[depth - 1]}
-          width={100}
-          height={100}
+          width={NODE_WIDTH_AND_HEIGHT}
+          height={NODE_WIDTH_AND_HEIGHT}
           strokeWidth={3}
-          radius={60 - depth * 10}
+          radius={NODE_RADIUS(depth)}
           shadowBlur={5}
         />
         <EditableText
           id={node.id}
           name="text"
           text={node.keyword}
-          offsetX={70 - depth * 10}
-          offsetY={8 * depth - 60}
-          width={140 - depth * 20}
+          offsetX={TEXT_OFFSET_X(depth)}
+          offsetY={TEXT_OFFSET_Y(depth)}
+          width={TEXT_WIDTH(depth)}
           isEditing={isEditing}
           setIsEditing={setIsEditing}
         />
