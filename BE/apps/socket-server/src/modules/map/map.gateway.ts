@@ -32,8 +32,8 @@ export class MapGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   async handleConnection(@ConnectedSocket() client: Socket) {
-    const currentMindMap = await this.mapService.joinRoom(client);
-    client.emit('joinRoom', currentMindMap);
+    const currentData = await this.mapService.joinRoom(client);
+    client.emit('joinRoom', currentData);
   }
 
   async handleDisconnect(@ConnectedSocket() client: Socket) {
@@ -41,19 +41,19 @@ export class MapGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   @SubscribeMessage('createNode')
-  async handleCreateNode(@ConnectedSocket() client: Socket, @MessageBody(WsValidationPipe) nodeCreateDto: CreateNodeDto) {
+  async handleCreateNode(
+    @ConnectedSocket() client: Socket,
+    @MessageBody(WsValidationPipe) nodeCreateDto: CreateNodeDto,
+  ) {
     const result = await this.mapService.createNode(client, nodeCreateDto);
     return { event: 'createNode', data: result };
   }
 
-  // @SubscribeMessage('deleteNode')
-  // async handleDeleteNode(@ConnectedSocket() client: Socket, @MessageBody(WsValidationPipe) nodeDeleteDto: DeleteNodeDto) {
-  //   const result = await this.mapService.deleteNode(client, nodeDeleteDto);
-  //   return { event: 'deleteNode', data: result };
-  // }
-
   @SubscribeMessage('updateNode')
-  handleMessage(@ConnectedSocket() client: Socket, @MessageBody(MindmapValidationPipe) mindmapDto: UpdateMindmapDto) {
+  handleUpdateNode(
+    @ConnectedSocket() client: Socket,
+    @MessageBody(MindmapValidationPipe) mindmapDto: UpdateMindmapDto,
+  ) {
     this.mapService.updateNodeList(client, mindmapDto);
     this.server.to(client.data.connectionId).emit('updateNode', mindmapDto);
   }

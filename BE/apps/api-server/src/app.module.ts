@@ -11,11 +11,13 @@ import { UserModule } from './modules/user/user.module';
 import { JwtModule } from '@nestjs/jwt';
 import { join } from 'path';
 import { MindmapModule } from './modules/mindmap/mindmap.module';
+import { NodeModule } from './modules/node/node.module';
+import { DashboardModule } from './modules/dashboard/dashboard.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: [join(__dirname, '..', '..', '..', '.env')],
+      envFilePath: [join(__dirname, '..', '..', '..', '.env.dev')],
     }),
     WinstonModule.forRootAsync({
       inject: [ConfigService],
@@ -26,21 +28,23 @@ import { MindmapModule } from './modules/mindmap/mindmap.module';
         inject: [ConfigService],
         useFactory: getRedisConfig,
       },
-      true,
+      true, // isGlobal
     ),
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
       useFactory: getTypeOrmConfig,
     }),
     JwtModule.registerAsync({
+      global: true,
       inject: [ConfigService],
       useFactory: getJwtConfig,
-      global: true,
     }),
     ConnectionModule,
     UserModule,
     AuthModule,
     MindmapModule,
+    NodeModule,
+    DashboardModule,
   ],
   controllers: [],
   providers: [],
@@ -50,4 +54,3 @@ export class AppModule {
     consumer.apply(LoggerMiddleware).forRoutes('*');
   }
 }
-console.log('env path : ', join(__dirname, '..', '..', '.env'));

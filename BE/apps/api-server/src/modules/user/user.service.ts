@@ -1,12 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from '@app/entity';
+import { User, UserMindmapRole } from '@app/entity';
 import { Repository } from 'typeorm';
 import { UserCreateDto, UserInfoDto } from './dto';
 
 @Injectable()
 export class UserService {
-  constructor(@InjectRepository(User) private readonly userRepository: Repository<User>) {}
+  constructor(
+    @InjectRepository(User) private readonly userRepository: Repository<User>,
+    @InjectRepository(UserMindmapRole) private readonly userMindmapRoleRepository: Repository<UserMindmapRole>,
+  ) {}
 
   async createGithubUser(user: UserCreateDto) {
     const createdUser = this.userRepository.create({ email: user.email, name: user.name, type: 'github' });
@@ -37,5 +40,13 @@ export class UserService {
       name: user.name,
       email: user.email,
     } as UserInfoDto;
+  }
+
+  async getRole(userId: number, mindmapId: number) {
+    const userMindmapRole = await this.userMindmapRoleRepository.findOne({
+      where: { user: { id: userId }, mindmap: { id: mindmapId } },
+    });
+
+    return userMindmapRole?.role;
   }
 }

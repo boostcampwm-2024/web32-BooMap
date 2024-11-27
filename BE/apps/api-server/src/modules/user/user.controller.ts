@@ -1,7 +1,7 @@
-import { Controller, Get, Req, UseGuards } from '@nestjs/common';
+import { Controller, Get, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
 import { AuthGuard } from '@nestjs/passport';
-import { AuthenticatedRequest } from '@app/interface';
+import { User } from '../../decorators';
 
 @Controller('user')
 export class UserController {
@@ -9,7 +9,7 @@ export class UserController {
 
   @Get('info')
   @UseGuards(AuthGuard('jwt'))
-  async getUserInfo(@Req() req: AuthenticatedRequest) {
-    return await this.userService.getUserInfo(req.user.id);
+  async getUserInfo(@User() user) {
+    return await this.userService.getUserInfo(user.id);
   }
 }
