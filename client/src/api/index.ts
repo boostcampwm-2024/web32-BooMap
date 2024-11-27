@@ -1,6 +1,6 @@
 import { tokenRefresh } from "@/api/auth";
 import { logOnDev } from "@/utils/logging";
-import { getToken } from "@/utils/token";
+import { getToken } from "@/utils/localstorage";
 import axios, { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from "axios";
 
 export const instance = axios.create({
