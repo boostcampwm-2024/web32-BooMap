@@ -41,7 +41,7 @@ export default function Minutes({ showMinutes, isAnimating, handleIsAnimating })
         className={`absolute right-[-32px] top-0 flex h-full max-w-full rounded-bl-[20px] rounded-tl-[20px] bg-grayscale-600 p-5 ${statusMinutes} ${animation}`}
         style={{ width: `${width}px` }}
       >
-        <div onMouseDown={handleMouseDown} className="absolute left-0 top-0 z-50 h-full w-4 cursor-ew-resize" />
+        <div onMouseDown={handleMouseDown} className="absolute left-0 top-0 z-40 h-full w-4 cursor-ew-resize" />
         <div className="flex w-full flex-col">
           <p className="mb-3 text-2xl font-bold">회의록</p>
           <Tiptap text={text} setText={setText} />
