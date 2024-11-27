@@ -13,12 +13,12 @@ export default function useNodeActions(nodeId: number, content: string) {
 
   useEffect(() => {
     setKeyword(content);
-  }, [nodeId]);
+  }, [content]);
 
   const originalContent = content;
 
   function saveContent() {
-    if (keyword.trim()) {
+    if (keyword.trim() && keyword !== originalContent) {
       handleSocketEvent({
         actionType: "updateNode",
         payload: { ...data, [nodeId]: { ...data[nodeId], keyword: keyword, newNode: false } },
@@ -53,7 +53,7 @@ export default function useNodeActions(nodeId: number, content: string) {
 
   function handleKeyDown(e: KeyboardEvent<HTMLInputElement>) {
     e.stopPropagation();
-    if (e.key == "Enter" && !e.nativeEvent.isComposing) setIsEditing(false);
+    if (e.key == "Enter" && !e.nativeEvent.isComposing) saveContent();
   }
 
   function handleDelete() {
