@@ -17,11 +17,9 @@ export default function ShareModal({ open, closeModal }: ShareModalProps) {
     try {
       await navigator.clipboard.writeText(currentUrl);
       setCopySuccess(false);
-      setTimeout(() => setCopySuccess(false), 2000);
     } catch (error) {
       console.error("링크 복사 실패!!!");
     }
-
     setTimeout(() => setCopySuccess(false), 2000);
   }
 
