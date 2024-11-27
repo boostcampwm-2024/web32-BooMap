@@ -49,7 +49,7 @@ export default function NodeListProvider({ children }: { children: ReactNode }) 
   socket?.on("joinRoom", (initialData) => {
     setLoading(true);
     setTimeout(() => {
-      setData({ ...initialData });
+      setData({ ...initialData.nodeData });
       overrideHistory(JSON.stringify(initialData));
       setLoading(false);
     }, 0);
