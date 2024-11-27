@@ -13,7 +13,7 @@ export default function useNodeActions(nodeId: number, content: string) {
 
   useEffect(() => {
     setKeyword(content);
-  }, [nodeId]);
+  }, [content]);
 
   const originalContent = content;
 
