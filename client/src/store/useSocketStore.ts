@@ -3,13 +3,14 @@ import { create } from "zustand";
 import { actionType, createNodePayload, updateNodePayload, deleteNodePayload } from "@/types/NodePayload";
 import { createMindmap } from "@/api/mindmap.api";
 import { NavigateFunction } from "react-router-dom";
+import { setOwner } from "@/utils/localstorage";
 
 type SocketState = {
   socket: Socket | null;
   connectSocket: (id: string) => void;
   disconnectSocket: () => void;
   handleSocketEvent: (props: HandleSocketEventProps) => void;
-  handleConnection: (navigate: NavigateFunction, targetMode: string) => void;
+  handleConnection: (navigate: NavigateFunction, targetMode: string, isAuthenticated: boolean) => void;
 };
 
 type HandleSocketEventProps = {
@@ -50,12 +51,13 @@ export const useSocketStore = create<SocketState>((set, get) => ({
     });
   },
 
-  handleConnection: async (navigate: NavigateFunction, targetMode: string) => {
+  handleConnection: async (navigate: NavigateFunction, targetMode: string, isAuthneticated: boolean) => {
     try {
       const socket = get().socket;
       if (socket) socket.disconnect();
       const response = await createMindmap();
       const newMindMapId = response.data;
+      if (!isAuthneticated) setOwner(newMindMapId);
       get().connectSocket(newMindMapId);
       navigate(`/mindmap/${newMindMapId}?mode=${targetMode}`);
     } catch (error) {

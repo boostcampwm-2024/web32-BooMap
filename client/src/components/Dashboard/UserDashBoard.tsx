@@ -6,6 +6,7 @@ import { useState } from "react";
 import { FaPlus } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useSocketStore } from "@/store/useSocketStore";
+import { useAuthStore } from "@/store/useAuthStore";
 
 const apiData = {
   mindMaps: [
@@ -125,7 +126,7 @@ export default function UserDashBoard() {
   const [searchContent, setSearchContent] = useState("");
   const navigate = useNavigate();
   const handleConnection = useSocketStore((state) => state.handleConnection);
-  localStorage.setItem("user", "강민주");
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
 
   function handleDeleteData(id: number) {
     const newData = data.filter((item) => item.id !== id);
@@ -157,7 +158,7 @@ export default function UserDashBoard() {
       <div className="absolute bottom-8 right-8">
         <Button
           className="flex items-center justify-center gap-2 rounded-xl bg-bm-blue px-5 py-3"
-          onClick={() => handleConnection(navigate, "textupload")}
+          onClick={() => handleConnection(navigate, "textupload", isAuthenticated)}
         >
           <FaPlus className="h-4 w-4" />
           <p>새로운 마인드맵 만들기</p>
