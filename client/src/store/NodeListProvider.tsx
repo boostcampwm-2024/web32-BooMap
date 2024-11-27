@@ -2,11 +2,10 @@ import useGroupSelect from "@/hooks/useGroupSelect";
 import useHistoryState from "@/hooks/useHistoryState";
 import { Node, NodeData, SelectedNode } from "@/types/Node";
 import Konva from "konva";
-import { createContext, ReactNode, useContext, useEffect, useState } from "react";
+import { createContext, ReactNode, useContext, useState } from "react";
 
 import { useSocketStore } from "./useSocketStore";
 import { deleteNodes } from "@/konva_mindmap/events/deleteNode";
-import { useEditor } from "@tiptap/react";
 
 export type NodeListContextType = {
   data: NodeData | null;
