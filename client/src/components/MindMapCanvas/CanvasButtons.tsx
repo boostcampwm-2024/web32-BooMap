@@ -1,24 +1,26 @@
 import DeleteConfirmModal from "@/components/MindMapCanvas/DeleteConfirmModal";
+import useModal from "@/hooks/useModal";
 import { useNodeListContext } from "@/store/NodeListProvider";
 import { useSocketStore } from "@/store/useSocketStore";
 import { Button } from "@headlessui/react";
-import { useState } from "react";
 import { createPortal } from "react-dom";
 
 export default function CanvasButtons({ handleReArrange, showMinutes, handleShowMinutes }) {
   const { handleSocketEvent } = useSocketStore();
   const { overrideNodeData } = useNodeListContext();
-  const [showDeleteConfirmModal, setShowDeleteConfirmModal] = useState(false);
+  const { open, openModal, closeModal } = useModal();
+
   const resetAllNode = () => {
     handleSocketEvent({
       actionType: "updateNode",
       payload: {},
       callback: () => {
         overrideNodeData({});
-        setShowDeleteConfirmModal(false);
+        closeModal();
       },
     });
   };
+
   return (
     <div className="absolute right-0 top-[-50px] flex gap-3">
       <Button className="rounded-lg bg-grayscale-600 px-4 py-2 text-sm font-bold" onClick={handleShowMinutes}>
@@ -27,21 +29,10 @@ export default function CanvasButtons({ handleReArrange, showMinutes, handleShow
       <Button className="rounded-lg bg-grayscale-600 px-4 py-2 text-sm font-bold" onClick={handleReArrange}>
         캔버스 재정렬
       </Button>
-      <Button
-        className="rounded-lg bg-grayscale-600 px-4 py-2 text-sm font-bold"
-        onClick={() => setShowDeleteConfirmModal(true)}
-      >
+      <Button className="rounded-lg bg-grayscale-600 px-4 py-2 text-sm font-bold" onClick={openModal}>
         캔버스 비우기
       </Button>
-      {showDeleteConfirmModal &&
-        createPortal(
-          <DeleteConfirmModal
-            open={showDeleteConfirmModal}
-            closeModal={() => setShowDeleteConfirmModal(false)}
-            onConfirm={resetAllNode}
-          />,
-          document.body,
-        )}
+      {createPortal(<DeleteConfirmModal open={open} closeModal={closeModal} onConfirm={resetAllNode} />, document.body)}
     </div>
   );
 }

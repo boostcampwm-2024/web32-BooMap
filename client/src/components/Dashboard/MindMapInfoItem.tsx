@@ -2,8 +2,9 @@ import profile from "@/assets/profile.png";
 import deleteIcon from "@/assets/trash2.png";
 import useModal from "@/hooks/useModal";
 import { Button } from "@headlessui/react";
-import Modal from "../common/Modal";
 import extractDate from "@/utils/extractDate";
+import DeleteMindMapModal from "../DeleteMindMapModal";
+import { createPortal } from "react-dom";
 
 interface MindMapInfoItemProps {
   data: {
@@ -66,20 +67,10 @@ export default function MindMapInfoItem({ data, index, handleDeleteData }: MindM
           )}
         </div>
       </div>
-      <Modal open={open} closeModal={closeModal}>
-        <p className="mb-4 text-center text-lg text-black">
-          <span className="font-bold">{data.title}</span>
-          <br></br>마인드 맵을 삭제하시겠습니까?
-        </p>
-        <div className="flex justify-center gap-2">
-          <Button onClick={closeModal} className="rounded-lg px-4 py-2 text-gray-500 hover:bg-gray-100">
-            취소
-          </Button>
-          <Button onClick={confirmDelete} className="rounded-lg px-4 py-2 text-red-600 hover:bg-red-100">
-            삭제
-          </Button>
-        </div>
-      </Modal>
+      {createPortal(
+        <DeleteMindMapModal open={open} closeModal={closeModal} confirmDelete={confirmDelete} data={data} />,
+        document.body,
+      )}
     </>
   );
 }
