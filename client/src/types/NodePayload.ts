@@ -1,6 +1,6 @@
 import { NodeData } from "./Node";
 
-export type actionType = "createNode" | "deleteNode" | "updateNode";
+export type actionType = "createNode" | "deleteNode" | "updateNode" | "updateTitle" | "updateContent";
 
 export type createNodePayload = {
   id: number;
@@ -17,3 +17,6 @@ export type deleteNodePayload = {
 };
 
 export type updateNodePayload = NodeData;
+
+export type updateTitlePayload = { title: string };
+export type updateContentPayload = { content: string };
