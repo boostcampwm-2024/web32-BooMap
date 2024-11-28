@@ -30,7 +30,7 @@ export const useSocketStore = create<SocketState>((set, get) => ({
 
   connectSocket: (id) => {
     if (get().socket) return;
-    const socket = io("http://localhost", {
+    const socket = io(import.meta.env.VITE_APP_SOCKET_SERVER_BASE_URL, {
       // TODO: change to production URL
       query: {
         connectionId: id,
