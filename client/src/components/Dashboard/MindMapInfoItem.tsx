@@ -18,7 +18,7 @@ interface MindMapInfoItemProps {
 
 export default function MindMapInfoItem({ data, index }: MindMapInfoItemProps) {
   const { open, openModal, closeModal } = useModal();
-  const { name } = useAuthStore();
+  const { id } = useAuthStore();
   const keywordData = data.keyword.slice(0, 4);
   const navigate = useNavigate();
   const mutation = useDeleteMindMap({
@@ -27,7 +27,7 @@ export default function MindMapInfoItem({ data, index }: MindMapInfoItemProps) {
   });
   const getConnection = useSocketStore((state) => state.getConnection);
 
-  const ownerCheck = name === data.owner;
+  const ownerCheck = id === data.ownerId;
 
   function handleDelete() {
     mutation.mutate();
