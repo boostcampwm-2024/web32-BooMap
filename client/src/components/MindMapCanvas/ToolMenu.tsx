@@ -65,6 +65,7 @@ export default function ToolMenu({ dimensions, zoomIn, zoomOut, dragmode, setDra
           <Button
             className="group flex h-8 w-8 items-center justify-center rounded-md p-1 hover:bg-blue-300"
             onMouseDown={() => startZoom(zoomIn)}
+            onClick={zoomIn}
             onMouseUp={stopZoom}
           >
             <TiZoomInOutline className="h-6 w-6 fill-grayscale-400 group-hover:fill-gray-100" />
@@ -73,6 +74,7 @@ export default function ToolMenu({ dimensions, zoomIn, zoomOut, dragmode, setDra
           <Button
             className="group flex h-8 w-8 items-center justify-center rounded-md p-1 hover:bg-blue-300"
             onMouseDown={() => startZoom(zoomOut)}
+            onClick={zoomOut}
             onMouseUp={stopZoom}
             onMouseLeave={stopZoom}
           >

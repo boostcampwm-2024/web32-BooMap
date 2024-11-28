@@ -15,7 +15,12 @@ import {
   TEXT_OFFSET_X,
   TEXT_OFFSET_Y,
   TEXT_WIDTH,
+  TOOL_OFFSET_X,
+  TOOL_OFFSET_Y,
 } from "@/konva_mindmap/utils/nodeAttrs";
+import NodeTool from "@/konva_mindmap/components/NodeTool";
+import { deleteNodes } from "@/konva_mindmap/events/deleteNode";
+import { showNewNode } from "@/konva_mindmap/events/addNode";
 
 export default function MindMapNode({ data, parentNode, node, depth, parentRef, dragmode }: NodeProps) {
   if (node.newNode)
@@ -23,8 +28,8 @@ export default function MindMapNode({ data, parentNode, node, depth, parentRef, 
   const nodeRef = useRef<Konva.Group>(null);
   const { saveHistory, updateNode, selectNode, selectedNode, selectedGroup, overrideNodeData, groupRelease } =
     useNodeListContext();
-  const [isEditing, setIsEditing] = useState(false);
   const handleSocketEvent = useSocketStore.getState().handleSocketEvent;
+  const [isEditing, setIsEditing] = useState(false);
 
   function handleDoubleClick() {
     setIsEditing(true);
@@ -37,7 +42,8 @@ export default function MindMapNode({ data, parentNode, node, depth, parentRef, 
 
   function handleMouseDown(e: Konva.KonvaEventObject<MouseEvent>) {
     e.evt.preventDefault();
-    const isInSelectedGroup = selectedGroup.some((selectedNode) => selectedNode === e.target.getParent().attrs.id);
+    const targetId = e.target.getParent().attrs.id;
+    const isInSelectedGroup = selectedGroup.some((selectedNode) => selectedNode === targetId);
     if (!isInSelectedGroup) groupRelease();
   }
 
@@ -120,6 +126,18 @@ export default function MindMapNode({ data, parentNode, node, depth, parentRef, 
           width={TEXT_WIDTH(depth)}
           isEditing={isEditing}
           setIsEditing={setIsEditing}
+        />
+        <NodeTool
+          offset={{ x: TOOL_OFFSET_X + 9, y: TOOL_OFFSET_Y(NODE_RADIUS(depth)) }}
+          visible={selectedNode.nodeId === node.id}
+          handleEdit={() => {
+            selectNode({});
+            setIsEditing(true);
+          }}
+          handleAdd={() =>
+            showNewNode(data, { nodeId: node.id, parentNodeId: node.id ?? null, addTo: "canvas" }, overrideNodeData)
+          }
+          handleDelete={() => deleteNodes(JSON.stringify(data), node.id, overrideNodeData)}
         />
       </Group>
     </>
