@@ -14,7 +14,7 @@ import { MindmapModule } from './modules/mindmap/mindmap.module';
 import { NodeModule } from './modules/node/node.module';
 import { DashboardModule } from './modules/dashboard/dashboard.module';
 import { PubsubModule } from './modules/pubsub/pubsub.module';
-import { TokenRefreshMiddleware } from './middlewares/token.refresh.middleware';
+
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -55,6 +55,5 @@ import { TokenRefreshMiddleware } from './middlewares/token.refresh.middleware';
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(LoggerMiddleware).forRoutes('*');
-    consumer.apply(TokenRefreshMiddleware).forRoutes('*');
   }
 }

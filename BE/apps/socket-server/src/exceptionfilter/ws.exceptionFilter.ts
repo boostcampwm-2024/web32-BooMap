@@ -1,7 +1,7 @@
 import { ArgumentsHost, Catch, Logger, BadRequestException } from '@nestjs/common';
 import { BaseWsExceptionFilter, WsException } from '@nestjs/websockets';
 
-@Catch(WsException, BadRequestException)
+@Catch()
 export class WsExceptionFilter extends BaseWsExceptionFilter {
   private readonly logger = new Logger('WsExceptionFilter');
 

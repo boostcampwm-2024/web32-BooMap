@@ -9,6 +9,7 @@ import {
   TreeParent,
   UpdateDateColumn,
   ManyToOne,
+  JoinColumn,
 } from 'typeorm';
 import { Mindmap } from '.';
 
@@ -46,5 +47,6 @@ export class Node {
   children: Node[];
 
   @ManyToOne(() => Mindmap, (mindmap) => mindmap.nodes, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'mindmap_id' })
   mindmap: Mindmap;
 }
