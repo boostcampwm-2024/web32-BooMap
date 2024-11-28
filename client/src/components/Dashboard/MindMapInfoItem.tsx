@@ -9,6 +9,7 @@ import { FaRegTrashAlt } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useDeleteMindMap } from "@/api/fetchHooks/useDeleteMindMap";
 import { DashBoard } from "@/konva_mindmap/types/dashboard";
+import { useSocketStore } from "@/store/useSocketStore";
 
 interface MindMapInfoItemProps {
   data: DashBoard;
@@ -24,6 +25,7 @@ export default function MindMapInfoItem({ data, index }: MindMapInfoItemProps) {
     mindMapId: data.id.toString(),
     onError: (error) => console.log(error),
   });
+  const handleConnection = useSocketStore((state) => state.getConnection);
 
   const ownerCheck = name === data.owner;
 
@@ -31,8 +33,14 @@ export default function MindMapInfoItem({ data, index }: MindMapInfoItemProps) {
     mutation.mutate();
     closeModal();
   }
-  function navigateToMindMap() {
-    navigate(`/mindmap/${data.connectionId}?mode=listview`);
+
+  async function navigateToMindMap() {
+    try {
+      await handleConnection(data.id, data.connectionId);
+      navigate(`/mindmap/${data.connectionId}?mode=listview`);
+    } catch (error) {
+      throw error;
+    }
   }
 
   return (
