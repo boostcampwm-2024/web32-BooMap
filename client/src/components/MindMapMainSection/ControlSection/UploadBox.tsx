@@ -1,6 +1,5 @@
 import { Dispatch, SetStateAction, useRef, useState } from "react";
 import { FaFileAudio } from "react-icons/fa6";
-import voiceIcon from "@/assets/voiceFile.png";
 import { Input } from "@headlessui/react";
 
 type UploadBoxProps = {
