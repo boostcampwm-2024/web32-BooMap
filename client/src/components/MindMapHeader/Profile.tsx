@@ -11,6 +11,7 @@ export default function Profile() {
   const { open: loginModal, openModal: openLoginModal, closeModal: closeLoginModal } = useModal();
   const { open: profileModal, openModal: openProfileModal, closeModal: closeProfileModal } = useModal();
   const auth = useAuthStore();
+  
   function handleProfileModal() {
     if (auth.isAuthenticated) {
       openProfileModal();

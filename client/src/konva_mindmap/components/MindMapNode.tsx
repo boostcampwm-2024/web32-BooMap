@@ -21,13 +21,24 @@ export default function MindMapNode({ data, parentNode, node, depth, parentRef, 
   if (node.newNode)
     return <NewNode data={data} parentNode={parentNode} node={node} depth={depth} dragmode={dragmode} />;
   const nodeRef = useRef<Konva.Group>(null);
-  const { saveHistory, updateNode, selectNode, selectedNode, selectedGroup, overrideNodeData } = useNodeListContext();
+  const { saveHistory, updateNode, selectNode, selectedNode, selectedGroup, overrideNodeData, groupRelease } =
+    useNodeListContext();
   const [isEditing, setIsEditing] = useState(false);
   const handleSocketEvent = useSocketStore.getState().handleSocketEvent;
-  const socket = useSocketStore.getState().socket;
 
   function handleDoubleClick() {
     setIsEditing(true);
+  }
+
+  function handleDragStart(e: Konva.KonvaEventObject<DragEvent>) {
+    e.evt.preventDefault();
+    saveOffsets(data, node);
+  }
+
+  function handleMouseDown(e: Konva.KonvaEventObject<MouseEvent>) {
+    e.evt.preventDefault();
+    const isInSelectedGroup = selectedGroup.some((selectedNode) => selectedNode === e.target.getParent().attrs.id);
+    if (!isInSelectedGroup) groupRelease();
   }
 
   function handleDragEnd() {
@@ -42,7 +53,7 @@ export default function MindMapNode({ data, parentNode, node, depth, parentRef, 
     });
   }
 
-  function handleClick(e) {
+  function handleClick(e: Konva.KonvaEventObject<MouseEvent>) {
     e.evt.preventDefault();
     if (selectedNode.nodeId === node.id) {
       selectNode({ nodeId: 0, parentNodeId: 0, addTo: "canvas" });
@@ -82,10 +93,8 @@ export default function MindMapNode({ data, parentNode, node, depth, parentRef, 
         onDblClick={handleDoubleClick}
         name="node"
         id={node.id.toString()}
-        onDragStart={(e) => {
-          e.evt.preventDefault();
-          saveOffsets(data, node);
-        }}
+        onMouseDown={handleMouseDown}
+        onDragStart={handleDragStart}
         onDragMove={handleDragMove}
         onDragEnd={handleDragEnd}
         draggable={!dragmode}
