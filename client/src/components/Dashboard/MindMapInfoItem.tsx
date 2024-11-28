@@ -9,6 +9,7 @@ import { FaRegTrashAlt } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useDeleteMindMap } from "@/api/fetchHooks/useDeleteMindMap";
 import { DashBoard } from "@/konva_mindmap/types/dashboard";
+import { useSocketStore } from "@/store/useSocketStore";
 
 interface MindMapInfoItemProps {
   data: DashBoard;
@@ -17,21 +18,24 @@ interface MindMapInfoItemProps {
 
 export default function MindMapInfoItem({ data, index }: MindMapInfoItemProps) {
   const { open, openModal, closeModal } = useModal();
-  const { name } = useAuthStore();
+  const { id } = useAuthStore();
   const keywordData = data.keyword.slice(0, 4);
   const navigate = useNavigate();
   const mutation = useDeleteMindMap({
     mindMapId: data.id.toString(),
     onError: (error) => console.log(error),
   });
+  const getConnection = useSocketStore((state) => state.getConnection);
 
-  const ownerCheck = name === data.owner;
+  const ownerCheck = id === data.ownerId;
 
   function handleDelete() {
     mutation.mutate();
     closeModal();
   }
+
   function navigateToMindMap() {
+    getConnection(data.id, data.connectionId);
     navigate(`/mindmap/${data.connectionId}?mode=listview`);
   }
 
@@ -54,7 +58,7 @@ export default function MindMapInfoItem({ data, index }: MindMapInfoItemProps) {
         </div>
         <div className="flex min-w-24 items-center justify-center gap-2">
           <img className="h-6 w-6" src={profile} alt="소유자 이미지" />
-          <div>{data.owner}</div>
+          <div>{data.ownerName}</div>
         </div>
         <div className="flex min-w-40 justify-between">
           <div>{extractDate(new Date(data.createDate))}</div>

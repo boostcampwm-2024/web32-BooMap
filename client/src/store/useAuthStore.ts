@@ -4,14 +4,16 @@ import { create } from "zustand";
 type UserStore = {
   email: null | string;
   name: null | string;
+  id: null | number;
   isAuthenticated: boolean;
   checkAuthenticated: () => void;
   logout: () => void;
-  setUser: (email: string, name: string) => void;
+  setUser: (email: string, name: string, id: number) => void;
 };
 export const useAuthStore = create<UserStore>((set) => ({
   email: null,
   name: null,
+  id: null,
   isAuthenticated: false,
 
   checkAuthenticated: () => {
@@ -26,7 +28,7 @@ export const useAuthStore = create<UserStore>((set) => ({
     set({ email: null, name: null, isAuthenticated: false });
   },
 
-  setUser: (email: string, name: string) => {
-    set({ email: email, name: name, isAuthenticated: true });
+  setUser: (email: string, name: string, id: number) => {
+    set({ email, name, id, isAuthenticated: true });
   },
 }));
