@@ -50,7 +50,7 @@ const queryClient = new QueryClient({
 queryClient.getQueryCache().subscribe((event) => {
   if (event?.type === "updated" && event.query.queryKey[0] === "user") {
     const data = event.query.state.data;
-    if (data?.email && data?.name) useAuthStore.getState().setUser(data?.email, data?.name);
+    if (data?.email && data?.name && data?.id) useAuthStore.getState().setUser(data?.email, data?.name, data?.id);
     else useAuthStore.getState().logout();
   }
 });
