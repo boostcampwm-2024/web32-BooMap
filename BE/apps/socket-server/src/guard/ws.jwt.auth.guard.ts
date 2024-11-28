@@ -10,7 +10,7 @@ export class WsOptionalJwtGuard implements CanActivate {
 
   canActivate(context: ExecutionContext): boolean {
     const client = context.switchToWs().getClient<Socket>();
-    const token = client.handshake.headers.authorization?.split(' ')[1];
+    const token = client.handshake.auth.token;
 
     if (!token) {
       return true;
@@ -33,7 +33,7 @@ export class WsOptionalJwtGuard implements CanActivate {
           const user = { id: payload['id'], email: payload['email'] };
           const accessToken = this.jwtService.sign(user, { expiresIn: '30m' });
           client.emit('tokenRefresh', { accessToken });
-          client.data.user = payload;
+          client.data.user = user;
           return true;
         } catch {
           client.emit('tokenExpiredError', { message: '리프레시 토큰 만료' });

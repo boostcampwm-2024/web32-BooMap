@@ -89,7 +89,7 @@ export class MapGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
   handleUpdateTitle(@ConnectedSocket() client: Socket, @MessageBody(WsValidationPipe) updateTitleDto: UpdateTitleDto) {
     this.logger.log('updateTitle 이벤트 : ' + (client.data.user ? client.data.user.id : `guest ${client.id}`));
     this.mapService.updateTitle(client, updateTitleDto.title);
-    this.server.to(client.data.connectionId).emit('updateContent', updateTitleDto);
+    this.server.to(client.data.connectionId).emit('updateTitle', updateTitleDto);
   }
 
   @SubscribeMessage('aiRequest')

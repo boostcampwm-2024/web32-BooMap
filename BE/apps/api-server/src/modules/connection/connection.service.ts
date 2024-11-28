@@ -1,12 +1,14 @@
 import { MindmapService } from './../mindmap/mindmap.service';
 import { UserService } from './../user/user.service';
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { Redis } from 'ioredis';
 import { RedisService } from '@liaoliaots/nestjs-redis';
 import { v4 as uuidv4 } from 'uuid';
+import { ConnectionException } from '../../exceptions';
 
 @Injectable()
 export class ConnectionService {
+  private readonly logger = new Logger(ConnectionService.name);
   private readonly GeneralRedis: Redis | null;
 
   constructor(
@@ -30,15 +32,14 @@ export class ConnectionService {
   }
 
   async setConnection(mindmapId: number, userId: number) {
-    const role = await this.userService.getRole(userId, mindmapId);
-    const owner = await this.mindmapService.getOwner(mindmapId);
-    if (!role) {
-      throw new UnauthorizedException('권한이 없습니다.');
-    }
-
-    const mindmapData = await this.mindmapService.getDataByMindmapId(mindmapId);
-
     try {
+      const role = await this.userService.getRole(userId, mindmapId);
+      const owner = await this.mindmapService.getOwner(mindmapId);
+      if (!role) {
+        throw new UnauthorizedException('권한이 없습니다.');
+      }
+
+      const mindmapData = await this.mindmapService.getDataByMindmapId(mindmapId);
       await this.GeneralRedis.hset(mindmapData.connectionId, {
         type: 'user',
         mindmapId: mindmapId,
@@ -55,7 +56,12 @@ export class ConnectionService {
         role: role,
       };
     } catch (error) {
-      throw error;
+      this.logger.error(error);
+      if (error instanceof UnauthorizedException) {
+        throw error;
+      } else {
+        throw new ConnectionException(error.message);
+      }
     }
   }
 }

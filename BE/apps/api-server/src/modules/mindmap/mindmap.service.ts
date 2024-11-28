@@ -1,14 +1,16 @@
 import { InjectRepository } from '@nestjs/typeorm';
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { In, Repository } from 'typeorm';
-import { Mindmap, UserMindmapRole } from '@app/entity';
+import { Mindmap, UserMindmapRole, Node } from '@app/entity';
 import { v4 as uuidv4 } from 'uuid';
 import { UpdateMindmapDto } from './dto/update.mindmap.dto';
 import { Role } from '@app/entity/enum/role.enum';
 import { NodeService } from '../node/node.service';
+import { MindmapException } from '../../exceptions';
 
 @Injectable()
 export class MindmapService {
+  private readonly logger = new Logger(MindmapService.name);
   constructor(
     @InjectRepository(Mindmap) private mindmapRepository: Repository<Mindmap>,
     @InjectRepository(UserMindmapRole) private userMindmapRoleRepository: Repository<UserMindmapRole>,
@@ -16,11 +18,16 @@ export class MindmapService {
   ) {}
 
   async create(userId: number) {
-    const uuid = uuidv4();
-    const mindmap = this.mindmapRepository.create({ connectionId: uuid, aiContent: '', content: '' });
-    const savedMindmap = await this.mindmapRepository.save(mindmap);
-    await this.assignUserToMindmap(userId, savedMindmap.id);
-    return { connectionId: uuid, mindmapId: savedMindmap.id };
+    try {
+      const uuid = uuidv4();
+      const mindmap = this.mindmapRepository.create({ connectionId: uuid, aiContent: '', content: '' });
+      const savedMindmap = await this.mindmapRepository.save(mindmap);
+      await this.assignUserToMindmap(userId, savedMindmap.id);
+      return { connectionId: uuid, mindmapId: savedMindmap.id };
+    } catch (error) {
+      this.logger.error(error);
+      throw new MindmapException('마인드맵 생성에 실패했습니다.');
+    }
   }
 
   createGuest() {
@@ -65,14 +72,31 @@ export class MindmapService {
   async update(mindmapId: number, updateMindmapDto: UpdateMindmapDto) {
     await this.mindmapRepository.update({ id: mindmapId }, updateMindmapDto);
   }
+
   async delete(mindmapId: number, userId: number) {
     const role = await this.userMindmapRoleRepository.findOne({
       where: { user: { id: userId }, mindmap: { id: mindmapId } },
     });
+
     if (role.role !== Role.OWNER) {
       throw new UnauthorizedException('권한이 없습니다.');
     }
-    return this.mindmapRepository.softDelete({ id: mindmapId });
+
+    return await this.mindmapRepository.manager.transaction(async (manager) => {
+      const nodes = await manager.find(Node, {
+        where: {
+          mindmap: {
+            id: mindmapId,
+          },
+        },
+      });
+      for (const node of nodes) {
+        const descendants = await manager.getTreeRepository(Node).findDescendants(node);
+        await manager.remove(descendants);
+      }
+
+      return manager.delete(Mindmap, { id: mindmapId });
+    });
   }
 
   async getDataByMindmapId(mindmapId: number) {
