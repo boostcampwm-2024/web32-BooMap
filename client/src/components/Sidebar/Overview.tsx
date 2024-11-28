@@ -44,6 +44,7 @@ export default function Overview() {
     navigate(`/mindmap/${getLatestMindMap()}?mode=${selectMode}`);
     closeModal();
   }
+
   function navigateToNewMindMap() {
     handleConnection(navigate, "listview", isAuthenticated);
     closeModal();

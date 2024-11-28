@@ -18,7 +18,7 @@ export default function NoMindMap() {
       </p>
       <img className="w-[300px]" src={cloud} alt="로그인 후 마인드맵 없을 때 아이콘" />
       <Button
-        className="group mt-4 flex w-[300px] items-center justify-center gap-3 rounded-[10px] bg-bm-blue px-10 py-2 hover:brightness-90"
+        className="group mt-4 flex w-[300px] items-center justify-center gap-3 rounded-[10px] bg-bm-blue px-10 py-2 transition hover:brightness-90"
         onClick={() => handleConnection(navigate, "textupload", isAuthenticated)}
       >
         새로운 마인드맵 만들기

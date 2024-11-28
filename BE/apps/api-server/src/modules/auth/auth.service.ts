@@ -1,8 +1,9 @@
 import { RedisService } from '@liaoliaots/nestjs-redis';
-import { BadRequestException, Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '@app/entity';
 import Redis from 'ioredis';
+import { authException } from '../../exceptions';
 
 interface tokenPayload {
   email: string;
@@ -33,16 +34,15 @@ export class AuthService {
   }
 
   async verifiedRefreshToken(refreshToken: string) {
-    const isBlacklisted = await this.GeneralRedis.get(refreshToken);
-    if (isBlacklisted === 'true') {
-      throw new BadRequestException('다시 로그인해주세요.');
-    }
-
     try {
+      const isBlacklisted = await this.GeneralRedis.get(refreshToken);
+      if (isBlacklisted === 'true') {
+        throw new Error('다시 로그인해주세요.');
+      }
       this.jwtService.verify(refreshToken);
       const decoded = this.jwtService.decode(refreshToken);
       if (!decoded || typeof decoded !== 'object') {
-        throw new BadRequestException('Invalid token format');
+        throw new Error('Invalid token format');
       }
 
       const payload: tokenPayload = {
@@ -54,11 +54,16 @@ export class AuthService {
       return accessToken;
     } catch (error) {
       this.logger.error(error);
-      throw new BadRequestException('다시 로그인해  주세요.');
+      throw new authException('다시 로그인해주세요.');
     }
   }
 
   async logout(refreshToken: string) {
-    await this.GeneralRedis.set(refreshToken, 'true', 'EX', 60 * 60 * 24 * 3);
+    try {
+      await this.GeneralRedis.set(refreshToken, 'true', 'EX', 60 * 60 * 24 * 3);
+    } catch (error) {
+      this.logger.error(error);
+      throw new authException('로그아웃에 실패했습니다.');
+    }
   }
 }

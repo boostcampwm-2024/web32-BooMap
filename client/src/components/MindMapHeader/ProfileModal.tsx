@@ -38,13 +38,16 @@ export default function ProfileModal({ open, close }: ProfileModalProps) {
   return (
     <>
       {open && (
-        <div ref={modalRef} className="absolute right-4 top-20 z-50 flex flex-col items-center rounded-lg bg-gray-900">
+        <div
+          ref={modalRef}
+          className="absolute right-4 top-14 z-50 flex flex-col items-center rounded-lg bg-gray-900 pb-2"
+        >
           <FaUserCircle className="my-5 h-11 w-11" color="#93C5FD" />
           <div className="w-full px-5 py-0 text-center">
             <p>{auth.name}</p>
             <p className="text-sm text-grayscale-300">{auth.email}</p>
           </div>
-          <Button className="w-full p-3 px-5 hover:bg-grayscale-300" onClick={handleLogout}>
+          <Button className="w-full p-3 px-5 text-sm transition hover:brightness-75" onClick={handleLogout}>
             로그아웃
           </Button>
         </div>

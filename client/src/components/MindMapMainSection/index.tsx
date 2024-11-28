@@ -6,6 +6,7 @@ import { useSocketStore } from "@/store/useSocketStore";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import ToastContainer from "../common/Toast/ToastContainer";
+import useAuth from "@/hooks/useAuth";
 
 const modeView = {
   voiceupload: "음성 파일 업로드",
@@ -19,6 +20,7 @@ export default function MindMapMainSection() {
   const { updateMindMapId } = useNodeListContext();
   const { connectSocket, disconnectSocket, wsError } = useSocketStore();
   const [toasts, setToasts] = useState([]);
+  const { accessToken } = useAuth();
 
   useEffect(() => {
     if (wsError.length > 0)
@@ -30,7 +32,7 @@ export default function MindMapMainSection() {
 
   useEffect(() => {
     if (mindMapId) {
-      connectSocket(mindMapId);
+      connectSocket(mindMapId, accessToken);
       updateMindMapId(mindMapId);
     }
     return () => {

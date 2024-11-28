@@ -9,8 +9,7 @@ export default function Layout() {
   const sidebar = useSideBar();
   const { connectionStatus } = useSocketStore();
 
-  // if (connectionStatus === "error") return <NotFound />;
-  // TODO: svg 사전로딩 문제 해결되면 주석 풀기...
+  if (connectionStatus === "error") return <NotFound />;
 
   return (
     <ErrorBoundary fallback={<NotFound />}>

@@ -5,7 +5,7 @@ import { RefObject, useEffect, useRef, useState } from "react";
 import { Rect } from "react-konva";
 
 export default function SelectionRect({ stage, dragmode }: { stage: RefObject<Konva.Stage>; dragmode: boolean }) {
-  const { groupSelect, groupRelease } = useNodeListContext();
+  const { groupSelect, groupRelease, selectedNode, selectNode } = useNodeListContext();
   const [rectOption, setRectOption] = useState({
     visible: false,
     x: 0,
@@ -34,6 +34,9 @@ export default function SelectionRect({ stage, dragmode }: { stage: RefObject<Ko
 
     const handleMouseDown = (e) => {
       if (dragmode || e.target.getParent()?.attrs.name === "node") return;
+      if (!e.target.getParent() || e.target.getParent().attrs.id !== selectedNode.nodeId) {
+        selectNode({});
+      }
       const pos = currentStage.getRelativePointerPosition();
       setStartPoint({ x: pos.x, y: pos.y });
 

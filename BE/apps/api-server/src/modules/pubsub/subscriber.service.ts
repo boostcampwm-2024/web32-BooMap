@@ -88,7 +88,7 @@ export class SubscriberService implements OnModuleInit {
       await this.nodeService.canvasToTable(parsedNodeData, Number(mindmapData.mindmapId));
       await this.mindmapService.update(Number(mindmapData.mindmapId), updateData);
     } catch (error) {
-      this.logger.error(`Failed to process node data: ${error}`);
+      this.logger.error(`saveData 이벤트 처리 실패: ${error}`);
     }
   }
 

@@ -14,9 +14,9 @@ export type Node = {
 export type NodeData = Record<number, Node>;
 
 export type SelectedNode = {
-  nodeId: number;
-  parentNodeId: number;
-  addTo: "canvas" | "list";
+  nodeId?: number;
+  parentNodeId?: number;
+  addTo?: "canvas" | "list";
 };
 
 export type NodeProps = {
