@@ -94,6 +94,7 @@ export default function MindMapCanvas({ showMinutes, handleShowMinutes }) {
   return (
     <div ref={targetRef} className="relative h-full min-h-0 w-full min-w-0 rounded-[20px] bg-white">
       <Stage
+        style={{ overflow: "hidden" }}
         ref={stageRef}
         width={dimensions.width}
         height={dimensions.height}
