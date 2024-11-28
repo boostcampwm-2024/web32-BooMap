@@ -8,7 +8,7 @@ RUN npm install
 
 COPY . .
 RUN npx nest build libs
-RUN npm nest build socket-server
+RUN npx nest build socket-server
 
 FROM node:22-alpine AS production
 WORKDIR /app
