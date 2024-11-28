@@ -30,7 +30,7 @@ export default function MindMapCanvas({ showMinutes, handleShowMinutes }) {
     selectedNode,
   } = useNodeListContext();
   const [isDragMode, setDragMode] = useState(false);
-  const { dimensions, targetRef, handleWheel, zoomIn, zoomOut } = useDimension(data);
+  const { dimensions, targetRef, handleWheel, zoomIn, zoomOut, centerMoveMap } = useDimension(data);
   const registerLayer = useCollisionDetection(data, updateNode);
   const stageRef = useRef();
   const { registerStageRef } = useStageStore();
@@ -132,6 +132,7 @@ export default function MindMapCanvas({ showMinutes, handleShowMinutes }) {
       ) : (
         <CanvasButtons
           handleReArrange={handleReArrange}
+          handleCenterMove={centerMoveMap}
           showMinutes={showMinutes}
           handleShowMinutes={handleShowMinutes}
         />
