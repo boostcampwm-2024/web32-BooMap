@@ -11,21 +11,24 @@ import { useAuthStore } from "@/store/useAuthStore";
 import { getLatestMindMap } from "@/utils/localstorage";
 import useModal from "@/hooks/useModal";
 import { createPortal } from "react-dom";
-import Modal from "@/components/common/Modal";
 import LatestMindMapModal from "@/components/Sidebar/LatestMindMapModal";
+import { useState } from "react";
 
+type ViewMode = "listview" | "voiceupload" | "textupload";
 export default function Overview() {
   const navigate = useNavigate();
   const { getmode, handleViewMode } = useSection();
   const { socket, handleConnection } = useSocketStore();
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const { open, closeModal, openModal } = useModal();
+  const [selectMode, setSelcetMode] = useState<ViewMode>("listview");
 
-  const navigateMindmap = (mode: "listview" | "voiceupload" | "textupload") => {
+  const navigateMindmap = (mode: ViewMode) => {
     if (socket) {
       handleViewMode(mode);
       return;
     }
+
     const latestMindMap = getLatestMindMap();
     if (!latestMindMap) {
       handleConnection(navigate, mode, isAuthenticated);
@@ -34,7 +37,7 @@ export default function Overview() {
   };
 
   function navigateToLatestMindap() {
-    navigate(`/mindmap/${getLatestMindMap()}?mode=listview`);
+    navigate(`/mindmap/${getLatestMindMap()}?mode=${selectMode}`);
     closeModal();
   }
   function navigateToNewMindMap() {
@@ -58,7 +61,10 @@ export default function Overview() {
           alt="리스트"
           text="리스트로 보기"
           active={getmode() === "listview"}
-          onclick={() => navigateMindmap("listview")}
+          onclick={() => {
+            setSelcetMode("listview");
+            navigateMindmap("listview");
+          }}
         />
         <div className="flex items-center gap-6 rounded-lg p-3">
           <img src={aiIcon} alt="ai변환" className="w-6" />
@@ -70,14 +76,20 @@ export default function Overview() {
             alt="음성 파일"
             text="음성 파일 업로드"
             active={getmode() === "voiceupload"}
-            onclick={() => navigateMindmap("voiceupload")}
+            onclick={() => {
+              setSelcetMode("voiceupload");
+              navigateMindmap("voiceupload");
+            }}
           />
           <OverviewButton
             src={textIcon}
             alt="텍스트 파일"
             text="텍스트 파일 업로드"
             active={getmode() === "textupload"}
-            onclick={() => navigateMindmap("textupload")}
+            onclick={() => {
+              setSelcetMode("textupload");
+              navigateMindmap("textupload");
+            }}
           />
         </div>
       </div>
