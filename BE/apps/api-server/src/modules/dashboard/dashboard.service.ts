@@ -29,7 +29,8 @@ export class DashboardService {
         keyword: keywords[index],
         createDate: mindmap.createdDate,
         modifiedDate: mindmap.modifiedDate,
-        owner: owners.find((owner) => owner.mindmapId === mindmap.id)?.ownerName,
+        ownerName: owners.find((owner) => owner.mindmapId === mindmap.id)?.ownerName,
+        ownerId: owners.find((owner) => owner.mindmapId === mindmap.id)?.userId,
       }));
     } catch (error) {
       Logger.error(error);
