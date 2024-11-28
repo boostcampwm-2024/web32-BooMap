@@ -113,7 +113,11 @@ export class MapService {
   }
 
   async checkAuth(client: Socket) {
-    const userId = client.data.user.id;
+    const type = await this.redis.hget(client.data.connectionId, 'type');
+    if (type === 'guest') {
+      return;
+    }
+    const userId = client.data.user?.id;
     const ownerId = await this.redis.hget(client.data.connectionId, 'ownerId');
 
     if (userId !== ownerId) {
@@ -122,11 +126,11 @@ export class MapService {
   }
 
   async joinRoom(client: Socket) {
-    const connectionId = this.extractMindmapId(client);
-
     try {
+      const connectionId = this.extractMindmapId(client);
       const type = await this.redis.hget(connectionId, 'type');
       this.logger.log('연결 type: ' + type + ' 마인드맵');
+
       if (!type) {
         throw new InvalidConnectionIdException();
       }
