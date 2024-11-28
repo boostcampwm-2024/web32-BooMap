@@ -14,7 +14,7 @@ import { setOwner } from "@/utils/localstorage";
 
 type SocketState = {
   socket: Socket | null;
-  connectSocket: (id: string) => void;
+  connectSocket: (id: string, token?: string) => void;
   disconnectSocket: () => void;
   handleSocketEvent: (props: HandleSocketEventProps) => void;
   handleConnection: (navigate: NavigateFunction, targetMode: string, isAuthenticated: boolean) => void;
@@ -36,15 +36,18 @@ export const useSocketStore = create<SocketState>((set, get) => ({
   currentJobStatus: "",
   connectionStatus: "",
 
-  connectSocket: (id) => {
-    if (get().socket) return;
-    const socket = io(import.meta.env.VITE_APP_SOCKET_SERVER_BASE_URL, {
-      // TODO: change to production URL
+  connectSocket: (id, token) => {
+    const options: any = {
       query: {
         connectionId: id,
       },
       transports: ["websocket"],
-    });
+    };
+    if (token) {
+      options.auth = { token };
+    }
+
+    const socket = io(import.meta.env.VITE_APP_SOCKET_SERVER_BASE_URL, options);
 
     socket.on("error", () => {
       set({ wsError: [...get().wsError, "작업 중 에러가 발생했어요"] });
