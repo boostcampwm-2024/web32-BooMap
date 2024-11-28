@@ -1,6 +1,6 @@
 import { getUser } from "@/api/auth";
 import { useAuthStore } from "@/store/useAuthStore";
-import { getToken, removeToken } from "@/utils/localstorage";
+import { getToken } from "@/utils/localstorage";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -21,5 +21,5 @@ export default function useAuth() {
       navigate("/error");
     }
   }, [isError]);
-  return { isLoading };
+  return { isLoading, accessToken };
 }

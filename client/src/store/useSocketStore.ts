@@ -10,11 +10,11 @@ import {
 } from "@/types/NodePayload";
 import { createMindmap, getMindMap } from "@/api/mindmap.api";
 import { NavigateFunction } from "react-router-dom";
-import { setOwner } from "@/utils/localstorage";
+import { getToken, setOwner } from "@/utils/localstorage";
 
 type SocketState = {
   socket: Socket | null;
-  connectSocket: (id: string) => void;
+  connectSocket: (id: string, token?: string) => void;
   disconnectSocket: () => void;
   handleSocketEvent: (props: HandleSocketEventProps) => void;
   handleConnection: (navigate: NavigateFunction, targetMode: string, isAuthenticated: boolean) => void;
@@ -36,15 +36,18 @@ export const useSocketStore = create<SocketState>((set, get) => ({
   currentJobStatus: "",
   connectionStatus: "",
 
-  connectSocket: (id) => {
-    if (get().socket) return;
-    const socket = io(import.meta.env.VITE_APP_SOCKET_SERVER_BASE_URL, {
-      // TODO: change to production URL
+  connectSocket: (id, token) => {
+    const options: any = {
       query: {
         connectionId: id,
       },
       transports: ["websocket"],
-    });
+    };
+    if (token) {
+      options.auth = { token };
+    }
+
+    const socket = io(import.meta.env.VITE_APP_SOCKET_SERVER_BASE_URL, options);
 
     socket.on("error", () => {
       set({ wsError: [...get().wsError, "작업 중 에러가 발생했어요"] });
@@ -88,7 +91,7 @@ export const useSocketStore = create<SocketState>((set, get) => ({
       const response = await createMindmap();
       const newMindMapId = response.data;
       if (!isAuthneticated) setOwner(newMindMapId);
-      get().connectSocket(newMindMapId);
+      get().connectSocket(newMindMapId, isAuthneticated ? getToken() : undefined);
       navigate(`/mindmap/${newMindMapId}?mode=${targetMode}`);
     } catch (error) {
       console.error(error);
