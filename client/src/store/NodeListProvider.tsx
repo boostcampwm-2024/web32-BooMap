@@ -62,11 +62,6 @@ export default function NodeListProvider({ children }: { children: ReactNode }) 
       initializeTitle(initialData);
       initializeContent(initialData);
       setLoading(false);
-      if (!initialData.role) {
-        setOwner(checkOwner(mindMapId));
-        return;
-      }
-      setOwner(initialData.role === "owner");
     }, 0);
   });
 

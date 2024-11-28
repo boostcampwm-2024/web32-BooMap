@@ -15,8 +15,9 @@ import { throttle } from "@/konva_mindmap/utils/throttle";
 import { useEffect } from "react";
 
 export default function Tiptap() {
-  const { isOwner, content, updateContent } = useNodeListContext();
+  const { content, updateContent } = useNodeListContext();
   const handleSocketEvent = useSocketStore((state) => state.handleSocketEvent);
+  const role = useSocketStore((state) => state.role);
 
   const editor = useEditor({
     extensions: [
@@ -37,9 +38,10 @@ export default function Tiptap() {
     ],
     content: content,
     onUpdate({ editor }) {
-      if (!isOwner) return;
+      if (!role || role === "editor") return;
       handleChangeContent(editor);
     },
+    editable: role === "owner",
   });
 
   function handleChangeContent(editor) {

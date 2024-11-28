@@ -10,24 +10,24 @@ import { createPortal } from "react-dom";
 import { FaPencilAlt } from "react-icons/fa";
 
 export default function MindMapHeader() {
-  const { title, updateTitle, isOwner } = useNodeListContext();
+  const { title, updateTitle } = useNodeListContext();
   const { isLoading } = useAuth();
   const [editMode, setEditMode] = useState(false);
   const handleSocketEvent = useSocketStore((state) => state.handleSocketEvent);
   const [editTitle, setEditTitle] = useState(title);
+  const role = useSocketStore((state) => state.role);
 
   function handleInputBlur() {
     if (!title.length) return;
     handleSocketEvent({
       actionType: "updateTitle",
       payload: { title: editTitle },
-      callback: (response) => updateTitle(response),
     });
     setEditMode(false);
   }
 
   function changeToEditMode() {
-    if (!isOwner) return;
+    if (!role || role === "editor") return;
     setEditMode(true);
   }
 
