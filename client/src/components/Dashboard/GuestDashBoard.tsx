@@ -19,7 +19,7 @@ export default function GuestDashBoard() {
         </p>
         <img className="w-[300px]" src={dashboardIcon} alt="대쉬보드 아이콘" />
         <Button
-          className="w-[300px] rounded-[10px] bg-grayscale-600 px-24 py-2 hover:brightness-90"
+          className="w-[300px] rounded-[10px] bg-grayscale-600 px-24 py-2 transition hover:brightness-90"
           onClick={openLoginModal}
         >
           로그인하기
@@ -33,7 +33,7 @@ export default function GuestDashBoard() {
           }}
         />
         <Button
-          className="group mt-4 flex w-[300px] items-center justify-center gap-3 rounded-[10px] bg-bm-blue px-10 py-2 hover:brightness-90"
+          className="group mt-4 flex w-[300px] items-center justify-center gap-3 rounded-[10px] bg-bm-blue px-10 py-2 transition hover:brightness-90"
           onClick={openConfirmModal}
         >
           새로운 마인드맵 만들기

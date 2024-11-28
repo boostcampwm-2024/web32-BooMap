@@ -17,12 +17,15 @@ export default function MindMapHeaderButtons() {
   return (
     <>
       <div className="flex gap-5">
-        <Button className="flex items-center gap-3 rounded-lg bg-bm-blue px-5 text-grayscale-100" onClick={openModal}>
+        <Button
+          className="flex items-center gap-3 rounded-lg bg-bm-blue px-5 transition hover:brightness-90"
+          onClick={openModal}
+        >
           <LuShare2 size={20} />
           공유
         </Button>
         <Button
-          className="flex items-center gap-3 rounded-lg bg-grayscale-600 px-5 text-grayscale-100"
+          className="flex items-center gap-3 rounded-lg bg-grayscale-600 px-5 transition hover:brightness-90"
           onClick={handleExport}
         >
           <LuShare size={20} />

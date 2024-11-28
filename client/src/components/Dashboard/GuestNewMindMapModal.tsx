@@ -20,11 +20,11 @@ export default function GuestNewMindMapModal({ open, closeModal, openLogin }) {
             <p className="text-center text-sm text-black">
               로그인하지 않은 상태로 마인드맵을 만들면 {"\n"} 24시간 이후에 사라져요
             </p>
-            <Button className="w-full rounded-md bg-bm-blue p-2 text-grayscale-100" onClick={openLogin}>
+            <Button className="w-full rounded-md bg-bm-blue p-2 transition hover:brightness-90" onClick={openLogin}>
               로그인하고 유지하기
             </Button>
             <Button
-              className="w-full rounded-md bg-grayscale-400 p-2"
+              className="w-full rounded-md bg-grayscale-400 p-2 transition hover:brightness-90"
               onClick={() => handleConnection(navigate, "listview", isAuthenticated)}
             >
               그냥 할게요
