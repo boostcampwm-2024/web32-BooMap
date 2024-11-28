@@ -59,10 +59,23 @@ export class NodeService {
 
   async deleteNodes(deleteNodeId: number[] | number) {
     if (Array.isArray(deleteNodeId)) {
-      await this.nodeRepository.delete({ id: In(deleteNodeId) });
+      const nodesToDelete = await this.nodeRepository.findBy({ id: In(deleteNodeId) });
+      for (const node of nodesToDelete) {
+        await this.nodeRepository.manager.transaction(async (manager) => {
+          const descendants = await manager.getTreeRepository(Node).findDescendants(node);
+          await manager.remove(descendants);
+        });
+      }
       return;
     }
-    await this.nodeRepository.delete({ id: deleteNodeId });
+
+    const nodeToDelete = await this.nodeRepository.findOne({ where: { id: deleteNodeId } });
+    if (nodeToDelete) {
+      await this.nodeRepository.manager.transaction(async (manager) => {
+        const descendants = await manager.getTreeRepository(Node).findDescendants(nodeToDelete);
+        await manager.remove(descendants);
+      });
+    }
   }
 
   async updateNode(updateData: UpdateNodeDto | UpdateNodeDto[]) {
