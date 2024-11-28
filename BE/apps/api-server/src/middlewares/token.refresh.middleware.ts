@@ -50,3 +50,14 @@ export class TokenRefreshMiddleware implements NestMiddleware {
     }
   }
 }
+
+// error: Cannot read properties of undefined (reading 'map') {"context":"ConnectionService","error":{},"stack":[
+// "TypeError: Cannot read properties of undefined (reading 'map')\n
+//     at /app/dist/main.js:1020:37\n    at Array.map (<anonymous>)\n
+//         at NodeService.tableToCanvas (/app/dist/main.js:1015:40)\n
+//             at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n
+//                 at async MindmapService.getDataByMindmapId (/app/dist/main.js:922:23)\n
+//                     at async ConnectionService.setConnection (/app/dist/main.js:782:33)\n
+//                        at async ConnectionController.setConnection (/app/dist/main.js:601:16)\n
+//                            at async /app/node_modules/@nestjs/core/router/router-execution-context.js:46:28\n
+//                                at async /app/node_modules/@nestjs/core/router/router-proxy.js:9:17"]}
