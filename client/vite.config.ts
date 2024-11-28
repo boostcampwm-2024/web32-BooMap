@@ -20,7 +20,7 @@ export default defineConfig({
   build: {
     outDir: "dist",
   },
-  base: "./",
+  base: "/",
   test: {
     environment: "jsdom",
     globals: true,
