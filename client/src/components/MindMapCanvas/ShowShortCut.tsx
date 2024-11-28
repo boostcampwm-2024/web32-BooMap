@@ -6,6 +6,7 @@ const shortcuts = [
   { keys: ["="], description: "노드 추가" },
   { keys: ["Backspace"], description: "노드 삭제" },
   { keys: ["Shift", "Drag"], description: "노드 다중 선택" },
+  { keys: ["Shift", "Move"], description: "하위 노드 이동" },
   { keys: ["SpaceBar"], description: "손모양 전환" },
   { keys: ["Ctrl", "Z"], description: "뒤로가기" },
   { keys: ["Ctrl", "Shift", "Z"], description: "앞으로가기" },
