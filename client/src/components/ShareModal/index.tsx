@@ -1,4 +1,4 @@
-import { Input } from "@headlessui/react";
+import { Button, Input } from "@headlessui/react";
 import Modal from "../common/Modal";
 import { useState } from "react";
 import { FiCopy, FiCheck } from "react-icons/fi";
@@ -33,13 +33,13 @@ export default function ShareModal({ open, closeModal }: ShareModalProps) {
           readOnly
           className="pointer-events-none h-10 w-full truncate rounded-lg bg-grayscale-200 px-3 py-2 text-grayscale-500"
         />
-        <button
+        <Button
           onClick={copyLink}
           className="mt-2 flex h-10 w-full items-center justify-center gap-2 rounded-lg bg-bm-blue transition hover:brightness-90"
         >
           {copySuccess === true ? <FiCheck size={18} /> : <FiCopy size={18} />}
           <p className="text-sm">{copySuccess === true ? "복사 완료" : "링크 복사"}</p>
-        </button>
+        </Button>
         <p className="mt-3 border-t pt-1 text-[10px] text-grayscale-400">
           복사된 링크를 통해 팀원들과 브레인스토밍을 해보세요
         </p>
