@@ -13,3 +13,11 @@ export const checkOwner = (mindMapId: string) => {
   if (!mindmaps) return false;
   return mindmaps.some((history) => history === mindMapId);
 };
+
+export const setLatestMindMap = (mindMapId: string) => {
+  localStorage.setItem("latest", mindMapId);
+};
+
+export const getLatestMindMap = () => {
+  return localStorage.getItem("latest");
+};

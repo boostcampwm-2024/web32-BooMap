@@ -7,17 +7,41 @@ import OverviewButton from "@/components/Sidebar/OverviewButton";
 import useSection from "@/hooks/useSection";
 import { useNavigate } from "react-router-dom";
 import { useSocketStore } from "@/store/useSocketStore";
+import { useAuthStore } from "@/store/useAuthStore";
+import { getLatestMindMap } from "@/utils/localstorage";
+import useModal from "@/hooks/useModal";
+import { createPortal } from "react-dom";
+import Modal from "@/components/common/Modal";
+import LatestMindMapModal from "@/components/Sidebar/LatestMindMapModal";
 
 export default function Overview() {
   const navigate = useNavigate();
   const { getmode, handleViewMode } = useSection();
   const { socket, handleConnection } = useSocketStore();
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const { open, closeModal, openModal } = useModal();
 
   const navigateMindmap = (mode: "listview" | "voiceupload" | "textupload") => {
     if (socket) {
       handleViewMode(mode);
-    } else handleConnection(navigate, mode);
+      return;
+    }
+    const latestMindMap = getLatestMindMap();
+    if (!latestMindMap) {
+      handleConnection(navigate, mode, isAuthenticated);
+    }
+    openModal();
   };
+
+  function navigateToLatestMindap() {
+    navigate(`/mindmap/${getLatestMindMap()}?mode=listview`);
+    closeModal();
+  }
+  function navigateToNewMindMap() {
+    handleConnection(navigate, "listview", isAuthenticated);
+    closeModal();
+  }
+
   return (
     <div className="mt-14 flex flex-col text-base">
       <p className="mb-8 font-medium text-grayscale-500">OVERVIEW</p>
@@ -57,6 +81,15 @@ export default function Overview() {
           />
         </div>
       </div>
+      {createPortal(
+        <LatestMindMapModal
+          open={open}
+          closeModal={closeModal}
+          navigateToLatestMindap={navigateToLatestMindap}
+          navigateToNewMindMap={navigateToNewMindMap}
+        />,
+        document.body,
+      )}
     </div>
   );
 }

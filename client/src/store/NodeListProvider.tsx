@@ -6,7 +6,7 @@ import { createContext, ReactNode, useContext, useState } from "react";
 
 import { useSocketStore } from "./useSocketStore";
 import { deleteNodes } from "@/konva_mindmap/events/deleteNode";
-import { checkOwner } from "@/utils/localstorage";
+import { checkOwner, setLatestMindMap } from "@/utils/localstorage";
 
 export type NodeListContextType = {
   data: NodeData | null;
@@ -68,6 +68,7 @@ export default function NodeListProvider({ children }: { children: ReactNode }) 
   socket?.on("disconnect", () => {
     setData({});
     overrideHistory(JSON.stringify({}));
+    setLatestMindMap(mindMapId);
   });
 
   function updateNode(id: number, updatedNode: Partial<Node>) {
