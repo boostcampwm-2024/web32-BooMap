@@ -1,8 +1,8 @@
+import { IsNumber, IsObject, IsOptional, IsString, ValidateNested } from 'class-validator';
+import { LocationDto } from '..';
 import { Expose, Type } from 'class-transformer';
-import { IsArray, IsNumber, IsObject, IsString, ValidateNested } from 'class-validator';
-import { LocationDto } from '.';
 
-export class NodeDto {
+export class CreateNodeDto {
   @Expose()
   @IsNumber()
   id: number;
@@ -22,7 +22,7 @@ export class NodeDto {
   location: LocationDto;
 
   @Expose()
-  @IsArray()
-  @IsNumber({}, { each: true })
-  children: number[];
+  @IsOptional()
+  @IsNumber()
+  parentId?: number;
 }
