@@ -13,6 +13,7 @@ import { join } from 'path';
 import { MindmapModule } from './modules/mindmap/mindmap.module';
 import { NodeModule } from './modules/node/node.module';
 import { DashboardModule } from './modules/dashboard/dashboard.module';
+import { PubsubModule } from './modules/pubsub/pubsub.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -45,6 +46,7 @@ import { DashboardModule } from './modules/dashboard/dashboard.module';
     MindmapModule,
     NodeModule,
     DashboardModule,
+    PubsubModule,
   ],
   controllers: [],
   providers: [],
