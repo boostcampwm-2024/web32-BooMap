@@ -60,29 +60,13 @@ export class NodeService {
   async deleteNodes(deleteNodeId: number[] | number) {
     if (Array.isArray(deleteNodeId)) {
       const nodesToDelete = await this.nodeRepository.findBy({ id: In(deleteNodeId) });
-      for (const node of nodesToDelete) {
-        await this.nodeRepository.manager.transaction(async (manager) => {
-          const treeRepository = manager.getTreeRepository(Node);
-          const descendants = await treeRepository.findDescendants(node);
-
-          for (let i = descendants.length - 1; i >= 0; i--) {
-            await manager.remove(descendants[i]);
-          }
-        });
-      }
+      await this.nodeRepository.softRemove(nodesToDelete);
       return;
     }
 
     const nodeToDelete = await this.nodeRepository.findOne({ where: { id: deleteNodeId } });
     if (nodeToDelete) {
-      await this.nodeRepository.manager.transaction(async (manager) => {
-        const treeRepository = manager.getTreeRepository(Node);
-        const descendants = await treeRepository.findDescendants(nodeToDelete);
-
-        for (let i = descendants.length - 1; i >= 0; i--) {
-          await manager.remove(descendants[i]);
-        }
-      });
+      await this.nodeRepository.softRemove(nodeToDelete);
     }
   }
 
