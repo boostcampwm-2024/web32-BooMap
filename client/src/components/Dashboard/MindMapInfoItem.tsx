@@ -42,7 +42,7 @@ export default function MindMapInfoItem({ data, index }: MindMapInfoItemProps) {
   return (
     <>
       <div
-        className={`${index !== 0 ? "border-t-[1px] border-t-grayscale-500" : ""} flex h-16 cursor-pointer items-center justify-between px-3 py-2`}
+        className={`${index !== 0 ? "border-t-[1px] border-t-grayscale-500" : ""} flex h-16 cursor-pointer items-center justify-between px-3 py-2 transition hover:brightness-110`}
         onClick={navigateToMindMap}
       >
         <div className="min-w-72">{data.title}</div>

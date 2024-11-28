@@ -7,7 +7,7 @@ export default function VoiceFileUpload() {
   return (
     <div className="flex h-full flex-col gap-12 text-grayscale-100">
       <UploadBox file={file} setFile={setFile} />
-      <Button className="rounded-xl bg-bm-blue p-3">🚀 만들기</Button>
+      <Button className="rounded-xl bg-bm-blue p-3 transition hover:brightness-90">만들기</Button>
     </div>
   );
 }

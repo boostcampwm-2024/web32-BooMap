@@ -28,14 +28,14 @@ export default function LoginModal({ open, close }: LoginModalProps) {
               <div className="flex flex-col gap-3">
                 <a
                   href={`${import.meta.env.VITE_APP_API_SERVER_BASE_URL}/auth/github`}
-                  className="flex h-[45.59px] items-center justify-center gap-2 rounded-md bg-black pl-4 pr-6 text-white"
+                  className="flex h-[45.59px] items-center justify-center gap-2 rounded-md bg-black pl-4 pr-6 text-white transition hover:brightness-75"
                 >
                   <img src={gitHubIcon} alt="Github" className="w-5" />
                   <span className="flex-grow text-sm">Login with Github</span>
                 </a>
                 <a
                   href={`${import.meta.env.VITE_APP_API_SERVER_BASE_URL}/auth/kakao`}
-                  className="flex items-center justify-center gap-3 rounded-xl bg-grayscale-200"
+                  className="flex items-center justify-center gap-3 rounded-xl bg-grayscale-200 transition hover:brightness-90"
                 >
                   <img src={kakaoIcon} alt="kakao" className="w-full" />
                 </a>

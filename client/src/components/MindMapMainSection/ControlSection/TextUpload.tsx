@@ -19,7 +19,7 @@ export default function TextUpload() {
           {content.length}/{TEXT_UPLOAD_LIMIT}
         </p>
       </div>
-      <Button className="rounded-xl bg-bm-blue p-3">만들기</Button>
+      <Button className="rounded-xl bg-bm-blue p-3 transition hover:brightness-90">만들기</Button>
     </div>
   );
 }

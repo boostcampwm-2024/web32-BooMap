@@ -41,7 +41,7 @@ export default function UserDashBoard() {
       </div>
       <div className="absolute bottom-8 right-8">
         <Button
-          className="flex items-center justify-center gap-2 rounded-xl bg-bm-blue px-5 py-3"
+          className="flex items-center justify-center gap-2 rounded-xl bg-bm-blue px-5 py-3 transition hover:brightness-90"
           onClick={() => handleConnection(navigate, "textupload", isAuthenticated)}
         >
           <FaPlus className="h-4 w-4" />
