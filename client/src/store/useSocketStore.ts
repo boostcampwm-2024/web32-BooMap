@@ -96,9 +96,13 @@ export const useSocketStore = create<SocketState>((set, get) => ({
   },
 
   getConnection: async (mindMapId: number, connectionId: string) => {
-    const socket = get().socket;
-    if (socket) socket.disconnect();
-    const response = await getMindMap(mindMapId.toString());
-    get().connectSocket(connectionId);
+    try {
+      const socket = get().socket;
+      if (socket) socket.disconnect();
+      const response = await getMindMap(mindMapId.toString());
+      get().connectSocket(connectionId);
+    } catch (error) {
+      throw error;
+    }
   },
 }));

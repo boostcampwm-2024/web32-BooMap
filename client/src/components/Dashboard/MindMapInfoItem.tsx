@@ -25,7 +25,7 @@ export default function MindMapInfoItem({ data, index }: MindMapInfoItemProps) {
     mindMapId: data.id.toString(),
     onError: (error) => console.log(error),
   });
-  const handleConnection = useSocketStore((state) => state.getConnection);
+  const getConnection = useSocketStore((state) => state.getConnection);
 
   const ownerCheck = name === data.owner;
 
@@ -34,13 +34,9 @@ export default function MindMapInfoItem({ data, index }: MindMapInfoItemProps) {
     closeModal();
   }
 
-  async function navigateToMindMap() {
-    try {
-      await handleConnection(data.id, data.connectionId);
-      navigate(`/mindmap/${data.connectionId}?mode=listview`);
-    } catch (error) {
-      throw error;
-    }
+  function navigateToMindMap() {
+    getConnection(data.id, data.connectionId);
+    navigate(`/mindmap/${data.connectionId}?mode=listview`);
   }
 
   return (
