@@ -1,6 +1,6 @@
 import { PublisherService } from './../pubsub/publisher.service';
 import { Socket } from 'socket.io';
-import { Injectable, Logger } from '@nestjs/common';
+import { Catch, Injectable, Logger } from '@nestjs/common';
 import { RedisService } from '@liaoliaots/nestjs-redis';
 import { Redis } from 'ioredis';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -17,6 +17,7 @@ import {
 } from '../../exceptions';
 
 @Injectable()
+@Catch()
 export class MapService {
   private readonly redis: Redis | null;
   private readonly logger = new Logger(MapService.name);
@@ -113,7 +114,11 @@ export class MapService {
   }
 
   async checkAuth(client: Socket) {
-    const userId = client.data.user.id;
+    const type = await this.redis.hget(client.data.connectionId, 'type');
+    if (type === 'guest') {
+      return;
+    }
+    const userId = client.data.user?.id;
     const ownerId = await this.redis.hget(client.data.connectionId, 'ownerId');
 
     if (userId !== ownerId) {
@@ -127,6 +132,7 @@ export class MapService {
     try {
       const type = await this.redis.hget(connectionId, 'type');
       this.logger.log('연결 type: ' + type + ' 마인드맵');
+
       if (!type) {
         throw new InvalidConnectionIdException();
       }

@@ -19,7 +19,7 @@ import { WsExceptionFilter } from '../../exceptionfilter/ws.exceptionFilter';
 import { WsOptionalJwtGuard } from '../../guard/ws.jwt.auth.guard';
 
 @Injectable()
-@WebSocketGateway()
+@WebSocketGateway({ transports: ['websocket'] })
 @UseFilters(new WsExceptionFilter())
 @UseGuards(WsOptionalJwtGuard)
 export class MapGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
