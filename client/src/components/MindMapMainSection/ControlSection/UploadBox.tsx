@@ -1,4 +1,5 @@
 import { Dispatch, SetStateAction, useRef, useState } from "react";
+import { FaFileAudio } from "react-icons/fa6";
 import voiceIcon from "@/assets/voiceFile.png";
 import { Input } from "@headlessui/react";
 
@@ -59,7 +60,7 @@ export default function UploadBox({ file, setFile }: UploadBoxProps) {
       onDragOver={onDragOver}
     >
       <Input type="file" ref={fileInputRef} className="hidden h-full w-full" onChange={handleFileChange} />
-      <img src={voiceIcon} alt="음성파일" className="h-40 w-32" />
+      <FaFileAudio size={50} />
       {file ? file.name : <p>음성 파일을 업로드해주세요(머시기 확장자)</p>}
     </div>
   );
