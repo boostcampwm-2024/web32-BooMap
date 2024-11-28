@@ -17,7 +17,7 @@ import { PubsubModule } from './modules/pubsub/pubsub.module';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: [join(__dirname, '..', '..', '..', '.env.dev')],
+      envFilePath: [join(__dirname, '..', '..', '..', '.env')],
     }),
     WinstonModule.forRootAsync({
       inject: [ConfigService],
