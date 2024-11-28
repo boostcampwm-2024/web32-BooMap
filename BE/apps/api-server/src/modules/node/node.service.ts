@@ -1,5 +1,5 @@
 import { Node } from '@app/entity';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, TreeRepository } from 'typeorm';
 import { NodeDto } from './dto/node.dto';
@@ -7,6 +7,7 @@ import { UpdateNodeDto } from './dto/update.node.dto';
 
 @Injectable()
 export class NodeService {
+  private readonly logger = new Logger(NodeService.name);
   constructor(@InjectRepository(Node) private nodeRepository: TreeRepository<Node>) {}
 
   async findKeywordByMindmapId(mindmapId: number) {
@@ -53,6 +54,7 @@ export class NodeService {
 
     await this.deleteNodes(deleteNodeIds);
     await this.updateNode(updateData);
+    this.logger.log('데이터 저장 끝');
   }
 
   async deleteNodes(deleteNodeId: number[] | number) {

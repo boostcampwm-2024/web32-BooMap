@@ -4,6 +4,7 @@ import { Injectable, Logger } from '@nestjs/common';
 
 @Injectable()
 export class DashboardService {
+  private readonly logger = new Logger(DashboardService.name);
   constructor(
     private readonly mindmapService: MindmapService,
     private readonly nodeService: NodeService,
