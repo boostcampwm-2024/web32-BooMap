@@ -7,6 +7,8 @@ import { createContext, ReactNode, useContext, useState } from "react";
 import { useSocketStore } from "./useSocketStore";
 import { deleteNodes } from "@/konva_mindmap/events/deleteNode";
 import { checkOwner, setLatestMindMap } from "@/utils/localstorage";
+import useMindMapTitle from "@/hooks/useMindMapTitle";
+import useContent from "@/hooks/useContent";
 
 export type NodeListContextType = {
   data: NodeData | null;
@@ -27,9 +29,9 @@ export type NodeListContextType = {
   deleteSelectedNodes: () => void;
   updateMindMapId: (mindMapId: string) => void;
   isOwner: boolean;
+  content: string;
+  updateContent: (updatedContent: string) => void;
 };
-
-const mindMapInfo = { title: "제목 없는 마인드맵" };
 
 const NodeListContext = createContext<NodeListContextType | undefined>(undefined);
 export function useNodeListContext() {
@@ -44,10 +46,11 @@ export default function NodeListProvider({ children }: { children: ReactNode }) 
   const [data, setData] = useState({});
   const [selectedNode, setSelectedNode] = useState<SelectedNode>({ nodeId: 0, parentNodeId: 0, addTo: "canvas" });
   const { saveHistory, overrideHistory, undo, redo, history } = useHistoryState<NodeData>(JSON.stringify(data));
-  const [title, setTitle] = useState(mindMapInfo.title);
+  const { title, initializeTitle, updateTitle } = useMindMapTitle();
+  const { content, updateContent, initializeContent } = useContent();
   const [loading, setLoading] = useState(true);
   const [mindMapId, setMindMapId] = useState("");
-  const [isOwner, setOwner] = useState(false);
+  const [isOwner, setOwner] = useState(true);
   const { selectedGroup, groupRelease, groupSelect } = useGroupSelect();
   const socket = useSocketStore((state) => state.socket);
 
@@ -56,6 +59,8 @@ export default function NodeListProvider({ children }: { children: ReactNode }) 
     setTimeout(() => {
       setData({ ...initialData.nodeData });
       overrideHistory(JSON.stringify(initialData));
+      initializeTitle(initialData);
+      initializeContent(initialData);
       setLoading(false);
       if (!initialData.isOwner) setOwner(checkOwner(mindMapId));
     }, 0);
@@ -63,6 +68,14 @@ export default function NodeListProvider({ children }: { children: ReactNode }) 
 
   socket?.on("updateNode", (updatedNodeData) => {
     overrideNodeData(updatedNodeData);
+  });
+
+  socket?.on("updateTitle", (updatedTitle) => {
+    updateTitle(updatedTitle);
+  });
+
+  socket?.on("updateContent", (updatedContent) => {
+    updateContent(updatedContent);
   });
 
   socket?.on("disconnect", () => {
@@ -102,10 +115,6 @@ export default function NodeListProvider({ children }: { children: ReactNode }) 
     });
   }
 
-  function updateTitle(title: string) {
-    setTitle(title);
-  }
-
   function deleteSelectedNodes() {
     if (selectedGroup.length) {
       deleteNodes(JSON.stringify(data), selectedGroup.map(Number), overrideNodeData);
@@ -137,6 +146,8 @@ export default function NodeListProvider({ children }: { children: ReactNode }) 
         deleteSelectedNodes,
         updateMindMapId,
         isOwner,
+        content,
+        updateContent,
       }}
     >
       {children}
