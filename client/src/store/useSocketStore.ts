@@ -10,7 +10,7 @@ import {
 } from "@/types/NodePayload";
 import { createMindmap, getMindMap } from "@/api/mindmap.api";
 import { NavigateFunction } from "react-router-dom";
-import { setOwner } from "@/utils/localstorage";
+import { getToken, setOwner } from "@/utils/localstorage";
 
 type SocketState = {
   socket: Socket | null;
@@ -91,7 +91,7 @@ export const useSocketStore = create<SocketState>((set, get) => ({
       const response = await createMindmap();
       const newMindMapId = response.data;
       if (!isAuthneticated) setOwner(newMindMapId);
-      get().connectSocket(newMindMapId);
+      get().connectSocket(newMindMapId, isAuthneticated ? getToken() : undefined);
       navigate(`/mindmap/${newMindMapId}?mode=${targetMode}`);
     } catch (error) {
       console.error(error);
