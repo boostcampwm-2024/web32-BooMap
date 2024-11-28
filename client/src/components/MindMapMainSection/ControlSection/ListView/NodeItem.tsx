@@ -1,15 +1,15 @@
-import arrowDown from "@/assets/arrowDown.png";
-import plusIcon from "@/assets/plus.png";
-import editIcon from "@/assets/pencil.png";
-import deleteIcon from "@/assets/trash2.png";
 import { Input } from "@headlessui/react";
-import useNodeActions from "@/hooks/useNodeActions";
-import bulletPointIcon from "@/assets/bulletPoint.png";
 import { useNodeListContext } from "@/store/NodeListProvider";
 import { showNewNode } from "@/konva_mindmap/events/addNode";
 import { useEffect, useRef } from "react";
 import { Node } from "@/types/Node";
 import { NODE_DEPTH_LIMIT } from "@/constants/node";
+import { TbPointFilled } from "react-icons/tb";
+import { FaChevronDown } from "react-icons/fa";
+import { FaPencilAlt } from "react-icons/fa";
+import { FaPlus } from "react-icons/fa";
+import { FaRegTrashAlt } from "react-icons/fa";
+import useNodeActions from "@/hooks/useNodeActions";
 
 type NodeItemProps = {
   node: Node;
@@ -73,16 +73,18 @@ export default function NodeItem({ node, parentNodeId, open, handleAccordion, op
       onMouseLeave={handleMouseLeave}
     >
       <div className="flex min-w-0 flex-1 items-center gap-3">
-        {node.depth < NODE_DEPTH_LIMIT ? (
-          <button
-            className={`flex h-5 w-5 items-center justify-center transition-all ${open ? "" : "rotate-[-90deg]"}`}
-            onClick={handleAccordion}
-          >
-            <img src={arrowDown} alt="열기" className="h-3 w-4" />
-          </button>
-        ) : (
-          <img src={bulletPointIcon} alt="구분점" className="h-2 w-2" />
-        )}
+        {!isEditing &&
+          (node.depth < NODE_DEPTH_LIMIT ? (
+            <button
+              className={`flex h-5 w-5 items-center justify-center transition-all ${open ? "" : "rotate-[-90deg]"}`}
+              onClick={handleAccordion}
+            >
+              <FaChevronDown className="h-4 w-4" />
+            </button>
+          ) : (
+            <TbPointFilled className="h-3 w-3" />
+          ))}
+
         {isEditing ? (
           <Input
             autoFocus={selectedNode.addTo === "list"}
@@ -100,21 +102,21 @@ export default function NodeItem({ node, parentNodeId, open, handleAccordion, op
           </span>
         )}
       </div>
-      <div className="flex items-center gap-1">
+      <div className="flex items-center gap-2">
         {hover && !isEditing && (
           <>
             <button onClick={() => setIsEditing(true)}>
-              <img src={editIcon} alt="수정하기" className="h-4 w-4" />
+              <FaPencilAlt className="h-4 w-4" />
             </button>
             {node.depth < NODE_DEPTH_LIMIT ? (
               <button onClick={handleAddButton}>
-                <img src={plusIcon} alt="추가하기" className="h-4 w-4" />
+                <FaPlus className="h-4 w-4" />
               </button>
             ) : (
               <></>
             )}
             <button onClick={handleDelete}>
-              <img src={deleteIcon} alt="삭제하기" className="h-4 w-4" />
+              <FaRegTrashAlt className="h-4 w-4" />
             </button>
           </>
         )}
