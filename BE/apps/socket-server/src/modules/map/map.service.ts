@@ -127,11 +127,12 @@ export class MapService {
   async joinRoom(client: Socket) {
     try {
       const connectionId = this.extractMindmapId(client);
-      const type = await this.redis.hget(connectionId, 'type');
+      let type = await this.redis.hget(connectionId, 'type');
       this.logger.log('연결 type: ' + type + ' 마인드맵');
 
       if (!type) {
-        throw new InvalidConnectionIdException();
+        type = client.data.user ? 'user' : 'guest';
+        await this.redis.hset(connectionId, 'type', type);
       }
 
       client.join(connectionId);
