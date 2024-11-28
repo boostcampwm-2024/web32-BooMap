@@ -97,16 +97,16 @@ function getNewNodePosition(children: number[], data: NodeData, parentNode: Node
   if (!children.length) {
     if (parentNode.id === rootKey)
       return {
-        x: parentNode.location.x + 110,
+        x: parentNode.location.x + 300,
         y: parentNode.location.y,
       };
-    const { x, y } = calculateVector(data[rootKey].location, parentNode.location, -80, 140);
+    const { x, y } = calculateVector(data[rootKey].location, parentNode.location, -80, 240);
     return parentNode ? { x: parentNode.location.x + x, y: parentNode.location.y + y } : { x: 0, y: 0 };
   }
   const lastChildren = data[children[children.length - 1]];
-  const uv = calculateVector(parentNode.location, lastChildren.location, 110);
+  const uv = calculateVector(parentNode.location, lastChildren.location, 110, 240);
   return {
-    x: lastChildren.location.x + uv.x * 100,
-    y: lastChildren.location.y + uv.y * 100,
+    x: lastChildren.location.x + uv.x,
+    y: lastChildren.location.y + uv.y,
   };
 }

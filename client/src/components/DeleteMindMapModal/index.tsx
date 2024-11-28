@@ -9,11 +9,14 @@ export default function DeleteMindMapModal({ open, closeModal, confirmDelete, da
         <br></br>마인드 맵을 삭제하시겠습니까?
       </p>
       <div className="flex justify-center gap-2">
-        <Button onClick={closeModal} className="rounded-lg px-4 py-2 text-gray-500 hover:bg-gray-100">
-          취소
+        <Button
+          onClick={closeModal}
+          className="flex-1 rounded-lg bg-grayscale-100 py-2.5 text-center text-sm text-black hover:brightness-90"
+        >
+          안할래요
         </Button>
-        <Button onClick={confirmDelete} className="rounded-lg px-4 py-2 text-red-600 hover:bg-red-100">
-          삭제
+        <Button onClick={confirmDelete} className="flex-1 rounded-lg bg-red-500 py-2.5 text-sm hover:brightness-90">
+          삭제할게요
         </Button>
       </div>
     </Modal>

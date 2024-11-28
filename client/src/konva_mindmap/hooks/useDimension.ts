@@ -28,11 +28,15 @@ export default function useDimension(data) {
   }, [targetRef]);
 
   useEffect(() => {
+    centerMoveMap();
+  }, [adjustedDimensions]);
+
+  function centerMoveMap() {
     setDimensions((prev) => ({
       ...prev,
       ...adjustedDimensions,
     }));
-  }, [adjustedDimensions]);
+  }
 
   function resizing() {
     if (targetRef.current) {
@@ -69,5 +73,6 @@ export default function useDimension(data) {
     handleWheel,
     zoomIn,
     zoomOut,
+    centerMoveMap,
   };
 }

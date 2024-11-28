@@ -4,7 +4,6 @@ import { findRootNodeKey } from "../utils/findRootNodeKey";
 
 export function useAdjustedStage(data: NodeData, containerWidth: number, containerHeight: number) {
   const [adjustedDimensions, setAdjustedDimensions] = useState({ scale: 1, x: 0, y: 0 });
-
   const rootKey = findRootNodeKey(data);
 
   useEffect(() => {
@@ -45,7 +44,7 @@ export function useAdjustedStage(data: NodeData, containerWidth: number, contain
     const scaleY = containerHeight / height;
     let scale = Math.min(scaleX, scaleY);
     if (scale >= 1.5) scale = 1.5;
-    else if (scale <= 0.5) scale = 0.5;
+    else if (scale <= 0.25) scale = 0.25;
 
     return {
       scale,
