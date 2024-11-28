@@ -58,7 +58,7 @@ export default function MindMapInfoItem({ data, index }: MindMapInfoItemProps) {
         </div>
         <div className="flex min-w-24 items-center justify-center gap-2">
           <img className="h-6 w-6" src={profile} alt="소유자 이미지" />
-          <div>{data.owner}</div>
+          <div>{data.ownerName}</div>
         </div>
         <div className="flex min-w-40 justify-between">
           <div>{extractDate(new Date(data.createDate))}</div>
