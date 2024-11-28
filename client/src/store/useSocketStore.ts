@@ -8,7 +8,7 @@ import {
   updateTitlePayload,
   updateContentPayload,
 } from "@/types/NodePayload";
-import { createMindmap } from "@/api/mindmap.api";
+import { createMindmap, getMindMap } from "@/api/mindmap.api";
 import { NavigateFunction } from "react-router-dom";
 import { setOwner } from "@/utils/localstorage";
 
@@ -18,6 +18,7 @@ type SocketState = {
   disconnectSocket: () => void;
   handleSocketEvent: (props: HandleSocketEventProps) => void;
   handleConnection: (navigate: NavigateFunction, targetMode: string, isAuthenticated: boolean) => void;
+  getConnection: (mindMapId: number, connectionId: string) => void;
   wsError: string[];
   currentJobStatus: string;
   connectionStatus: string;
@@ -91,6 +92,17 @@ export const useSocketStore = create<SocketState>((set, get) => ({
       navigate(`/mindmap/${newMindMapId}?mode=${targetMode}`);
     } catch (error) {
       console.error(error);
+    }
+  },
+
+  getConnection: async (mindMapId: number, connectionId: string) => {
+    try {
+      const socket = get().socket;
+      if (socket) socket.disconnect();
+      const response = await getMindMap(mindMapId.toString());
+      get().connectSocket(connectionId);
+    } catch (error) {
+      throw error;
     }
   },
 }));

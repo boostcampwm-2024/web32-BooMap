@@ -33,10 +33,13 @@ export default function Overview() {
     const latestMindMap = getLatestMindMap();
     if (!latestMindMap) {
       handleConnection(navigate, mode, isAuthenticated);
+      return;
     }
     openModal();
   };
 
+  //비회원은 삭제를 안한다
+  //setConnection
   function navigateToLatestMindap() {
     navigate(`/mindmap/${getLatestMindMap()}?mode=${selectMode}`);
     closeModal();

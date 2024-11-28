@@ -17,7 +17,9 @@ export class WsOptionalJwtGuard implements CanActivate {
     }
 
     try {
-      const user = this.jwtService.verify(token);
+      this.jwtService.verify(token);
+      const payload = this.jwtService.decode(token);
+      const user = { id: payload['id'], email: payload['email'] };
       client.data.user = user;
       return true;
     } catch (error) {
@@ -26,8 +28,10 @@ export class WsOptionalJwtGuard implements CanActivate {
       } else if (error instanceof TokenExpiredError) {
         try {
           const refreshToken = cookieParser.JSONCookie(client.handshake.headers.cookie)['refreshToken'];
-          const payload = this.jwtService.verify(refreshToken);
-          const accessToken = this.jwtService.sign(payload, { expiresIn: '30m' });
+          this.jwtService.verify(refreshToken);
+          const payload = this.jwtService.decode(refreshToken);
+          const user = { id: payload['id'], email: payload['email'] };
+          const accessToken = this.jwtService.sign(user, { expiresIn: '30m' });
           client.emit('tokenRefresh', { accessToken });
           client.data.user = payload;
           return true;

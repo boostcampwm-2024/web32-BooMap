@@ -37,7 +37,6 @@ export class MapService {
         return { id: createNodeDto.id };
       }
 
-      // mindmapId가 유효한지 확인
       if (!mindmapId) {
         throw new DatabaseException('유효하지 않은 mindmapId');
       }
@@ -113,7 +112,11 @@ export class MapService {
   }
 
   async checkAuth(client: Socket) {
-    const userId = client.data.user.id;
+    const type = await this.redis.hget(client.data.connectionId, 'type');
+    if (type === 'guest') {
+      return;
+    }
+    const userId = client.data.user?.id;
     const ownerId = await this.redis.hget(client.data.connectionId, 'ownerId');
 
     if (userId !== ownerId) {
@@ -122,11 +125,11 @@ export class MapService {
   }
 
   async joinRoom(client: Socket) {
-    const connectionId = this.extractMindmapId(client);
-
     try {
+      const connectionId = this.extractMindmapId(client);
       const type = await this.redis.hget(connectionId, 'type');
       this.logger.log('연결 type: ' + type + ' 마인드맵');
+
       if (!type) {
         throw new InvalidConnectionIdException();
       }
@@ -135,12 +138,12 @@ export class MapService {
       client.data.connectionId = connectionId;
       const curruntData: Record<string, any> = {};
 
-      const [currentState, currentContent, currentTitle, currentAiCount, mindmapId] = await Promise.all([
+      const [currentState, currentContent, currentTitle, currentAiCount, ownerId, mindmapId] = await Promise.all([
         this.redis.get(`mindmapState:${connectionId}`),
         this.redis.get(`content:${connectionId}`),
         this.redis.hget(connectionId, 'title'),
         this.redis.hget(connectionId, 'aiCount'),
-        this.redis.hget(connectionId, 'owner'),
+        this.redis.hget(connectionId, 'ownerId'),
         this.redis.hget(connectionId, 'mindmapId'),
       ]);
 
@@ -156,7 +159,7 @@ export class MapService {
       if (currentAiCount) {
         curruntData['aiCount'] = currentAiCount;
       }
-      if (client.data.user) {
+      if (client.data.user && ownerId !== client.data.user.id) {
         this.publisherService.publish(
           'api-socket',
           JSON.stringify({ event: 'join', data: { connectionId, userId: client.data.user, mindmapId } }),
