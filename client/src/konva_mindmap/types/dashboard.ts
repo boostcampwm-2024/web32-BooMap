@@ -5,5 +5,6 @@ export type DashBoard = {
   keyword: string[];
   createDate: Date;
   modifiedDate: Date;
-  owner: string;
+  ownerName: string;
+  ownerId: number;
 };
