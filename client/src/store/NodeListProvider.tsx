@@ -75,11 +75,11 @@ export default function NodeListProvider({ children }: { children: ReactNode }) 
   });
 
   socket?.on("updateTitle", (updatedTitle) => {
-    updateTitle(updatedTitle);
+    updateTitle(updatedTitle.title);
   });
 
   socket?.on("updateContent", (updatedContent) => {
-    updateContent(updatedContent);
+    updateContent(updatedContent.content);
   });
 
   socket?.on("disconnect", () => {

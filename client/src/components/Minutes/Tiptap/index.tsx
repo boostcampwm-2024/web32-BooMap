@@ -12,6 +12,7 @@ import Placeholder from "@tiptap/extension-placeholder";
 import { useNodeListContext } from "@/store/NodeListProvider";
 import { useSocketStore } from "@/store/useSocketStore";
 import { throttle } from "@/konva_mindmap/utils/throttle";
+import { useEffect } from "react";
 
 export default function Tiptap() {
   const { isOwner, content, updateContent } = useNodeListContext();
@@ -54,6 +55,12 @@ export default function Tiptap() {
       1500,
     );
   }
+
+  useEffect(() => {
+    if (editor && content) {
+      editor.commands.setContent(content);
+    }
+  }, [content, editor]);
 
   return (
     <>

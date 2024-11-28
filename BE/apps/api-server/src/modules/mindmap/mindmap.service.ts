@@ -1,7 +1,7 @@
 import { InjectRepository } from '@nestjs/typeorm';
 import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { In, Repository } from 'typeorm';
-import { Mindmap, UserMindmapRole, Node } from '@app/entity';
+import { Mindmap, UserMindmapRole } from '@app/entity';
 import { v4 as uuidv4 } from 'uuid';
 import { UpdateMindmapDto } from './dto/update.mindmap.dto';
 import { Role } from '@app/entity/enum/role.enum';
@@ -82,21 +82,7 @@ export class MindmapService {
       throw new UnauthorizedException('권한이 없습니다.');
     }
 
-    return await this.mindmapRepository.manager.transaction(async (manager) => {
-      const nodes = await manager.find(Node, {
-        where: {
-          mindmap: {
-            id: mindmapId,
-          },
-        },
-      });
-      for (const node of nodes) {
-        const descendants = await manager.getTreeRepository(Node).findDescendants(node);
-        await manager.remove(descendants);
-      }
-
-      return manager.delete(Mindmap, { id: mindmapId });
-    });
+    await this.mindmapRepository.softRemove({ id: mindmapId });
   }
 
   async getDataByMindmapId(mindmapId: number) {
