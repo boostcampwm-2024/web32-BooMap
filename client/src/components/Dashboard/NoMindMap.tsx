@@ -10,16 +10,18 @@ export default function NoMindMap() {
   const navigate = useNavigate();
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   return (
-    <div className="relative flex h-full w-full flex-col items-center justify-center gap-5 rounded-[20px] bg-grayscale-700 px-8 pb-24 pt-8">
-      <img className="w-1/2" src={cloud} alt="" />
-      <p>현재 만들어둔 마인드맵이 없어요</p>
-      <p>새로운 마인드맵을 생성하고 브레인스토밍 해보세요!</p>
+    <div className="mb-20 flex h-full w-full flex-col items-center justify-center rounded-[20px] bg-grayscale-700 pb-10">
+      <p className="whitespace-pre-line text-center text-3xl font-bold">
+        현재 만들어둔 마인드맵이 없어요
+        <br />
+        새로운 마인드맵을 생성하고 브레인스토밍 해보세요!
+      </p>
+      <img className="w-[300px]" src={cloud} alt="로그인 후 마인드맵 없을 때 아이콘" />
       <Button
-        className="flex items-center justify-center gap-2 rounded-xl bg-bm-blue px-5 py-3"
+        className="group mt-4 flex w-[300px] items-center justify-center gap-3 rounded-[10px] bg-bm-blue px-10 py-2 hover:brightness-90"
         onClick={() => handleConnection(navigate, "textupload", isAuthenticated)}
       >
-        <FaPlus className="h-4 w-4" />
-        <p>새로운 마인드맵 만들기</p>
+        새로운 마인드맵 만들기
       </Button>
     </div>
   );
