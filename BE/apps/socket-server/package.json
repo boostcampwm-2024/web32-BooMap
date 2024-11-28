@@ -6,6 +6,8 @@
   "dependencies": {
     "@nestjs/platform-socket.io": "^10.4.8",
     "@nestjs/websockets": "^10.4.8",
-    "@types/socket.io": "^3.0.1"
+    "@types/socket.io": "^3.0.1",
+    "passport-github2": "^0.1.12",
+    "passport-kakao": "^1.0.1"
   }
 }
