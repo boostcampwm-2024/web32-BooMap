@@ -1,6 +1,13 @@
 import { Socket, io } from "socket.io-client";
 import { create } from "zustand";
-import { actionType, createNodePayload, updateNodePayload, deleteNodePayload } from "@/types/NodePayload";
+import {
+  actionType,
+  createNodePayload,
+  updateNodePayload,
+  deleteNodePayload,
+  updateTitlePayload,
+  updateContentPayload,
+} from "@/types/NodePayload";
 import { createMindmap } from "@/api/mindmap.api";
 import { NavigateFunction } from "react-router-dom";
 import { setOwner } from "@/utils/localstorage";
@@ -17,7 +24,7 @@ type SocketState = {
 
 type HandleSocketEventProps = {
   actionType: actionType;
-  payload: createNodePayload | updateNodePayload | deleteNodePayload;
+  payload: createNodePayload | updateNodePayload | deleteNodePayload | updateTitlePayload | updateContentPayload;
   callback?: (response?: any) => void;
 };
 
