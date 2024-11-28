@@ -1,6 +1,6 @@
 import { PublisherService } from './../pubsub/publisher.service';
 import { Socket } from 'socket.io';
-import { Catch, Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { RedisService } from '@liaoliaots/nestjs-redis';
 import { Redis } from 'ioredis';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -17,7 +17,6 @@ import {
 } from '../../exceptions';
 
 @Injectable()
-@Catch()
 export class MapService {
   private readonly redis: Redis | null;
   private readonly logger = new Logger(MapService.name);
@@ -127,9 +126,8 @@ export class MapService {
   }
 
   async joinRoom(client: Socket) {
-    const connectionId = this.extractMindmapId(client);
-
     try {
+      const connectionId = this.extractMindmapId(client);
       const type = await this.redis.hget(connectionId, 'type');
       this.logger.log('연결 type: ' + type + ' 마인드맵');
 

@@ -72,7 +72,7 @@ export class MindmapService {
     if (role.role !== Role.OWNER) {
       throw new UnauthorizedException('권한이 없습니다.');
     }
-    return this.mindmapRepository.delete({ id: mindmapId });
+    return this.mindmapRepository.softDelete({ id: mindmapId });
   }
 
   async getDataByMindmapId(mindmapId: number) {
