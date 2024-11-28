@@ -43,7 +43,7 @@ export class Node {
   @TreeParent()
   parent: Node;
 
-  @TreeChildren()
+  @TreeChildren({ cascade: true })
   children: Node[];
 
   @ManyToOne(() => Mindmap, (mindmap) => mindmap.nodes, { onDelete: 'CASCADE' })

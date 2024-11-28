@@ -9,8 +9,9 @@ import { MapModule } from './modules/map/map.module';
 
 import { LoggerMiddleware } from './middlewares/logger.middleware';
 import { join } from 'path';
-import { AuthModule } from './modules/auth/auth.module';
 import { JwtModule } from '@nestjs/jwt';
+
+import { PubsubModule } from './modules/pubsub/pubsub.module';
 
 @Module({
   imports: [
@@ -36,7 +37,7 @@ import { JwtModule } from '@nestjs/jwt';
       useFactory: getJwtConfig,
     }),
     MapModule,
-    AuthModule,
+    PubsubModule,
   ],
   controllers: [],
   providers: [],

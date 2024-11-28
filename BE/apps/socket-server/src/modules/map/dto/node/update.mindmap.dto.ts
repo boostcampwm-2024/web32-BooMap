@@ -1,4 +1,4 @@
-import { NodeDto } from '.';
+import { NodeDto } from '..';
 
 export class UpdateMindmapDto {
   [key: number]: NodeDto;

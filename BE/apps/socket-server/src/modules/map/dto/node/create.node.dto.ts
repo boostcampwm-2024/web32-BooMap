@@ -1,8 +1,12 @@
 import { IsNumber, IsObject, IsOptional, IsString, ValidateNested } from 'class-validator';
-import { LocationDto } from '.';
+import { LocationDto } from '..';
 import { Expose, Type } from 'class-transformer';
 
 export class CreateNodeDto {
+  @Expose()
+  @IsNumber()
+  id: number;
+
   @Expose()
   @IsString()
   keyword: string;

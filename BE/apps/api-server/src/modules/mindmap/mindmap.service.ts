@@ -18,9 +18,9 @@ export class MindmapService {
   async create(userId: number) {
     const uuid = uuidv4();
     const mindmap = this.mindmapRepository.create({ connectionId: uuid, aiContent: '', content: '' });
-    await this.mindmapRepository.save(mindmap);
-    await this.assignUserToMindmap(userId, mindmap.id);
-    return uuid;
+    const savedMindmap = await this.mindmapRepository.save(mindmap);
+    await this.assignUserToMindmap(userId, savedMindmap.id);
+    return { connectionId: uuid, mindmapId: savedMindmap.id };
   }
 
   createGuest() {

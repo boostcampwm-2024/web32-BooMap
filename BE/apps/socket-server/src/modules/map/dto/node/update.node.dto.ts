@@ -1,6 +1,6 @@
 import { Expose, Type } from 'class-transformer';
 import { IsArray, IsNumber, IsObject, IsString, ValidateNested } from 'class-validator';
-import { LocationDto } from '.';
+import { LocationDto } from '..';
 
 export class NodeDto {
   @Expose()

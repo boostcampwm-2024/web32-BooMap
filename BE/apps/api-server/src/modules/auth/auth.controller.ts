@@ -1,11 +1,18 @@
-import { Controller, Get, Post, Req, Res, UnauthorizedException, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthGuard } from '@nestjs/passport';
 import { UserService } from '../user/user.service';
 import { Request, Response } from 'express';
-import { AuthenticatedRequest } from '@app/interface';
 import { plainToInstance } from 'class-transformer';
 import { UserCreateDto } from '../user/dto';
+
+export interface AuthenticatedRequest extends Request {
+  user: {
+    id?: number;
+    email: string;
+    name?: string;
+  };
+}
 
 @Controller('auth')
 export class AuthController {
@@ -57,12 +64,7 @@ export class AuthController {
   @Post('refresh')
   async refresh(@Req() req: Request, @Res() res: Response) {
     const refreshToken = req.cookies['refreshToken'];
-    const userId = await this.authService.verifiedRefreshToken(refreshToken);
-    const user = await this.userService.findById(userId);
-    if (!user) {
-      throw new UnauthorizedException();
-    }
-    const accessToken = this.authService.generateAccessToken(user);
+    const accessToken = await this.authService.verifiedRefreshToken(refreshToken);
     res.json({ accessToken });
   }
 
