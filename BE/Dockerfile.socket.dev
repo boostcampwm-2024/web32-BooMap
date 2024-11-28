@@ -1,0 +1,15 @@
+FROM node:22-alpine
+WORKDIR /app
+
+RUN npm install -g @nestjs/cli
+
+COPY package*.json ./
+COPY nest-cli.json ./
+COPY tsconfig*.json ./
+
+COPY apps/socket-server/package*.json ./apps/socket-server/
+COPY libs ./libs
+
+RUN npm install
+
+EXPOSE 4000

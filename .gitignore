@@ -1,5 +1,8 @@
 .env
-Docker-compose.dev.yml
-Dockerfile.api-server.dev
-Dockerfile.socket-server.dev
-nginx/dev.conf
+.env.dev
+.env.development
+.env.production
+/BE/apps/api-server/node_modules
+/BE/apps/api-server/dist
+/BE/apps/socket-server/node_modules
+/BE/apps/socket-server/dist

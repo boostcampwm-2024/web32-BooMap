@@ -1,0 +1,25 @@
+FROM node:22-alpine AS build    
+WORKDIR /app
+
+COPY ./package*.json ./
+COPY ./apps/socket-server/package*.json ./apps/socket-server/
+
+RUN npm install
+
+COPY . .
+RUN npm run build
+
+FROM node:22-alpine AS production
+WORKDIR /app
+
+COPY --from=build /app/package*.json ./
+COPY --from=build /app/apps/socket-server/package*.json ./apps/socket-server/
+
+RUN npm install --only=production
+
+COPY --from=build /app/dist/apps/socket-server ./dist
+
+EXPOSE 4000
+
+CMD ["node", "dist/main.js"]
+

@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import { NodeData } from "@/types/Node";
+import { findRootNodeKey } from "../utils/findRootNodeKey";
 
 export function useAdjustedStage(data: NodeData, containerWidth: number, containerHeight: number) {
   const [adjustedDimensions, setAdjustedDimensions] = useState({ scale: 1, x: 0, y: 0 });
+  const rootKey = findRootNodeKey(data);
 
   useEffect(() => {
-    const bounds = calculateBounds(data, 1);
+    const bounds = calculateBounds(data, rootKey);
     const newDimensions = adjustStageToFit(bounds);
     setAdjustedDimensions(newDimensions);
   }, [containerWidth, containerHeight]);
@@ -40,7 +42,9 @@ export function useAdjustedStage(data: NodeData, containerWidth: number, contain
 
     const scaleX = containerWidth / width;
     const scaleY = containerHeight / height;
-    const scale = Math.min(scaleX, scaleY);
+    let scale = Math.min(scaleX, scaleY);
+    if (scale >= 1.5) scale = 1.5;
+    else if (scale <= 0.25) scale = 0.25;
 
     return {
       scale,

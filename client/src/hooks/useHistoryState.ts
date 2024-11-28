@@ -1,8 +1,10 @@
-import { useState, useCallback, useEffect } from "react";
+import { useSocketStore } from "@/store/useSocketStore";
+import { useState, useCallback } from "react";
 
 export default function useHistoryState<T>(data: string) {
   const [history, setHistory] = useState([data]);
   const [pointer, setPointer] = useState(0);
+  const handleSocketEvent = useSocketStore.getState().handleSocketEvent;
 
   const saveHistory = useCallback(
     (data: string) => {
@@ -12,12 +14,26 @@ export default function useHistoryState<T>(data: string) {
     [pointer],
   );
 
+  const overrideHistory = useCallback(
+    (data: string) => {
+      setHistory([data]);
+      setPointer(0);
+    },
+    [pointer],
+  );
+
   const undo = useCallback(
     (setData) => {
-      if (!history[0] || pointer < 0) return;
+      if (!history[0] || pointer <= 0) return;
       const parsedData = JSON.parse(history[pointer - 1]);
-      setData(parsedData);
-      setPointer((p) => p - 1);
+      handleSocketEvent({
+        actionType: "updateNode",
+        payload: parsedData,
+        callback: () => {
+          setData(parsedData);
+          setPointer((p) => p - 1);
+        },
+      });
     },
     [history, pointer],
   );
@@ -25,11 +41,18 @@ export default function useHistoryState<T>(data: string) {
   const redo = useCallback(
     (setData) => {
       if (pointer >= history.length - 1) return;
-      setPointer((p) => p + 1);
-      setData(history[pointer + 1]);
+      const parsedData = JSON.parse(history[pointer + 1]);
+      handleSocketEvent({
+        actionType: "updateNode",
+        payload: parsedData,
+        callback: () => {
+          setData(parsedData);
+          setPointer((p) => p + 1);
+        },
+      });
     },
     [history, pointer],
   );
 
-  return { saveHistory, undo, redo };
+  return { saveHistory, overrideHistory, undo, redo, history };
 }

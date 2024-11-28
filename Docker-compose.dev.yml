@@ -1,0 +1,79 @@
+services:
+  redis:
+    image: redis:7.4.1-alpine
+    container_name: redis
+    networks:
+      - my-network
+
+  mysql:
+    image: mysql:8.0.39
+    container_name: mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=boomap
+      - MYSQL_USER=boomap
+      - MYSQL_PASSWORD=test
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --skip-character-set-client-handshake
+    networks:
+      - my-network
+
+  api-server:
+    build:
+      context: ./BE
+      dockerfile: Dockerfile.api.dev
+    container_name: api
+    volumes:
+      - ./BE:/app
+      - /app/node_modules
+    env_file:
+      - .env.dev
+    command: nest start api-server --watch
+    networks:
+      - my-network
+
+  socket-server:
+    build:
+      context: ./BE
+      dockerfile: Dockerfile.socket.dev
+    container_name: socket
+    volumes:
+      - ./BE:/app
+      - /app/node_modules
+    env_file:
+      - .env.dev
+    command: nest start socket-server --watch
+    networks:
+      - my-network
+
+  nginx:
+    build:
+      context: .
+      dockerfile: Dockerfile.nginx.dev
+    ports:
+      - "80:80"
+      - "443:443"
+    container_name: nginx
+    volumes:
+      - ./nginx/dev.conf:/etc/nginx/conf.d/default.conf
+    networks:
+      - my-network
+
+  fe:
+    build:
+      context: .
+      dockerfile: Dockerfile.fe.dev
+    container_name: fe
+    volumes:
+      - ./client/src:/app/src
+    env_file:
+      - .env.dev
+    command: ["npm", "run", "dev"]
+    networks:
+      - my-network
+
+networks:
+  my-network:
+    driver: bridge

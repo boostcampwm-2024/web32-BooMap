@@ -8,6 +8,7 @@ interface EditableTextInputProps {
   offsetX: number;
   offsetY: number;
   width: number;
+  focus: boolean;
 }
 
 export default function EditableTextInput({
@@ -18,17 +19,18 @@ export default function EditableTextInput({
   offsetX,
   offsetY,
   width,
+  focus,
 }: EditableTextInputProps) {
   return (
     <Html groupProps={{ offset: { x: offsetX, y: offsetY } }}>
       <input
-        autoFocus={true}
+        autoFocus={focus}
         value={value}
         onChange={onChange}
-        className={`w-full resize-none bg-transparent text-center text-sm font-semibold text-black ${value.trim() === "" ? "border border-red-500" : ""}`}
+        className={`w-full resize-none bg-transparent text-center text-lg font-semibold text-black ${value.trim() === "" ? "border border-red-500" : ""}`}
         onKeyDown={onKeyDown}
         onBlur={onBlur}
-        maxLength={14}
+        maxLength={50}
         style={{ width }}
       />
     </Html>

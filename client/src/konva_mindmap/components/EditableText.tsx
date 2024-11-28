@@ -2,6 +2,8 @@ import { Text } from "react-konva";
 import { useEffect, useState } from "react";
 import { useNodeListContext } from "@/store/NodeListProvider";
 import EditableTextInput from "@/konva_mindmap/components/EditableTextInput";
+import { useSocketStore } from "@/store/useSocketStore";
+import { TEXT_FONT_SIZE } from "@/konva_mindmap/utils/nodeAttrs";
 
 interface EditableTextProps {
   id: number;
@@ -24,29 +26,38 @@ export default function EditableText({
   width,
 }: EditableTextProps) {
   const originalContent = text;
-  const [content, setContent] = useState(originalContent);
+  const [keyword, setKeyword] = useState(originalContent);
   const { data, updateNode, saveHistory } = useNodeListContext();
+  const { handleSocketEvent, currentJobStatus } = useSocketStore();
 
   useEffect(() => {
-    setContent(text);
+    setKeyword(text);
   }, [text]);
 
   function handleTextChange(e: React.ChangeEvent<HTMLInputElement>) {
-    setContent(e.target.value);
+    setKeyword(e.target.value);
   }
 
   function saveContent() {
-    if (content.trim()) {
-      saveHistory(JSON.stringify(data));
-      updateNode(id, { ...data[id], keyword: content });
+    if (keyword.trim() && keyword !== originalContent) {
+      handleSocketEvent({
+        actionType: "updateNode",
+        payload: { ...data, [id]: { ...data[id], keyword: keyword } },
+        callback: () => {
+          saveHistory(JSON.stringify(data));
+          updateNode(id, { keyword: keyword });
+        },
+      });
+      if (currentJobStatus === "error") setKeyword(originalContent);
     } else {
-      setContent(originalContent);
+      setKeyword(originalContent);
     }
     setIsEditing(false);
   }
 
   function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
-    if (e.key === "Enter") saveContent();
+    e.stopPropagation();
+    if (e.key === "Enter") setIsEditing(false);
   }
 
   function handleBlur() {
@@ -57,7 +68,8 @@ export default function EditableText({
     <>
       {isEditing ? (
         <EditableTextInput
-          value={content}
+          focus={true}
+          value={keyword}
           onChange={handleTextChange}
           onKeyDown={handleKeyDown}
           onBlur={handleBlur}
@@ -67,7 +79,8 @@ export default function EditableText({
         />
       ) : (
         <Text
-          text={content}
+          fontSize={TEXT_FONT_SIZE}
+          text={keyword}
           fill="black"
           wrap="word"
           align="center"

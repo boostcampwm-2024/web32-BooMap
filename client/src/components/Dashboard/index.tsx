@@ -1,17 +1,12 @@
-import { useState } from "react";
 import GuestDashBoard from "./GuestDashBoard";
 import UserDashBoard from "./UserDashBoard";
+import { useAuthStore } from "@/store/useAuthStore";
 
 export default function DashBoard() {
-  const [login, setLogin] = useState(false);
+  const loggedIn = useAuthStore((state) => state.isAuthenticated);
   return (
     <>
-      <section className="relative w-full">
-        {login ? <UserDashBoard /> : <GuestDashBoard />}
-        <button className="absolute bottom-[-30px] left-0" onClick={() => setLogin((prev) => !prev)}>
-          login
-        </button>
-      </section>
+      <section className="relative w-full">{loggedIn ? <UserDashBoard /> : <GuestDashBoard />}</section>
     </>
   );
 }

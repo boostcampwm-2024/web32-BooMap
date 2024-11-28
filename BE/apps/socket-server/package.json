@@ -1,0 +1,11 @@
+{
+  "name": "socket-server",
+  "version": "1.0.0",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@nestjs/platform-socket.io": "^10.4.8",
+    "@nestjs/websockets": "^10.4.8",
+    "@types/socket.io": "^3.0.1"
+  }
+}

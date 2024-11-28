@@ -1,9 +1,9 @@
 services:
   api-server:
     build:
-      context: .
-      dockerfile: Dockerfile.api-server
-    container_name: api-server
+      context: ./BE
+      dockerfile: Dockerfile.api
+    container_name: api
     env_file:
       - .env
     networks:
@@ -15,7 +15,10 @@ services:
       dockerfile: Dockerfile.nginx
     ports:
       - "80:80"
+      - "443:443"
     container_name: nginx
+    volumes:
+      - ./ete/letsencrypt:/etc/letsencrypt:ro
     networks:
       - my-network
 
@@ -27,9 +30,9 @@ services:
 
   socket-server:
     build:
-      context: .
-      dockerfile: Dockerfile.socket-server
-    container_name: socket-server
+      context: ./BE
+      dockerfile: Dockerfile.socket
+    container_name: socket
     env_file:
       - .env
     networks:

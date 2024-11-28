@@ -28,11 +28,15 @@ export default function useDimension(data) {
   }, [targetRef]);
 
   useEffect(() => {
+    centerMoveMap();
+  }, [adjustedDimensions]);
+
+  function centerMoveMap() {
     setDimensions((prev) => ({
       ...prev,
       ...adjustedDimensions,
     }));
-  }, [adjustedDimensions]);
+  }
 
   function resizing() {
     if (targetRef.current) {
@@ -52,14 +56,14 @@ export default function useDimension(data) {
   function zoomIn() {
     setDimensions((prevDimensions) => ({
       ...prevDimensions,
-      scale: prevDimensions.scale + 0.01,
+      scale: prevDimensions.scale + 0.05,
     }));
   }
 
   function zoomOut() {
     setDimensions((prevDimensions) => ({
       ...prevDimensions,
-      scale: prevDimensions.scale - 0.01,
+      scale: prevDimensions.scale - 0.05 < 0.05 ? 0.05 : prevDimensions.scale - 0.05,
     }));
   }
 
@@ -69,5 +73,6 @@ export default function useDimension(data) {
     handleWheel,
     zoomIn,
     zoomOut,
+    centerMoveMap,
   };
 }

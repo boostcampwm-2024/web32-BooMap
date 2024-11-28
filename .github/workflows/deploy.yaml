@@ -1,5 +1,4 @@
-name: cd
-
+name: CD
 on:
   push:
     branches:
@@ -22,6 +21,10 @@ jobs:
           port: ${{ secrets.SERVER_PORT }}
           script: |
             cd /root/web32-BooMap
-            git pull
+            git pull origin main
+            rm -f .env
+            rm -f client/.env.production
+            echo "${{ secrets.ENV_BE }}" > .env
+            echo "${{ secrets.ENV_FE }}" > client/.env.production
             docker-compose down
             docker-compose up -d --build
