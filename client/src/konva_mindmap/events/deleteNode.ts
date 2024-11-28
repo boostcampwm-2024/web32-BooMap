@@ -1,8 +1,12 @@
 import { useSocketStore } from "@/store/useSocketStore";
 import { NodeData } from "@/types/Node";
+import { findRootNodeKey } from "../utils/findRootNodeKey";
 
 export function deleteNodes(data: string, selectedNodeIds: number | number[], overrideNodeData) {
   const newNodeData: NodeData = JSON.parse(data);
+  const rootKey = findRootNodeKey(newNodeData);
+
+  if ((Array.isArray(selectedNodeIds) && selectedNodeIds.includes(rootKey)) || selectedNodeIds === rootKey) return;
 
   const nodeIds = Array.isArray(selectedNodeIds) ? selectedNodeIds : [selectedNodeIds];
   if (nodeIds.some((id) => !id || !newNodeData[id])) return;
