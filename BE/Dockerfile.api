@@ -7,7 +7,8 @@ COPY ./apps/api-server/package*.json ./apps/api-server/
 RUN npm install
 
 COPY . .
-RUN npm run build
+RUN npx nest build libs
+RUN npm nest build api-server
 
 FROM node:22-alpine AS production
 WORKDIR /app
