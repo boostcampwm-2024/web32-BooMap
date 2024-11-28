@@ -1,6 +1,7 @@
 import { NodeService } from './../node/node.service';
 import { MindmapService } from './../mindmap/mindmap.service';
 import { Injectable, Logger } from '@nestjs/common';
+import { DashboardException } from '../../exceptions';
 
 @Injectable()
 export class DashboardService {
@@ -34,7 +35,7 @@ export class DashboardService {
       }));
     } catch (error) {
       Logger.error(error);
-      throw error;
+      throw new DashboardException('대시보드 조회에 실패했습니다.');
     }
   }
 }
