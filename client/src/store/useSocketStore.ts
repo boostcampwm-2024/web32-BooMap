@@ -20,6 +20,7 @@ type SocketState = {
   handleConnection: (navigate: NavigateFunction, targetMode: string, isAuthenticated: boolean) => void;
   wsError: string[];
   currentJobStatus: string;
+  connectionStatus: string;
 };
 
 type HandleSocketEventProps = {
@@ -32,20 +33,32 @@ export const useSocketStore = create<SocketState>((set, get) => ({
   socket: null,
   wsError: [],
   currentJobStatus: "",
+  connectionStatus: "",
 
   connectSocket: (id) => {
     if (get().socket) return;
-    const socket = io("http://localhost/map", {
+    const socket = io(import.meta.env.VITE_APP_SOCKET_SERVER_BASE_URL, {
       // TODO: change to production URL
       query: {
         connectionId: id,
       },
+      transports: ["websocket"],
     });
+
     socket.on("error", () => {
       set({ wsError: [...get().wsError, "작업 중 에러가 발생했어요"] });
       set({ currentJobStatus: "error" });
     });
-    set({ socket });
+
+    socket.on("connect_error", () => {
+      set({ connectionStatus: "error" });
+    });
+
+    socket.on("reconnect", () => {
+      set({ connectionStatus: "connected" });
+    });
+
+    set({ socket: socket, connectionStatus: "connected" });
   },
 
   disconnectSocket: () => {
