@@ -37,7 +37,6 @@ export class MapService {
         return { id: createNodeDto.id };
       }
 
-      // mindmapId가 유효한지 확인
       if (!mindmapId) {
         throw new DatabaseException('유효하지 않은 mindmapId');
       }
@@ -139,12 +138,12 @@ export class MapService {
       client.data.connectionId = connectionId;
       const curruntData: Record<string, any> = {};
 
-      const [currentState, currentContent, currentTitle, currentAiCount, mindmapId] = await Promise.all([
+      const [currentState, currentContent, currentTitle, currentAiCount, ownerId, mindmapId] = await Promise.all([
         this.redis.get(`mindmapState:${connectionId}`),
         this.redis.get(`content:${connectionId}`),
         this.redis.hget(connectionId, 'title'),
         this.redis.hget(connectionId, 'aiCount'),
-        this.redis.hget(connectionId, 'owner'),
+        this.redis.hget(connectionId, 'ownerId'),
         this.redis.hget(connectionId, 'mindmapId'),
       ]);
 
@@ -160,7 +159,7 @@ export class MapService {
       if (currentAiCount) {
         curruntData['aiCount'] = currentAiCount;
       }
-      if (client.data.user) {
+      if (client.data.user && ownerId !== client.data.user.id) {
         this.publisherService.publish(
           'api-socket',
           JSON.stringify({ event: 'join', data: { connectionId, userId: client.data.user, mindmapId } }),

@@ -37,6 +37,7 @@ export class UserService {
     const user = await this.userRepository.findOne({ where: { id: userId } });
 
     return {
+      id: user.id,
       name: user.name,
       email: user.email,
     } as UserInfoDto;

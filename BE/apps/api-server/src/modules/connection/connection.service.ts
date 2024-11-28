@@ -49,13 +49,13 @@ export class ConnectionService {
 
       await this.GeneralRedis.set(`mindmapState:${mindmapData.connectionId}`, JSON.stringify(mindmapData.nodes));
       await this.GeneralRedis.set(`content:${mindmapData.connectionId}`, mindmapData.content);
+
+      return {
+        connectionId: mindmapData.connectionId,
+        role: role,
+      };
     } catch (error) {
       throw error;
     }
-
-    return {
-      connectionId: mindmapData.connectionId,
-      role: role,
-    };
   }
 }
