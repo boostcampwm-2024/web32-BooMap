@@ -28,10 +28,10 @@ export default function LoginModal({ open, close }: LoginModalProps) {
               <div className="flex flex-col gap-3">
                 <a
                   href={`${import.meta.env.VITE_APP_API_SERVER_BASE_URL}/auth/github`}
-                  className="flex items-center justify-center gap-3 rounded-lg bg-black p-3 pl-4 text-white"
+                  className="flex h-[45.59px] items-center justify-center gap-2 rounded-md bg-black pl-4 pr-6 text-white"
                 >
-                  <img src={gitHubIcon} alt="Github" className="w-7" />
-                  <span className="flex-grow">Login with Github</span>
+                  <img src={gitHubIcon} alt="Github" className="w-5" />
+                  <span className="flex-grow text-sm">Login with Github</span>
                 </a>
                 <a
                   href={`${import.meta.env.VITE_APP_API_SERVER_BASE_URL}/auth/kakao`}
