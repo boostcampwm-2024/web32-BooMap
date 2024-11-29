@@ -1,3 +1,4 @@
+import { JwtService } from '@nestjs/jwt';
 import {
   ConnectedSocket,
   MessageBody,
@@ -11,17 +12,15 @@ import {
 import { RedisService } from '@liaoliaots/nestjs-redis';
 import { Redis } from 'ioredis';
 import { MapService } from './map.service';
-import { UseFilters, Injectable, UseGuards, Logger } from '@nestjs/common';
+import { UseFilters, Injectable, Logger } from '@nestjs/common';
 import { Socket, Server } from 'socket.io';
 import { UpdateMindmapDto, CreateNodeDto, UpdateContentDto, UpdateTitleDto, AiRequestDto } from './dto';
 import { MindmapValidationPipe, WsValidationPipe } from '../../pipes';
 import { WsExceptionFilter } from '../../exceptionfilter/ws.exceptionFilter';
-import { WsOptionalJwtGuard } from '../../guard/ws.jwt.auth.guard';
 
 @Injectable()
 @WebSocketGateway({ transports: ['websocket'] })
 @UseFilters(new WsExceptionFilter())
-@UseGuards(WsOptionalJwtGuard)
 export class MapGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer() server: Server;
   private readonly redis: Redis;
@@ -30,6 +29,7 @@ export class MapGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
   constructor(
     private readonly mapService: MapService,
     private readonly redisService: RedisService,
+    private readonly jwtService: JwtService,
   ) {
     this.redis = this.redisService.getOrThrow('general');
   }
@@ -39,7 +39,35 @@ export class MapGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
   }
 
   async handleConnection(@ConnectedSocket() client: Socket) {
-    this.logger.log('사용자 연결 : ' + (client.data.user ? client.data.user.id : `guest ${client.id}`));
+    const refreshToken = client.handshake.headers.cookie?.split('=')[1];
+
+    if (refreshToken) {
+      const accessToken = client.handshake.auth.token;
+      if (accessToken) {
+        try {
+          this.jwtService.verify(accessToken);
+          const payload = this.jwtService.decode(accessToken);
+          const user = { id: payload['id'], email: payload['email'] };
+          client.data.user = user;
+        } catch {
+          try {
+            this.jwtService.verify(refreshToken);
+            const payload = this.jwtService.decode(refreshToken);
+            const user = { id: payload['id'], email: payload['email'] };
+            const accessToken = this.jwtService.sign(user, { expiresIn: '30m' });
+            client.emit('tokenRefresh', { accessToken });
+            client.data.user = user;
+          } catch {
+            client.emit('tokenExpiredError', { message: '리프레시 토큰 만료' });
+          }
+        }
+      }
+    } else {
+      client.data.user = null;
+    }
+    this.logger.log(
+      '사용자 연결 : ' + (client.data.user ? `유저 ID : ${client.data.user.id}` : `guest ID : ${client.id}`),
+    );
     const currentData = await this.mapService.joinRoom(client);
     client.emit('joinRoom', currentData);
   }

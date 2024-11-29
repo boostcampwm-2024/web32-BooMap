@@ -24,7 +24,8 @@ export class NodeService {
       return {};
     }
 
-    const nodeTree = await this.nodeRepository.findDescendants(rootNode);
+    const nodeTree = await this.nodeRepository.findDescendants(rootNode, { relations: ['children'] });
+
     const nodeTreeArray = nodeTree.map((node) => ({
       id: node.id,
       keyword: node.keyword,
