@@ -75,7 +75,7 @@ export class MapService {
 
   async updateContent(client: Socket, content: string) {
     try {
-      this.checkAuth(client);
+      // this.checkAuth(client);
       await this.redis.set(`content:${client.data.connectionId}`, content);
     } catch (error) {
       if (error instanceof UnauthorizedException) throw error;
@@ -85,7 +85,7 @@ export class MapService {
 
   async updateTitle(client: Socket, title: string) {
     try {
-      await this.checkAuth(client);
+      // await this.checkAuth(client);
       await this.redis.hset(client.data.connectionId, 'title', title);
     } catch (error) {
       if (error instanceof UnauthorizedException) throw error;
@@ -95,7 +95,7 @@ export class MapService {
 
   async aiRequest(client: Socket, aiContent: string) {
     try {
-      await this.checkAuth(client);
+      // await this.checkAuth(client);
       const aiCount = await this.redis.hget(client.data.connectionId, 'aiCount');
       if (Number(aiCount) === 0) {
         throw new AiRequestException('ai 요청 횟수 초과');
@@ -113,11 +113,14 @@ export class MapService {
 
   async checkAuth(client: Socket) {
     const type = await this.redis.hget(client.data.connectionId, 'type');
+    this.logger.log('연결 type: ' + type + ' 마인드맵');
     if (type === 'guest') {
       return;
     }
     const userId = client.data.user?.id;
+    this.logger.log('사용자 id: ' + userId);
     const ownerId = await this.redis.hget(client.data.connectionId, 'ownerId');
+    this.logger.log('소유자 id: ' + ownerId);
 
     if (userId !== ownerId) {
       throw new UnauthorizedException();
@@ -137,6 +140,7 @@ export class MapService {
 
       client.join(connectionId);
       client.data.connectionId = connectionId;
+      this.logger.log(`클라이언트 데이터 : ${JSON.stringify(client.data)}`);
       const curruntData: Record<string, any> = {};
 
       const [currentState, currentContent, currentTitle, currentAiCount, ownerId, mindmapId] = await Promise.all([

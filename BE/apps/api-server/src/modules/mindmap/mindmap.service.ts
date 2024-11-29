@@ -60,9 +60,11 @@ export class MindmapService {
     const myRoles = await this.userMindmapRoleRepository.find({
       where: { user: { id: userId } },
       relations: ['mindmap'],
+      select: ['mindmap'],
     });
 
-    if (!myRoles.length) {
+    if (!myRoles) {
+      this.logger.log('myRoles is empty');
       return [];
     }
 
@@ -83,11 +85,12 @@ export class MindmapService {
     }
 
     await this.mindmapRepository.softRemove({ id: mindmapId });
+    await this.userMindmapRoleRepository.softDelete({ mindmap: { id: mindmapId } });
   }
 
   async getDataByMindmapId(mindmapId: number) {
     const mindmap = await this.mindmapRepository.findOne({ where: { id: mindmapId } });
-    const nodes = await this.nodeService.tableToCanvas(mindmapId);
+    const nodes = await this.nodeService.tableToCanvas(mindmap.id);
 
     return {
       title: mindmap.title,

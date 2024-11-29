@@ -1,16 +1,18 @@
 import * as cookieParser from 'cookie-parser';
-import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import { CanActivate, ExecutionContext, Injectable, Logger } from '@nestjs/common';
 import { JsonWebTokenError, JwtService, TokenExpiredError } from '@nestjs/jwt';
 import { InvalidTokenException } from '../exceptions';
 import { Socket } from 'socket.io';
 
 @Injectable()
 export class WsOptionalJwtGuard implements CanActivate {
+  private readonly logger = new Logger(WsOptionalJwtGuard.name);
   constructor(private readonly jwtService: JwtService) {}
 
   canActivate(context: ExecutionContext): boolean {
     const client = context.switchToWs().getClient<Socket>();
     const token = client.handshake.auth.token;
+    this.logger.log('토큰 : ' + token);
 
     if (!token) {
       return true;

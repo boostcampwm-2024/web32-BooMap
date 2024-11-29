@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, DeleteDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Role } from './enum/role.enum';
 import { User } from './user.entity';
 import { Mindmap } from './mindmap.entity';
@@ -18,4 +18,7 @@ export class UserMindmapRole {
 
   @Column({ type: 'enum', enum: Role, default: Role.OWNER })
   role: Role;
+
+  @DeleteDateColumn()
+  deleteAt: Date | null;
 }
