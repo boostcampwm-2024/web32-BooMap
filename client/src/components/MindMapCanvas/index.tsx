@@ -13,9 +13,9 @@ import SelectionRect from "@/konva_mindmap/components/selectionRect";
 import DrawMindMap from "@/konva_mindmap/components/DrawMindMap";
 import ShowShortCut from "./ShowShortCut";
 import { findRootNodeKey } from "@/konva_mindmap/utils/findRootNodeKey";
-import { useConnectionStore } from "@/store/useConnectionStore";
 import Konva from "konva";
 import { addNode } from "@/konva_mindmap/events/addNode";
+import { useConnectionStore } from "@/store/useConnectionStore";
 
 export default function MindMapCanvas({ showMinutes, handleShowMinutes }) {
   const {
