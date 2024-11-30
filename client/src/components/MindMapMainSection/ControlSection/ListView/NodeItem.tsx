@@ -59,7 +59,9 @@ export default function NodeItem({ node, parentNodeId, open, handleAccordion, op
   function handleAddButton() {
     saveHistory(JSON.stringify(data));
     selectNode({ nodeId: node.id, parentNodeId: parentNodeId, addTo: "list" });
-    addNode(data, { nodeId: node.id, parentNodeId: parentNodeId, addTo: "list" }, overrideNodeData);
+    addNode(data, { nodeId: node.id, parentNodeId: parentNodeId, addTo: "list" }, overrideNodeData, (newNodeId) => {
+      selectNode({ nodeId: newNodeId, parentNodeId: node.id, addTo: "list" });
+    });
     openAccordion();
   }
 
