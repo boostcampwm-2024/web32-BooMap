@@ -13,9 +13,9 @@ import SelectionRect from "@/konva_mindmap/components/selectionRect";
 import DrawMindMap from "@/konva_mindmap/components/DrawMindMap";
 import ShowShortCut from "./ShowShortCut";
 import { findRootNodeKey } from "@/konva_mindmap/utils/findRootNodeKey";
-import { showNewNode } from "@/konva_mindmap/events/addNode";
 import { useConnectionStore } from "@/store/useConnectionStore";
 import Konva from "konva";
+import { addNode } from "@/konva_mindmap/events/addNode";
 
 export default function MindMapCanvas({ showMinutes, handleShowMinutes }) {
   const {
@@ -79,7 +79,7 @@ export default function MindMapCanvas({ showMinutes, handleShowMinutes }) {
         deleteSelectedNodes();
         break;
       case "Equal":
-        showNewNode(data, selectedNode, overrideNodeData);
+        addNode(data, selectedNode, overrideNodeData);
         break;
       default:
         break;

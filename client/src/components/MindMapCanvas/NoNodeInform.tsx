@@ -1,4 +1,4 @@
-import { showNewNode } from "@/konva_mindmap/events/addNode";
+import { addNode } from "@/konva_mindmap/events/addNode";
 import { useNodeListContext } from "@/store/NodeListProvider";
 import { Button } from "@headlessui/react";
 
@@ -9,7 +9,7 @@ export default function NoNodeInform() {
       <p className="mb-5 text-white">브레인스토밍을 시작해보세요.</p>
       <Button
         className="rounded-lg bg-bm-blue px-6 py-2 transition hover:brightness-90"
-        onClick={() => showNewNode(data, selectedNode, overrideNodeData)}
+        onClick={() => addNode(data, selectedNode, overrideNodeData)}
       >
         시작하기
       </Button>

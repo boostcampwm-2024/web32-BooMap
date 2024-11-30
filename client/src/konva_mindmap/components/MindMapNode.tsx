@@ -1,4 +1,3 @@
-import NewNode from "@/konva_mindmap/components/NewNode";
 import EditableText from "@/konva_mindmap/components/EditableText";
 import { NodeProps } from "@/types/Node";
 import { Circle, Group } from "react-konva";
@@ -19,12 +18,10 @@ import {
 } from "@/konva_mindmap/utils/nodeAttrs";
 import NodeTool from "@/konva_mindmap/components/NodeTool";
 import { deleteNodes } from "@/konva_mindmap/events/deleteNode";
-import { showNewNode } from "@/konva_mindmap/events/addNode";
 import { useConnectionStore } from "@/store/useConnectionStore";
+import { addNode } from "@/konva_mindmap/events/addNode";
 
 export default function MindMapNode({ data, parentNode, node, depth, parentRef, dragmode }: NodeProps) {
-  if (node.newNode)
-    return <NewNode data={data} parentNode={parentNode} node={node} depth={depth} dragmode={dragmode} />;
   const nodeRef = useRef<Konva.Group>(null);
   const { saveHistory, updateNode, selectNode, selectedNode, selectedGroup, overrideNodeData, groupRelease } =
     useNodeListContext();
@@ -135,7 +132,7 @@ export default function MindMapNode({ data, parentNode, node, depth, parentRef, 
             setIsEditing(true);
           }}
           handleAdd={() =>
-            showNewNode(data, { nodeId: node.id, parentNodeId: node.id ?? null, addTo: "canvas" }, overrideNodeData)
+            addNode(data, { nodeId: node.id, parentNodeId: node.id ?? null, addTo: "canvas" }, overrideNodeData)
           }
           handleDelete={() => deleteNodes(JSON.stringify(data), node.id, overrideNodeData)}
         />
