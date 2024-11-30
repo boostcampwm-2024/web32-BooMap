@@ -5,13 +5,13 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 export default function useAuth() {
-  const isAuthenticated = useConnectionStore((state) => state.isAuthenticated);
+  const isAuthenticated = useConnectionStore((state) => state.token);
   const navigate = useNavigate();
 
   const { isLoading, isError } = useQuery({
     queryKey: ["user"],
     queryFn: getUser,
-    enabled: isAuthenticated,
+    enabled: !!isAuthenticated,
   });
 
   useEffect(() => {

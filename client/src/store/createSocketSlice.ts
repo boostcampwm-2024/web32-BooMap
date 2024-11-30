@@ -43,11 +43,8 @@ export const createSocketSlice: StateCreator<ConnectionStore, [], [], SocketSlic
       },
       transports: ["websocket"],
     };
-    if (get().isAuthenticated) {
-      options.auth = { token: get().token };
-    } else {
-      get().checkRole(connectionId);
-    }
+
+    get().checkRole(connectionId);
 
     const socket = io(import.meta.env.VITE_APP_SOCKET_SERVER_BASE_URL, options);
 

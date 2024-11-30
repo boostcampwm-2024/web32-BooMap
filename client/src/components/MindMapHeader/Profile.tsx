@@ -9,7 +9,7 @@ import { useConnectionStore } from "@/store/useConnectionStore";
 export default function Profile() {
   const { open: loginModal, openModal: openLoginModal, closeModal: closeLoginModal } = useModal();
   const { open: profileModal, openModal: openProfileModal, closeModal: closeProfileModal } = useModal();
-  const isAuthenticated = useConnectionStore((state) => state.isAuthenticated);
+  const isAuthenticated = useConnectionStore((state) => state.token);
 
   function handleProfileModal() {
     if (isAuthenticated) {
