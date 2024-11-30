@@ -39,6 +39,7 @@ export const useSocketStore = create<SocketState>((set, get) => ({
   connectionStatus: "",
 
   connectSocket: (id, token) => {
+    if (get().socket) return;
     const options: any = {
       query: {
         connectionId: id,
