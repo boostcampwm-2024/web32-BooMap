@@ -26,6 +26,8 @@ export const useConnectionStore = create<ConnectionStore>()(
         partialize: (state) => {
           return {
             token: state.token,
+            ownedMindMap: state.ownedMindMap,
+            ownedMindMapForGuest: state.ownedMindMapForGuest,
           };
         },
         storage: createJSONStorage(() => localStorage),
