@@ -1,34 +1,38 @@
-import { getToken, removeToken } from "@/utils/localstorage";
-import { create } from "zustand";
+import { ConnectionStore } from "@/types/store";
+import { StateCreator } from "zustand";
 
-type UserStore = {
+export interface AuthSlice {
+  token: string;
   email: null | string;
   name: null | string;
   id: null | number;
   isAuthenticated: boolean;
+  tokenRefresh: (accessToken: string) => void;
   checkAuthenticated: () => void;
   logout: () => void;
   setUser: (email: string, name: string, id: number) => void;
-};
-export const useAuthStore = create<UserStore>((set) => ({
+}
+
+export const createAuthSlice: StateCreator<ConnectionStore, [], [], AuthSlice> = (set, get) => ({
+  token: "",
   email: null,
   name: null,
   id: null,
   isAuthenticated: false,
 
+  tokenRefresh: (accessToken: string) => set({ token: accessToken }),
+
   checkAuthenticated: () => {
-    const accessToken = getToken();
-    if (accessToken) {
+    if (get().token) {
       set({ isAuthenticated: true });
     }
   },
 
   logout: () => {
-    removeToken();
-    set({ email: null, name: null, isAuthenticated: false });
+    set({ email: null, name: null, isAuthenticated: false, token: "" });
   },
 
   setUser: (email: string, name: string, id: number) => {
     set({ email, name, id, isAuthenticated: true });
   },
-}));
+});
