@@ -1,5 +1,5 @@
 import profileIcon from "@/assets/profile.png";
-import { useAuthStore } from "@/store/useAuthStore";
+import { useConnectionStore } from "@/store/useConnectionStore";
 import { Button } from "@headlessui/react";
 import { useEffect, useRef } from "react";
 import { FaUserCircle } from "react-icons/fa";
@@ -9,12 +9,14 @@ type ProfileModalProps = {
   close: () => void;
 };
 export default function ProfileModal({ open, close }: ProfileModalProps) {
-  const auth = useAuthStore();
+  const logout = useConnectionStore((state) => state.logout);
+  const email = useConnectionStore((state) => state.email);
+  const name = useConnectionStore((state) => state.name);
   const modalRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    auth.logout();
+    logout();
     navigate("/");
     close();
   };
@@ -44,8 +46,8 @@ export default function ProfileModal({ open, close }: ProfileModalProps) {
         >
           <FaUserCircle className="my-5 h-11 w-11" color="#93C5FD" />
           <div className="w-full px-5 py-0 text-center">
-            <p>{auth.name}</p>
-            <p className="text-sm text-grayscale-300">{auth.email}</p>
+            <p>{name}</p>
+            <p className="text-sm text-grayscale-300">{email}</p>
           </div>
           <Button className="w-full p-3 px-5 text-sm transition hover:brightness-75" onClick={handleLogout}>
             로그아웃

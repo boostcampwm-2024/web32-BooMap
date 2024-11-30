@@ -2,16 +2,16 @@ import { colors } from "@/constants/color";
 import EditableTextInput from "@/konva_mindmap/components/EditableTextInput";
 import { addNode } from "@/konva_mindmap/events/addNode";
 import { useNodeListContext } from "@/store/NodeListProvider";
-import { useSocketStore } from "@/store/useSocketStore";
 import { NodeProps } from "@/types/Node";
 import { useState } from "react";
 import { Circle, Group } from "react-konva";
 import { NODE_RADIUS, NODE_WIDTH_AND_HEIGHT, TEXT_OFFSET_X, TEXT_OFFSET_Y, TEXT_WIDTH } from "../utils/nodeAttrs";
+import { useConnectionStore } from "@/store/useConnectionStore";
 
 export default function NewNode({ data, node, depth }: NodeProps) {
   const { saveHistory, selectedNode, updateNode } = useNodeListContext();
   const [keyword, setKeyword] = useState("제목없음");
-  const handleSocketEvent = useSocketStore.getState().handleSocketEvent;
+  const handleSocketEvent = useConnectionStore.getState().handleSocketEvent;
 
   function handleTextChange(e: React.ChangeEvent<HTMLInputElement>) {
     setKeyword(e.target.value);

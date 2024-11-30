@@ -1,14 +1,13 @@
-import { useAuthStore } from "@/store/useAuthStore";
-import { useSocketStore } from "@/store/useSocketStore";
 import { Button } from "@headlessui/react";
 import { FaPlus } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import cloud from "@/assets/dashbordIcon.png";
+import { useConnectionStore } from "@/store/useConnectionStore";
 
 export default function NoMindMap() {
-  const handleConnection = useSocketStore((state) => state.handleConnection);
+  const handleConnection = useConnectionStore((state) => state.createConnection);
   const navigate = useNavigate();
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const isAuthenticated = useConnectionStore((state) => state.isAuthenticated);
   return (
     <div className="mb-20 flex h-full w-full flex-col items-center justify-center rounded-[20px] bg-grayscale-700 pb-10">
       <p className="whitespace-pre-line text-center text-3xl font-bold">

@@ -4,12 +4,11 @@ import { Button } from "@headlessui/react";
 import extractDate from "@/utils/extractDate";
 import DeleteMindMapModal from "../DeleteMindMapModal";
 import { createPortal } from "react-dom";
-import { useAuthStore } from "@/store/useAuthStore";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useDeleteMindMap } from "@/api/fetchHooks/useDeleteMindMap";
 import { DashBoard } from "@/konva_mindmap/types/dashboard";
-import { useSocketStore } from "@/store/useSocketStore";
+import { useConnectionStore } from "@/store/useConnectionStore";
 
 interface MindMapInfoItemProps {
   data: DashBoard;
@@ -18,14 +17,14 @@ interface MindMapInfoItemProps {
 
 export default function MindMapInfoItem({ data, index }: MindMapInfoItemProps) {
   const { open, openModal, closeModal } = useModal();
-  const { id } = useAuthStore();
   const keywordData = data.keyword.slice(0, 4);
   const navigate = useNavigate();
   const mutation = useDeleteMindMap({
     mindMapId: data.id.toString(),
     onError: (error) => console.log(error),
   });
-  const getConnection = useSocketStore((state) => state.getConnection);
+  const id = useConnectionStore((state) => state.id);
+  const getConnection = useConnectionStore((state) => state.getConnection);
 
   const ownerCheck = id === data.ownerId;
 

@@ -1,10 +1,10 @@
-import { useSocketStore } from "@/store/useSocketStore";
+import { useConnectionStore } from "@/store/useConnectionStore";
 import { useState, useCallback } from "react";
 
 export default function useHistoryState<T>(data: string) {
   const [history, setHistory] = useState([data]);
   const [pointer, setPointer] = useState(0);
-  const handleSocketEvent = useSocketStore.getState().handleSocketEvent;
+  const handleSocketEvent = useConnectionStore((state) => state.handleSocketEvent);
 
   const saveHistory = useCallback(
     (data: string) => {

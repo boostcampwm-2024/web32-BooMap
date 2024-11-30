@@ -1,7 +1,7 @@
 import { addNode } from "@/konva_mindmap/events/addNode";
 import { deleteNodes } from "@/konva_mindmap/events/deleteNode";
 import { useNodeListContext } from "@/store/NodeListProvider";
-import { useSocketStore } from "@/store/useSocketStore";
+import { useConnectionStore } from "@/store/useConnectionStore";
 import { ChangeEvent, KeyboardEvent, useEffect, useState } from "react";
 
 export default function useNodeActions(nodeId: number, content: string) {
@@ -9,7 +9,7 @@ export default function useNodeActions(nodeId: number, content: string) {
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [keyword, setKeyword] = useState(content);
   const { data, updateNode, saveHistory, overrideNodeData } = useNodeListContext();
-  const handleSocketEvent = useSocketStore((state) => state.handleSocketEvent);
+  const handleSocketEvent = useConnectionStore((state) => state.handleSocketEvent);
 
   useEffect(() => {
     setKeyword(content);

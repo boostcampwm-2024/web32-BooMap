@@ -13,8 +13,8 @@ import SelectionRect from "@/konva_mindmap/components/selectionRect";
 import DrawMindMap from "@/konva_mindmap/components/DrawMindMap";
 import ShowShortCut from "./ShowShortCut";
 import { findRootNodeKey } from "@/konva_mindmap/utils/findRootNodeKey";
-import { useSocketStore } from "@/store/useSocketStore";
 import { showNewNode } from "@/konva_mindmap/events/addNode";
+import { useConnectionStore } from "@/store/useConnectionStore";
 
 export default function MindMapCanvas({ showMinutes, handleShowMinutes }) {
   const {
@@ -34,7 +34,7 @@ export default function MindMapCanvas({ showMinutes, handleShowMinutes }) {
   const registerLayer = useCollisionDetection(data, updateNode);
   const stageRef = useRef();
   const { registerStageRef } = useStageStore();
-  const handleSocketEvent = useSocketStore.getState().handleSocketEvent;
+  const handleSocketEvent = useConnectionStore((state) => state.handleSocketEvent);
 
   const rootKey = findRootNodeKey(data);
 

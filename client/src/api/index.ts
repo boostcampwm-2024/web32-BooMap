@@ -1,7 +1,7 @@
 import { tokenRefresh } from "@/api/auth";
 import { logOnDev } from "@/utils/logging";
-import { getToken } from "@/utils/localstorage";
 import axios, { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from "axios";
+import { useConnectionStore } from "@/store/useConnectionStore";
 
 export const instance = axios.create({
   baseURL: import.meta.env.VITE_APP_API_SERVER_BASE_URL,
@@ -23,7 +23,7 @@ declare module "axios" {
 instance.interceptors.request.use((config: InternalAxiosRequestConfig) => {
   const { method, baseURL, url } = config;
   logOnDev(`🚀 [API Request] ${method?.toUpperCase()} ${baseURL} ${url}`);
-  const accessToken = getToken();
+  const accessToken = useConnectionStore.getState().token;
 
   config.headers["Content-Type"] = "application/json";
   config.headers["Authorization"] = `Bearer ${accessToken}`;
@@ -54,7 +54,8 @@ instance.interceptors.response.use(
           originalRequest._retry = true;
 
           const newAccessToken = await tokenRefresh();
-          originalRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
+          useConnectionStore.getState().tokenRefresh(newAccessToken.accessToken);
+          originalRequest.headers["Authorization"] = `Bearer ${newAccessToken.accessToken}`;
 
           return instance(originalRequest);
         }

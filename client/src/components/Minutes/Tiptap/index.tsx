@@ -10,14 +10,14 @@ import { Indent } from "./utils/indent";
 import CustomCodeBlockLowlight from "./utils/codeBlockIndent";
 import Placeholder from "@tiptap/extension-placeholder";
 import { useNodeListContext } from "@/store/NodeListProvider";
-import { useSocketStore } from "@/store/useSocketStore";
 import { throttle } from "@/konva_mindmap/utils/throttle";
 import { useEffect } from "react";
+import { useConnectionStore } from "@/store/useConnectionStore";
 
 export default function Tiptap() {
   const { content, updateContent } = useNodeListContext();
-  const handleSocketEvent = useSocketStore((state) => state.handleSocketEvent);
-  const role = useSocketStore((state) => state.role);
+  const handleSocketEvent = useConnectionStore((state) => state.handleSocketEvent);
+  const role = useConnectionStore((state) => state.currentRole);
 
   const editor = useEditor({
     extensions: [

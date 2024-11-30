@@ -2,8 +2,6 @@ import aiIcon from "@/assets/ai.png";
 import OverviewButton from "@/components/Sidebar/OverviewButton";
 import useSection from "@/hooks/useSection";
 import { useNavigate } from "react-router-dom";
-import { useSocketStore } from "@/store/useSocketStore";
-import { useAuthStore } from "@/store/useAuthStore";
 import { getLatestMindMap } from "@/utils/localstorage";
 import useModal from "@/hooks/useModal";
 import { createPortal } from "react-dom";
@@ -14,13 +12,15 @@ import { FaListUl } from "react-icons/fa";
 import { FaFileAlt } from "react-icons/fa";
 import { FaFileAudio } from "react-icons/fa6";
 import { RiRobot3Line } from "react-icons/ri";
+import { useConnectionStore } from "@/store/useConnectionStore";
 
 type ViewMode = "listview" | "voiceupload" | "textupload";
 export default function Overview() {
   const navigate = useNavigate();
   const { getmode, handleViewMode } = useSection();
-  const { socket, handleConnection } = useSocketStore();
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const socket = useConnectionStore((state) => state.socket);
+  const createConnection = useConnectionStore((state) => state.createConnection);
+  const isAuthenticated = useConnectionStore((state) => state.isAuthenticated);
   const { open, closeModal, openModal } = useModal();
   const [selectMode, setSelcetMode] = useState<ViewMode>("listview");
 
@@ -32,7 +32,7 @@ export default function Overview() {
 
     const latestMindMap = getLatestMindMap();
     if (!latestMindMap) {
-      handleConnection(navigate, mode, isAuthenticated);
+      createConnection(navigate, mode, isAuthenticated);
       return;
     }
     openModal();
@@ -46,7 +46,7 @@ export default function Overview() {
   }
 
   function navigateToNewMindMap() {
-    handleConnection(navigate, "listview", isAuthenticated);
+    createConnection(navigate, "listview", isAuthenticated);
     closeModal();
   }
 

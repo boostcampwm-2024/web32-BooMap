@@ -2,8 +2,8 @@ import { Text } from "react-konva";
 import { useEffect, useState } from "react";
 import { useNodeListContext } from "@/store/NodeListProvider";
 import EditableTextInput from "@/konva_mindmap/components/EditableTextInput";
-import { useSocketStore } from "@/store/useSocketStore";
 import { TEXT_FONT_SIZE } from "@/konva_mindmap/utils/nodeAttrs";
+import { useConnectionStore } from "@/store/useConnectionStore";
 
 interface EditableTextProps {
   id: number;
@@ -28,7 +28,8 @@ export default function EditableText({
   const originalContent = text;
   const [keyword, setKeyword] = useState(originalContent);
   const { data, updateNode, saveHistory } = useNodeListContext();
-  const { handleSocketEvent, currentJobStatus } = useSocketStore();
+  const handleSocketEvent = useConnectionStore((state) => state.handleSocketEvent);
+  const currentJobStatus = useConnectionStore((state) => state.currentJobStatus);
 
   useEffect(() => {
     setKeyword(text);
