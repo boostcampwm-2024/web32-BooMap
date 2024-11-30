@@ -43,6 +43,8 @@ export const createSocketSlice: StateCreator<ConnectionStore, [], [], SocketSlic
       },
       transports: ["websocket"],
     };
+    const token = get().token;
+    if (token) options.auth = { token };
 
     get().checkRole(connectionId);
 
