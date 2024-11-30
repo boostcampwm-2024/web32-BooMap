@@ -31,7 +31,7 @@ export default function MindMapNode({ data, parentNode, node, depth, parentRef, 
 
   useWindowEventListener("keydown", (e) => {
     if (e.code === "Enter" && selectedNode.nodeId === node.id) {
-      setIsEditing(true);
+      setIsEditing(!isEditing);
     }
   });
 
