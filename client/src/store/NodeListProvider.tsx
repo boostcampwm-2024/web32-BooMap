@@ -3,12 +3,11 @@ import useHistoryState from "@/hooks/useHistoryState";
 import { Node, NodeData, SelectedNode } from "@/types/Node";
 import Konva from "konva";
 import { createContext, ReactNode, useContext, useState } from "react";
-
-import { useSocketStore } from "./useSocketStore";
 import { deleteNodes } from "@/konva_mindmap/events/deleteNode";
-import { checkOwner, setLatestMindMap } from "@/utils/localstorage";
+import { setLatestMindMap } from "@/utils/localstorage";
 import useMindMapTitle from "@/hooks/useMindMapTitle";
 import useContent from "@/hooks/useContent";
+import { useConnectionStore } from "@/store/useConnectionStore";
 
 export type NodeListContextType = {
   data: NodeData | null;
@@ -28,7 +27,6 @@ export type NodeListContextType = {
   loading: boolean;
   deleteSelectedNodes: () => void;
   updateMindMapId: (mindMapId: string) => void;
-  isOwner: boolean;
   content: string;
   updateContent: (updatedContent: string) => void;
 };
@@ -50,9 +48,8 @@ export default function NodeListProvider({ children }: { children: ReactNode }) 
   const { content, updateContent, initializeContent } = useContent();
   const [loading, setLoading] = useState(true);
   const [mindMapId, setMindMapId] = useState("");
-  const [isOwner, setOwner] = useState(true);
   const { selectedGroup, groupRelease, groupSelect } = useGroupSelect();
-  const socket = useSocketStore((state) => state.socket);
+  const socket = useConnectionStore((state) => state.socket);
 
   socket?.on("joinRoom", (initialData) => {
     setLoading(true);
@@ -144,7 +141,6 @@ export default function NodeListProvider({ children }: { children: ReactNode }) 
         loading,
         deleteSelectedNodes,
         updateMindMapId,
-        isOwner,
         content,
         updateContent,
       }}

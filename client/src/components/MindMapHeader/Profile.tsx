@@ -1,19 +1,18 @@
 import LoginModal from "@/components/LoginModal";
-import profile from "@/assets/profile.png";
 import { Button } from "@headlessui/react";
 import { createPortal } from "react-dom";
-import { useAuthStore } from "@/store/useAuthStore";
 import useModal from "@/hooks/useModal";
 import ProfileModal from "@/components/MindMapHeader/ProfileModal";
 import { FaUserCircle } from "react-icons/fa";
+import { useConnectionStore } from "@/store/useConnectionStore";
 
 export default function Profile() {
   const { open: loginModal, openModal: openLoginModal, closeModal: closeLoginModal } = useModal();
   const { open: profileModal, openModal: openProfileModal, closeModal: closeProfileModal } = useModal();
-  const auth = useAuthStore();
-  
+  const isAuthenticated = useConnectionStore((state) => state.token);
+
   function handleProfileModal() {
-    if (auth.isAuthenticated) {
+    if (isAuthenticated) {
       openProfileModal();
       return;
     }

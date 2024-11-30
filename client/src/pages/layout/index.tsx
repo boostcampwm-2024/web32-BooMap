@@ -1,13 +1,13 @@
 import NotFound from "@/components/common/NotFound";
 import Sidebar from "@/components/Sidebar";
 import { useSideBar } from "@/store/useSideBar";
-import { useSocketStore } from "@/store/useSocketStore";
 import { ErrorBoundary } from "react-error-boundary";
 import { Outlet } from "react-router-dom";
+import { useConnectionStore } from "@/store/useConnectionStore";
 
 export default function Layout() {
   const sidebar = useSideBar();
-  const { connectionStatus } = useSocketStore();
+  const connectionStatus = useConnectionStore((state) => state.connectionStatus);
 
   if (connectionStatus === "error") return <NotFound />;
 

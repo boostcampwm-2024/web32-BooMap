@@ -1,5 +1,5 @@
 import { Socket, io } from "socket.io-client";
-import { create } from "zustand";
+import { StateCreator } from "zustand";
 import {
   actionType,
   createNodePayload,
@@ -9,16 +9,14 @@ import {
   updateContentPayload,
 } from "@/types/NodePayload";
 import { createMindmap, getMindMap } from "@/api/mindmap.api";
-import { NavigateFunction } from "react-router-dom";
-import { checkOwner, getToken, setOwner } from "@/utils/localstorage";
+import { ConnectionStore } from "@/types/store";
 
-type SocketState = {
+export type SocketSlice = {
   socket: Socket | null;
-  role: "owner" | "editor" | null;
-  connectSocket: (id: string, token?: string) => void;
+  connectSocket: (id: string) => void;
   disconnectSocket: () => void;
   handleSocketEvent: (props: HandleSocketEventProps) => void;
-  handleConnection: (navigate: NavigateFunction, targetMode: string, isAuthenticated: boolean) => void;
+  handleConnection: () => Promise<string>;
   getConnection: (mindMapId: number, connectionId: string) => void;
   wsError: string[];
   currentJobStatus: string;
@@ -31,26 +29,24 @@ type HandleSocketEventProps = {
   callback?: (response?: any) => void;
 };
 
-export const useSocketStore = create<SocketState>((set, get) => ({
+export const createSocketSlice: StateCreator<ConnectionStore, [], [], SocketSlice> = (set, get) => ({
   socket: null,
   role: null,
   wsError: [],
   currentJobStatus: "",
   connectionStatus: "",
 
-  connectSocket: (id, token) => {
-    if (get().socket) return;
+  connectSocket: (connectionId) => {
     const options: any = {
       query: {
-        connectionId: id,
+        connectionId,
       },
       transports: ["websocket"],
     };
-    if (token) {
-      options.auth = { token };
-    } else {
-      checkOwner(id) ? set({ role: "owner" }) : set({ role: "editor" });
-    }
+    const token = get().token;
+    if (token) options.auth = { token };
+
+    get().checkRole(connectionId);
 
     const socket = io(import.meta.env.VITE_APP_SOCKET_SERVER_BASE_URL, options);
 
@@ -73,7 +69,8 @@ export const useSocketStore = create<SocketState>((set, get) => ({
   disconnectSocket: () => {
     const socket = get().socket;
     if (socket) socket.disconnect();
-    set({ socket: null, role: null });
+    set({ socket: null });
+    get().updateRole("editor");
   },
 
   handleSocketEvent: ({ actionType, payload, callback }: HandleSocketEventProps) => {
@@ -89,16 +86,14 @@ export const useSocketStore = create<SocketState>((set, get) => ({
     });
   },
 
-  handleConnection: async (navigate: NavigateFunction, targetMode: string, isAuthenticated: boolean) => {
+  handleConnection: async () => {
     try {
       const socket = get().socket;
       if (socket) socket.disconnect();
       const response = await createMindmap();
       const newMindMapId = response.data;
-      if (!isAuthenticated) setOwner(newMindMapId);
-      set({ role: "owner" });
-      get().connectSocket(newMindMapId, isAuthenticated ? getToken() : undefined);
-      navigate(`/mindmap/${newMindMapId}?mode=${targetMode}`);
+      get().connectSocket(newMindMapId);
+      return newMindMapId;
     } catch (error) {
       console.error(error);
     }
@@ -109,10 +104,9 @@ export const useSocketStore = create<SocketState>((set, get) => ({
       const socket = get().socket;
       if (socket) socket.disconnect();
       const response = await getMindMap(mindMapId.toString());
-      set({ role: response.role });
       get().connectSocket(connectionId);
     } catch (error) {
       throw error;
     }
   },
-}));
+});

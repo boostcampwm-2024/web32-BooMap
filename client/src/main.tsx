@@ -6,10 +6,10 @@ import App from "./App";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import NotFound from "@/components/common/NotFound";
 import AuthorizeCallback from "@/pages/auth";
-import { useAuthStore } from "@/store/useAuthStore";
 import Layout from "@/pages/layout";
 import MindMap from "@/pages/Mindmap";
 import { ErrorBoundary } from "react-error-boundary";
+import { useConnectionStore } from "@/store/useConnectionStore";
 import TestPage from "./pages/TestPage";
 
 const router = createBrowserRouter([
@@ -55,8 +55,8 @@ const queryClient = new QueryClient({
 queryClient.getQueryCache().subscribe((event) => {
   if (event?.type === "updated" && event.query.queryKey[0] === "user") {
     const data = event.query.state.data;
-    if (data?.email && data?.name && data?.id) useAuthStore.getState().setUser(data?.email, data?.name, data?.id);
-    else useAuthStore.getState().logout();
+    if (data?.email && data?.name && data?.id) useConnectionStore.getState().setUser(data?.email, data?.name, data?.id);
+    else useConnectionStore.getState().logout();
   }
 });
 

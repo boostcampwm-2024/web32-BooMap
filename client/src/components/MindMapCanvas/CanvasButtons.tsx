@@ -2,12 +2,12 @@ import DeleteConfirmModal from "@/components/MindMapCanvas/DeleteConfirmModal";
 import useModal from "@/hooks/useModal";
 import { findRootNodeKey } from "@/konva_mindmap/utils/findRootNodeKey";
 import { useNodeListContext } from "@/store/NodeListProvider";
-import { useSocketStore } from "@/store/useSocketStore";
+import { useConnectionStore } from "@/store/useConnectionStore";
 import { Button } from "@headlessui/react";
 import { createPortal } from "react-dom";
 
 export default function CanvasButtons({ handleReArrange, handleCenterMove, showMinutes, handleShowMinutes }) {
-  const { handleSocketEvent } = useSocketStore();
+  const handleSocketEvent = useConnectionStore((state) => state.handleSocketEvent);
   const { data, overrideNodeData } = useNodeListContext();
   const { open, openModal, closeModal } = useModal();
   const rootKey = findRootNodeKey(data);

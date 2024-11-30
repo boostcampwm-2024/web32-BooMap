@@ -1,8 +1,8 @@
 import { calculateVector } from "@/konva_mindmap/utils/vector";
-import { useSocketStore } from "@/store/useSocketStore";
 import { Node, NodeData, SelectedNode } from "@/types/Node";
 import { findRootNodeKey } from "../utils/findRootNodeKey";
 import { NODE_DEPTH_LIMIT } from "@/constants/node";
+import { useConnectionStore } from "@/store/useConnectionStore";
 
 export function addNode(
   data: NodeData,
@@ -10,7 +10,7 @@ export function addNode(
   overrideNodeData: React.Dispatch<React.SetStateAction<NodeData>>,
   onNodeCreated?: (id: number) => void,
 ) {
-  const handleSocketEvent = useSocketStore.getState().handleSocketEvent;
+  const handleSocketEvent = useConnectionStore.getState().handleSocketEvent;
   // 아무 노드도 없을 때는 임의로 id 생성해서 현재는 넣음
   if (!Object.keys(data).length) {
     const newNode = {
