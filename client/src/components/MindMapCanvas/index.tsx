@@ -15,6 +15,7 @@ import ShowShortCut from "./ShowShortCut";
 import { findRootNodeKey } from "@/konva_mindmap/utils/findRootNodeKey";
 import { showNewNode } from "@/konva_mindmap/events/addNode";
 import { useConnectionStore } from "@/store/useConnectionStore";
+import Konva from "konva";
 
 export default function MindMapCanvas({ showMinutes, handleShowMinutes }) {
   const {
@@ -30,9 +31,9 @@ export default function MindMapCanvas({ showMinutes, handleShowMinutes }) {
     selectedNode,
   } = useNodeListContext();
   const [isDragMode, setDragMode] = useState(false);
-  const { dimensions, targetRef, handleWheel, zoomIn, zoomOut, centerMoveMap } = useDimension(data);
+  const { dimensions, targetRef, handleWheel, zoomIn, zoomOut, reArrange } = useDimension(data);
   const registerLayer = useCollisionDetection(data, updateNode);
-  const stageRef = useRef();
+  const stageRef = useRef<Konva.Stage>();
   const { registerStageRef } = useStageStore();
   const handleSocketEvent = useConnectionStore((state) => state.handleSocketEvent);
 
@@ -121,19 +122,12 @@ export default function MindMapCanvas({ showMinutes, handleShowMinutes }) {
         setDragmode={setDragMode}
       />
       <ShowShortCut />
-      <ToolMenu
-        dimensions={dimensions}
-        zoomIn={zoomIn}
-        zoomOut={zoomOut}
-        dragmode={isDragMode}
-        setDragmode={setDragMode}
-      />
       {!Object.keys(data).length && !loading ? (
         <NoNodeInform />
       ) : (
         <CanvasButtons
           handleReArrange={handleReArrange}
-          handleCenterMove={centerMoveMap}
+          handleCenterMove={reArrange}
           showMinutes={showMinutes}
           handleShowMinutes={handleShowMinutes}
         />
