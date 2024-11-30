@@ -26,9 +26,9 @@ export default function MindMapCanvas({ showMinutes, handleShowMinutes }) {
     overrideNodeData,
     saveHistory,
     loading,
-    selectedGroup,
     deleteSelectedNodes,
     selectedNode,
+    selectNode,
   } = useNodeListContext();
   const [isDragMode, setDragMode] = useState(false);
   const { dimensions, targetRef, handleWheel, zoomIn, zoomOut, reArrange } = useDimension(data);
@@ -79,7 +79,13 @@ export default function MindMapCanvas({ showMinutes, handleShowMinutes }) {
         deleteSelectedNodes();
         break;
       case "Equal":
-        addNode(data, selectedNode, overrideNodeData);
+        addNode(data, selectedNode, overrideNodeData, (newNodeId) => {
+          selectNode({
+            nodeId: newNodeId,
+            parentNodeId: selectedNode.nodeId,
+            addTo: "canvas",
+          });
+        });
         break;
       default:
         break;

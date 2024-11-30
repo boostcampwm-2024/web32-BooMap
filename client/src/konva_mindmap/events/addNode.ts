@@ -8,6 +8,7 @@ export function addNode(
   data: NodeData,
   selectedNode: SelectedNode,
   overrideNodeData: React.Dispatch<React.SetStateAction<NodeData>>,
+  onNodeCreated?: (id: number) => void,
 ) {
   const handleSocketEvent = useConnectionStore.getState().handleSocketEvent;
   // 아무 노드도 없을 때는 임의로 id 생성해서 현재는 넣음
@@ -37,6 +38,7 @@ export function addNode(
             actionType: "updateNode",
             payload: updatedData,
           });
+          onNodeCreated?.(response.id);
         }
       },
     });
@@ -72,6 +74,7 @@ export function addNode(
           actionType: "updateNode",
           payload: updatedData,
         });
+        onNodeCreated?.(response.id);
       }
     },
   });
