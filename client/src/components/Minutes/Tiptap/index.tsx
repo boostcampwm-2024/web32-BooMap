@@ -38,10 +38,9 @@ export default function Tiptap() {
     ],
     content: content,
     onUpdate({ editor }) {
-      if (!role || role === "editor") return;
+      if (role === "editor") return;
       handleChangeContent(editor);
     },
-    editable: role === "owner",
   });
 
   function handleChangeContent(editor) {
@@ -57,6 +56,10 @@ export default function Tiptap() {
       1500,
     );
   }
+
+  useEffect(() => {
+    editor.setOptions({ editable: role === "owner" });
+  }, [role]);
 
   useEffect(() => {
     if (editor && content) {

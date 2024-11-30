@@ -19,7 +19,7 @@ export const createRoleSlice: StateCreator<ConnectionStore, [], [], RoleSlice> =
       return;
     }
     //비회원 마인드맵 중 확인
-    if (get().ownedMindForGuest.some((ids) => ids === connectionId)) {
+    if (get().ownedMindMapForGuest.some((ids) => ids === connectionId)) {
       get().updateRole("owner");
       return;
     }
