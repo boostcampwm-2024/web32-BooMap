@@ -21,7 +21,6 @@ import { deleteNodes } from "@/konva_mindmap/events/deleteNode";
 import { useConnectionStore } from "@/store/useConnectionStore";
 import { addNode } from "@/konva_mindmap/events/addNode";
 import useWindowEventListener from "@/hooks/useWindowEventListener";
-import { useConnectionStore } from "@/store/useConnectionStore";
 
 export default function MindMapNode({ data, parentNode, node, depth, parentRef, dragmode }: NodeProps) {
   const nodeRef = useRef<Konva.Group>(null);
@@ -67,10 +66,10 @@ export default function MindMapNode({ data, parentNode, node, depth, parentRef, 
   function handleClick(e: Konva.KonvaEventObject<MouseEvent>) {
     e.evt.preventDefault();
     if (selectedNode.nodeId === node.id) {
-      selectNode({ nodeId: 0, parentNodeId: 0, addTo: "canvas" });
+      selectNode({ nodeId: 0, parentNodeId: 0 });
       return;
     }
-    selectNode({ nodeId: node.id, parentNodeId: parentNode ? parentNode.id : null, addTo: "canvas" });
+    selectNode({ nodeId: node.id, parentNodeId: parentNode ? parentNode.id : null });
   }
 
   const NodeStroke = selectedGroup.includes(node.id.toString()) ? "red" : "";
@@ -139,9 +138,7 @@ export default function MindMapNode({ data, parentNode, node, depth, parentRef, 
             selectNode({});
             setIsEditing(true);
           }}
-          handleAdd={() =>
-            addNode(data, { nodeId: node.id, parentNodeId: node.id ?? null, addTo: "canvas" }, overrideNodeData)
-          }
+          handleAdd={() => addNode(data, { nodeId: node.id, parentNodeId: node.id ?? null }, overrideNodeData)}
           handleDelete={() => deleteNodes(JSON.stringify(data), node.id, overrideNodeData)}
         />
       </Group>

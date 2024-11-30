@@ -6,7 +6,7 @@ export default function NoNodeInform() {
   const { data, selectedNode, overrideNodeData, selectNode } = useNodeListContext();
   function initializeRootNode() {
     addNode(data, selectedNode, overrideNodeData, (newNodeId) => {
-      selectNode({ nodeId: newNodeId, parentNodeId: null, addTo: "canvas" });
+      selectNode({ nodeId: newNodeId, parentNodeId: null });
     });
   }
   return (
