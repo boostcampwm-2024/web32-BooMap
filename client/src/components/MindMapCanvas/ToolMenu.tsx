@@ -1,7 +1,7 @@
 import { Button } from "@headlessui/react";
 import { useNodeListContext } from "@/store/NodeListProvider";
 import { StageDimension } from "@/konva_mindmap/types/dimension";
-import { showNewNode } from "@/konva_mindmap/events/addNode";
+import { addNode } from "@/konva_mindmap/events/addNode";
 import { deleteNodes } from "@/konva_mindmap/events/deleteNode";
 import { useRef } from "react";
 import { FaRegHandPaper } from "react-icons/fa";
@@ -34,7 +34,13 @@ export default function ToolMenu({ dimensions, zoomIn, zoomOut, dragmode, setDra
 
   function handleAddButton() {
     saveHistory(JSON.stringify(data));
-    showNewNode(data, selectedNode, overrideNodeData);
+    addNode(data, selectedNode, overrideNodeData, (newNodeId) => {
+      selectNode({
+        nodeId: newNodeId,
+        parentNodeId: selectedNode.nodeId,
+        addTo: "canvas",
+      });
+    });
   }
   function handleDeleteButton() {
     saveHistory(JSON.stringify(data));

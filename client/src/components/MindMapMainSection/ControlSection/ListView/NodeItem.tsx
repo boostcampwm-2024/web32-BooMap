@@ -1,6 +1,6 @@
 import { Input } from "@headlessui/react";
 import { useNodeListContext } from "@/store/NodeListProvider";
-import { showNewNode } from "@/konva_mindmap/events/addNode";
+import { addNode } from "@/konva_mindmap/events/addNode";
 import { useEffect, useRef } from "react";
 import { Node } from "@/types/Node";
 import { NODE_DEPTH_LIMIT } from "@/constants/node";
@@ -59,7 +59,7 @@ export default function NodeItem({ node, parentNodeId, open, handleAccordion, op
   function handleAddButton() {
     saveHistory(JSON.stringify(data));
     selectNode({ nodeId: node.id, parentNodeId: parentNodeId, addTo: "list" });
-    showNewNode(data, { nodeId: node.id, parentNodeId: parentNodeId, addTo: "list" }, overrideNodeData);
+    addNode(data, { nodeId: node.id, parentNodeId: parentNodeId, addTo: "list" }, overrideNodeData);
     openAccordion();
   }
 

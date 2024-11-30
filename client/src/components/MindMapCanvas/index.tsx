@@ -1,5 +1,5 @@
 import useDimension from "@/konva_mindmap/hooks/useDimension";
-import useWindowKeyEventListener from "@/hooks/useWindowKeyEventListener";
+import useWindowEventListener from "@/hooks/useWindowEventListener";
 import ToolMenu from "@/components/MindMapCanvas/ToolMenu";
 import initializeNodePosition from "@/konva_mindmap/utils/initializeNodePosition";
 import { Layer, Stage } from "react-konva";
@@ -14,7 +14,7 @@ import DrawMindMap from "@/konva_mindmap/components/DrawMindMap";
 import ShowShortCut from "./ShowShortCut";
 import { findRootNodeKey } from "@/konva_mindmap/utils/findRootNodeKey";
 import { useSocketStore } from "@/store/useSocketStore";
-import { showNewNode } from "@/konva_mindmap/events/addNode";
+import { addNode } from "@/konva_mindmap/events/addNode";
 
 export default function MindMapCanvas({ showMinutes, handleShowMinutes }) {
   const {
@@ -25,9 +25,9 @@ export default function MindMapCanvas({ showMinutes, handleShowMinutes }) {
     overrideNodeData,
     saveHistory,
     loading,
-    selectedGroup,
     deleteSelectedNodes,
     selectedNode,
+    selectNode,
   } = useNodeListContext();
   const [isDragMode, setDragMode] = useState(false);
   const { dimensions, targetRef, handleWheel, zoomIn, zoomOut, centerMoveMap } = useDimension(data);
@@ -55,7 +55,7 @@ export default function MindMapCanvas({ showMinutes, handleShowMinutes }) {
     });
   }
 
-  useWindowKeyEventListener("keydown", (e) => {
+  useWindowEventListener("keydown", (e) => {
     e.preventDefault();
     if (e.metaKey || e.ctrlKey) {
       if (e.shiftKey && e.code) redo();
@@ -78,14 +78,20 @@ export default function MindMapCanvas({ showMinutes, handleShowMinutes }) {
         deleteSelectedNodes();
         break;
       case "Equal":
-        showNewNode(data, selectedNode, overrideNodeData);
+        addNode(data, selectedNode, overrideNodeData, (newNodeId) => {
+          selectNode({
+            nodeId: newNodeId,
+            parentNodeId: selectedNode.nodeId,
+            addTo: "canvas",
+          });
+        });
         break;
       default:
         break;
     }
   });
 
-  useWindowKeyEventListener("keyup", (e) => {
+  useWindowEventListener("keyup", (e) => {
     if (e.code === "Space") {
       setDragMode(false);
     }
