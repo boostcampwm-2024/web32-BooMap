@@ -16,7 +16,6 @@ import { findRootNodeKey } from "@/konva_mindmap/utils/findRootNodeKey";
 import Konva from "konva";
 import { addNode } from "@/konva_mindmap/events/addNode";
 import { useConnectionStore } from "@/store/useConnectionStore";
-import Konva from "konva";
 
 export default function MindMapCanvas({ showMinutes, handleShowMinutes }) {
   const {
