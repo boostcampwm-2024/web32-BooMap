@@ -1,4 +1,4 @@
-import notFoundIcon from "@/assets/notFound.png";
+import notFoundIcon from "@/assets/notFound";
 import { Button } from "@headlessui/react";
 export default function NotFound() {
   return (
