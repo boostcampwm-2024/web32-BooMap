@@ -1,5 +1,5 @@
 import useDimension from "@/konva_mindmap/hooks/useDimension";
-import useWindowEventListener from "@/hooks/useWindowKeyEventListener";
+import useWindowEventListener from "@/hooks/useWindowEventListener";
 import ToolMenu from "@/components/MindMapCanvas/ToolMenu";
 import initializeNodePosition from "@/konva_mindmap/utils/initializeNodePosition";
 import { Layer, Stage } from "react-konva";
