@@ -83,7 +83,6 @@ export default function MindMapCanvas({ showMinutes, handleShowMinutes }) {
           selectNode({
             nodeId: newNodeId,
             parentNodeId: selectedNode.nodeId,
-            addTo: "canvas",
           });
         });
         break;

@@ -18,7 +18,7 @@ export type NodeListContextType = {
   saveHistory: (newState: string) => void;
   undoData: () => void;
   redoData: () => void;
-  selectNode: ({ nodeId, parentNodeId, addTo }: SelectedNode) => void;
+  selectNode: ({ nodeId, parentNodeId }: SelectedNode) => void;
   title: string;
   updateTitle: (title: string) => void;
   groupSelect: (group: Konva.Group[]) => void;
@@ -42,7 +42,7 @@ export function useNodeListContext() {
 
 export default function NodeListProvider({ children }: { children: ReactNode }) {
   const [data, setData] = useState({});
-  const [selectedNode, setSelectedNode] = useState<SelectedNode>({ nodeId: 0, parentNodeId: 0, addTo: "canvas" });
+  const [selectedNode, setSelectedNode] = useState<SelectedNode>({ nodeId: 0, parentNodeId: 0 });
   const { saveHistory, overrideHistory, undo, redo, history } = useHistoryState<NodeData>(JSON.stringify(data));
   const { title, initializeTitle, updateTitle } = useMindMapTitle();
   const { content, updateContent, initializeContent } = useContent();
@@ -99,15 +99,14 @@ export default function NodeListProvider({ children }: { children: ReactNode }) 
     redo(setData);
   }
 
-  function selectNode({ nodeId, parentNodeId, addTo }: SelectedNode) {
+  function selectNode({ nodeId, parentNodeId }: SelectedNode) {
     if (!nodeId) {
-      setSelectedNode({ nodeId: 0, parentNodeId: 0, addTo: addTo });
+      setSelectedNode({ nodeId: 0, parentNodeId: 0 });
       return;
     }
     setSelectedNode({
       nodeId,
       parentNodeId,
-      addTo,
     });
   }
 
