@@ -34,7 +34,13 @@ export default function ToolMenu({ dimensions, zoomIn, zoomOut, dragmode, setDra
 
   function handleAddButton() {
     saveHistory(JSON.stringify(data));
-    addNode(data, selectedNode, overrideNodeData);
+    addNode(data, selectedNode, overrideNodeData, (newNodeId) => {
+      selectNode({
+        nodeId: newNodeId,
+        parentNodeId: selectedNode.nodeId,
+        addTo: "canvas",
+      });
+    });
   }
   function handleDeleteButton() {
     saveHistory(JSON.stringify(data));
