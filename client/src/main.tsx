@@ -10,6 +10,7 @@ import { useAuthStore } from "@/store/useAuthStore";
 import Layout from "@/pages/layout";
 import MindMap from "@/pages/Mindmap";
 import { ErrorBoundary } from "react-error-boundary";
+import TestPage from "./pages/TestPage";
 
 const router = createBrowserRouter([
   {
@@ -26,6 +27,10 @@ const router = createBrowserRouter([
       {
         path: "/mindmap/:mindMapId",
         element: <MindMap />,
+      },
+      {
+        path: "/test",
+        element: <TestPage />,
       },
     ],
   },
