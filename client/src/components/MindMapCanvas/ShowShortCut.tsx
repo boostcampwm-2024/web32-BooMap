@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Button } from "@headlessui/react";
 import { FaLightbulb } from "react-icons/fa6";
 
@@ -13,31 +13,50 @@ const shortcuts = [
 ];
 
 export default function ShowShortCut() {
+  const [isClicked, setIsClicked] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
+
   function Btn({ children }) {
     return <span className="rounded-[6px] bg-white px-2 py-1 text-grayscale-500">{children}</span>;
   }
 
+  const isOpen = isClicked || isHovered;
+
   return (
-    <div className="group absolute left-2 top-2">
-      <div className="cursor-pointer p-2">
+    <div
+      className="absolute left-2 top-2"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      <Button
+        className="cursor-pointer p-2"
+        onClick={(e) => {
+          e.stopPropagation();
+          setIsClicked((prev) => !prev);
+        }}
+      >
         <FaLightbulb size={20} color="#98A4EE" />
-      </div>
-      <div className="absolute left-2 top-[35px] hidden w-64 rounded-lg bg-grayscale-700 px-2 py-3 text-white group-hover:block">
-        <div className="flex flex-col gap-3">
-          {shortcuts.map(({ keys, description }, index) => (
-            <p key={index}>
-              {keys.map((key, i) => (
-                <React.Fragment key={i}>
-                  <Btn>{key}</Btn>
-                  {i < keys.length - 1 && " + "}
-                </React.Fragment>
-              ))}
-              <span> : </span>
-              {description}
-            </p>
-          ))}
+      </Button>
+      {isOpen ? (
+        <div className="absolute left-2 top-[35px] w-64 rounded-lg bg-grayscale-700 px-2 py-3 text-white">
+          <div className="flex flex-col gap-3">
+            {shortcuts.map(({ keys, description }, index) => (
+              <p key={index}>
+                {keys.map((key, i) => (
+                  <React.Fragment key={i}>
+                    <Btn>{key}</Btn>
+                    {i < keys.length - 1 && " + "}
+                  </React.Fragment>
+                ))}
+                <span> : </span>
+                {description}
+              </p>
+            ))}
+          </div>
         </div>
-      </div>
+      ) : (
+        <></>
+      )}
     </div>
   );
 }
