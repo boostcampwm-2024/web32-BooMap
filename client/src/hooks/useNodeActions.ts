@@ -8,7 +8,7 @@ export default function useNodeActions(nodeId: number, content: string) {
   const [hover, setHover] = useState<boolean>(false);
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [keyword, setKeyword] = useState(content);
-  const { data, updateNode, saveHistory, overrideNodeData } = useNodeListContext();
+  const { data, saveHistory, overrideNodeData } = useNodeListContext();
   const handleSocketEvent = useConnectionStore((state) => state.handleSocketEvent);
 
   useEffect(() => {
@@ -22,9 +22,9 @@ export default function useNodeActions(nodeId: number, content: string) {
       handleSocketEvent({
         actionType: "updateNode",
         payload: { ...data, [nodeId]: { ...data[nodeId], keyword: keyword, newNode: false } },
-        callback: () => {
+        callback: (response) => {
           saveHistory(JSON.stringify(data));
-          addNode(keyword, nodeId, updateNode);
+          overrideNodeData(response);
         },
       });
     }
