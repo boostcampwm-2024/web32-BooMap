@@ -1,5 +1,5 @@
 import useDimension from "@/konva_mindmap/hooks/useDimension";
-import useWindowKeyEventListener from "@/hooks/useWindowKeyEventListener";
+import useWindowEventListener from "@/hooks/useWindowKeyEventListener";
 import ToolMenu from "@/components/MindMapCanvas/ToolMenu";
 import initializeNodePosition from "@/konva_mindmap/utils/initializeNodePosition";
 import { Layer, Stage } from "react-konva";
@@ -56,7 +56,7 @@ export default function MindMapCanvas({ showMinutes, handleShowMinutes }) {
     });
   }
 
-  useWindowKeyEventListener("keydown", (e) => {
+  useWindowEventListener("keydown", (e) => {
     e.preventDefault();
     if (e.metaKey || e.ctrlKey) {
       if (e.shiftKey && e.code) redo();
@@ -92,7 +92,7 @@ export default function MindMapCanvas({ showMinutes, handleShowMinutes }) {
     }
   });
 
-  useWindowKeyEventListener("keyup", (e) => {
+  useWindowEventListener("keyup", (e) => {
     if (e.code === "Space") {
       setDragMode(false);
     }

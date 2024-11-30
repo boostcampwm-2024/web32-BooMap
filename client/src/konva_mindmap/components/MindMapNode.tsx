@@ -20,6 +20,7 @@ import NodeTool from "@/konva_mindmap/components/NodeTool";
 import { deleteNodes } from "@/konva_mindmap/events/deleteNode";
 import { useConnectionStore } from "@/store/useConnectionStore";
 import { addNode } from "@/konva_mindmap/events/addNode";
+import useWindowEventListener from "@/hooks/useWindowEventListener";
 
 export default function MindMapNode({ data, parentNode, node, depth, parentRef, dragmode }: NodeProps) {
   const nodeRef = useRef<Konva.Group>(null);
@@ -27,6 +28,12 @@ export default function MindMapNode({ data, parentNode, node, depth, parentRef, 
     useNodeListContext();
   const handleSocketEvent = useConnectionStore.getState().handleSocketEvent;
   const [isEditing, setIsEditing] = useState(false);
+
+  useWindowEventListener("keydown", (e) => {
+    if (e.code === "Enter" && selectedNode.nodeId === node.id) {
+      setIsEditing(true);
+    }
+  });
 
   function handleDoubleClick() {
     setIsEditing(true);
