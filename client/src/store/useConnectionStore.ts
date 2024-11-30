@@ -24,7 +24,6 @@ export const useConnectionStore = create<ConnectionStore>()(
       {
         name: "connectionStore",
         partialize: (state) => {
-          console.log("wwwwwww");
           return {
             token: state.token,
           };
