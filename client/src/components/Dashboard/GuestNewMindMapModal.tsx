@@ -8,7 +8,6 @@ import { useConnectionStore } from "@/store/useConnectionStore";
 export default function GuestNewMindMapModal({ open, closeModal, openLogin }) {
   const navigate = useNavigate();
   const createConnection = useConnectionStore((state) => state.createConnection);
-  const isAuthenticated = useConnectionStore((state) => state.isAuthenticated);
 
   return (
     <>
@@ -24,7 +23,7 @@ export default function GuestNewMindMapModal({ open, closeModal, openLogin }) {
             </Button>
             <Button
               className="w-full rounded-md bg-grayscale-400 p-2 transition hover:brightness-90"
-              onClick={() => createConnection(navigate, "listview", isAuthenticated)}
+              onClick={() => createConnection(navigate, "listview")}
             >
               그냥 할게요
             </Button>
