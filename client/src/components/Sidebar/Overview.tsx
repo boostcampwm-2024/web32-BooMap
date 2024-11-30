@@ -20,7 +20,6 @@ export default function Overview() {
   const { getmode, handleViewMode } = useSection();
   const socket = useConnectionStore((state) => state.socket);
   const createConnection = useConnectionStore((state) => state.createConnection);
-  const isAuthenticated = useConnectionStore((state) => state.isAuthenticated);
   const { open, closeModal, openModal } = useModal();
   const [selectMode, setSelcetMode] = useState<ViewMode>("listview");
 
@@ -32,7 +31,7 @@ export default function Overview() {
 
     const latestMindMap = getLatestMindMap();
     if (!latestMindMap) {
-      createConnection(navigate, mode, isAuthenticated);
+      createConnection(navigate, mode);
       return;
     }
     openModal();
@@ -46,7 +45,7 @@ export default function Overview() {
   }
 
   function navigateToNewMindMap() {
-    createConnection(navigate, "listview", isAuthenticated);
+    createConnection(navigate, "listview");
     closeModal();
   }
 
