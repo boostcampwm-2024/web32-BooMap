@@ -1,8 +1,7 @@
 import MindMapInfoItem from "./MindMapInfoItem";
-import addIcon from "@/assets/whitePlus.png";
 import searchIcon from "@/assets/search.png";
 import { Button, Input } from "@headlessui/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaPlus } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import useDashBoard from "@/api/fetchHooks/useDashBoard";
@@ -14,7 +13,13 @@ export default function UserDashBoard() {
   const [searchContent, setSearchContent] = useState("");
   const navigate = useNavigate();
   const createConnection = useConnectionStore((state) => state.createConnection);
-  const isAuthenticated = useConnectionStore((state) => state.isAuthenticated);
+  const updateOwnedMindMap = useConnectionStore((state) => state.updateOwnedMindMap);
+
+  useEffect(() => {
+    if (data.length) {
+      updateOwnedMindMap(data);
+    }
+  }, [data]);
 
   function searchData(content: string) {
     if (!data) return [];
@@ -41,7 +46,7 @@ export default function UserDashBoard() {
       <div className="absolute bottom-8 right-8">
         <Button
           className="flex items-center justify-center gap-2 rounded-xl bg-bm-blue px-5 py-3 transition hover:brightness-90"
-          onClick={() => createConnection(navigate, "textupload", isAuthenticated)}
+          onClick={() => createConnection(navigate, "textupload")}
         >
           <FaPlus className="h-4 w-4" />
           <p>새로운 마인드맵 만들기</p>
