@@ -16,7 +16,7 @@ export default function ShareModal({ open, closeModal }: ShareModalProps) {
   async function copyLink() {
     try {
       await navigator.clipboard.writeText(currentUrl);
-      setCopySuccess(false);
+      setCopySuccess(true);
     } catch (error) {
       console.error("링크 복사 실패!!!");
     }
