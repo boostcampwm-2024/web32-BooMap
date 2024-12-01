@@ -19,6 +19,10 @@ AI 기반 마인드맵 자동화 서비스
 | <img src="https://i.imgur.com/zjvZ2sa.jpeg" width=100 height=100/> | <img src="https://i.imgur.com/GMFP1FK.png" width=100 height=100/> | <img src="https://i.imgur.com/wtHJtfD.jpeg" width=100 height=100/> | <img src="https://i.imgur.com/wXzG6SX.png" width=100 height=100/>|
 | [@Minju9187](https://github.com/Minju9187)                             | [@kimnamheeee](https://github.com/kimnamheeee)                    | [@adkm12](https://github.com/adkm12)                               | [@alsgud8311](https://github.com/alsgud8311)                          |
 
+### 🛠️ 기술스택
+<img width="697" alt="image" src="https://github.com/user-attachments/assets/1d0ff657-53b7-4053-8802-c98ab249a316">
+
+
 ### 🔗 Links
 
 [TEAM NOTION](https://luxurious-share-af6.notion.site/BOOMAP-1287725fa9ac80dd87d9c5fbad711b3d?pvs=4)
