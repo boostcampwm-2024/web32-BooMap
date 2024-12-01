@@ -1,8 +1,16 @@
 import { NodeData } from "./Node";
 
-export type actionType = "createNode" | "deleteNode" | "updateNode" | "updateTitle" | "updateContent";
+export type actionType = "createNode" | "deleteNode" | "updateNode" | "updateTitle" | "updateContent" | "aiRequest";
 
-export type createNodePayload = {
+export type HandleSocketEventPayloads =
+  | createNodePayload
+  | deleteNodePayload
+  | updateNodePayload
+  | updateContentPayload
+  | updateTitlePayload
+  | aiRequestPayload;
+
+type createNodePayload = {
   id: number;
   keyword: string;
   depth: number;
@@ -12,11 +20,12 @@ export type createNodePayload = {
   parentId: number | null;
 };
 
-export type deleteNodePayload = {
+type deleteNodePayload = {
   id: string[];
 };
 
-export type updateNodePayload = NodeData;
+type updateNodePayload = NodeData;
 
-export type updateTitlePayload = { title: string };
-export type updateContentPayload = { content: string };
+type updateTitlePayload = { title: string };
+type updateContentPayload = { content: string };
+type aiRequestPayload = { aiContent: string };

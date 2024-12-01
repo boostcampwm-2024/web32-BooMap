@@ -6,7 +6,10 @@ export function deleteNodes(data: string, selectedNodeIds: number | number[], ov
   const newNodeData: NodeData = JSON.parse(data);
   const rootKey = findRootNodeKey(newNodeData);
 
-  if ((Array.isArray(selectedNodeIds) && selectedNodeIds.includes(rootKey)) || selectedNodeIds === rootKey) return;
+  if (Array.isArray(selectedNodeIds) && selectedNodeIds.includes(rootKey)) {
+    return deleteNodes(data, [...newNodeData[rootKey].children], overrideNodeData);
+  }
+  if (!Array.isArray(selectedNodeIds) && selectedNodeIds === rootKey) return;
 
   const nodeIds = Array.isArray(selectedNodeIds) ? selectedNodeIds : [selectedNodeIds];
   if (nodeIds.some((id) => !id || !newNodeData[id])) return;

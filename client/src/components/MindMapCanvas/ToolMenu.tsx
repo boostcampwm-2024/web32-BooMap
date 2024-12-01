@@ -19,7 +19,7 @@ type ToolMenuProps = {
   setDragmode: React.Dispatch<React.SetStateAction<boolean>>;
 };
 export default function ToolMenu({ dimensions, zoomIn, zoomOut, dragmode, setDragmode }: ToolMenuProps) {
-  const { data, selectNode, selectedNode, saveHistory, overrideNodeData } = useNodeListContext();
+  const { data, selectNode, selectedNode, saveHistory, overrideNodeData, deleteSelectedNodes } = useNodeListContext();
   const intervalRef = useRef(null);
 
   const startZoom = (zoomFn) => {

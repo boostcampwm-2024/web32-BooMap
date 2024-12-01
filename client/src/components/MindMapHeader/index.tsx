@@ -11,7 +11,6 @@ import { FaPencilAlt } from "react-icons/fa";
 
 export default function MindMapHeader() {
   const { title, updateTitle } = useNodeListContext();
-  const { isLoading } = useAuth();
   const [editMode, setEditMode] = useState(false);
   const handleSocketEvent = useConnectionStore((state) => state.handleSocketEvent);
   const [editTitle, setEditTitle] = useState(title);
@@ -63,7 +62,6 @@ export default function MindMapHeader() {
         </span>
       )}
       <Profile />
-      {isLoading && createPortal(<Spinner />, document.body)}
     </header>
   );
 }

@@ -1,13 +1,6 @@
 import { Socket, io } from "socket.io-client";
 import { StateCreator } from "zustand";
-import {
-  actionType,
-  createNodePayload,
-  updateNodePayload,
-  deleteNodePayload,
-  updateTitlePayload,
-  updateContentPayload,
-} from "@/types/NodePayload";
+import { actionType, HandleSocketEventPayloads } from "@/types/NodePayload";
 import { createMindmap, getMindMap } from "@/api/mindmap.api";
 import { ConnectionStore } from "@/types/store";
 
@@ -25,7 +18,7 @@ export type SocketSlice = {
 
 type HandleSocketEventProps = {
   actionType: actionType;
-  payload: createNodePayload | updateNodePayload | deleteNodePayload | updateTitlePayload | updateContentPayload;
+  payload: HandleSocketEventPayloads;
   callback?: (response?: any) => void;
 };
 

@@ -8,6 +8,7 @@ import { setLatestMindMap } from "@/utils/localstorage";
 import useMindMapTitle from "@/hooks/useMindMapTitle";
 import useContent from "@/hooks/useContent";
 import { useConnectionStore } from "@/store/useConnectionStore";
+import initializeNodePosition from "@/konva_mindmap/utils/initializeNodePosition";
 
 export type NodeListContextType = {
   data: NodeData | null;
@@ -50,6 +51,7 @@ export default function NodeListProvider({ children }: { children: ReactNode }) 
   const [mindMapId, setMindMapId] = useState("");
   const { selectedGroup, groupRelease, groupSelect } = useGroupSelect();
   const socket = useConnectionStore((state) => state.socket);
+  const handleSocketEvent = useConnectionStore((state) => state.handleSocketEvent);
 
   socket?.on("joinRoom", (initialData) => {
     setLoading(true);
@@ -78,6 +80,11 @@ export default function NodeListProvider({ children }: { children: ReactNode }) 
     setData({});
     overrideHistory(JSON.stringify({}));
     setLatestMindMap(mindMapId);
+  });
+
+  socket?.on("aiResponse", (response) => {
+    const initializedNodes = initializeNodePosition(response.nodeData);
+    handleSocketEvent({ actionType: "updateNode", payload: initializedNodes });
   });
 
   function updateNode(id: number, updatedNode: Partial<Node>) {
