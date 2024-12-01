@@ -26,6 +26,10 @@ export default function MindMapHeader() {
     handleSocketEvent({
       actionType: "updateTitle",
       payload: { title: editTitle },
+      callback: (response) => {
+        updateTitle(response.title);
+        setEditTitle(response.title);
+      },
     });
     setEditMode(false);
   }

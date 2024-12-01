@@ -59,6 +59,7 @@ instance.interceptors.response.use(
 
           return instance(originalRequest);
         }
+        useConnectionStore.getState().logout();
         return Promise.reject(error);
       }
 

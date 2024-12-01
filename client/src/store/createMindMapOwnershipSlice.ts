@@ -26,6 +26,7 @@ export const createMindMapOwnershipSlice: StateCreator<ConnectionStore, [], [], 
 
   updateOwnedMindMap: (mindMaps: DashBoard[]) => {
     const userId = get().id;
+    if (!userId) return;
     const userOwnedMaps = mindMaps.filter((map) => map.ownerId === userId).map((map) => map.connectionId);
     set({ ownedMindMap: userOwnedMaps });
   },
@@ -33,7 +34,9 @@ export const createMindMapOwnershipSlice: StateCreator<ConnectionStore, [], [], 
   deleteOwnedMindMap: (connectionId: string) =>
     set((state) => ({ ownedMindMap: state.ownedMindMap.filter((map) => map !== connectionId) })),
   deleteOwnedMindMapForGuest: (connectionId: string) =>
-    set((state) => ({ ownedMindMap: state.ownedMindMap.filter((map) => map !== connectionId) })),
+    set((state) => ({
+      ownedMindMapForGuest: state.ownedMindMapForGuest.filter((map) => map !== connectionId),
+    })),
 
   resetOwnedMindMap: () => set({ ownedMindMap: [] }),
 });
