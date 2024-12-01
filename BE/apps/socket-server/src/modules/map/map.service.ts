@@ -1,4 +1,4 @@
-import { PublisherService } from './../pubsub/publisher.service';
+import { PublisherService } from '@app/publisher';
 import { Socket } from 'socket.io';
 import { Injectable, Logger } from '@nestjs/common';
 import { RedisService } from '@liaoliaots/nestjs-redis';
@@ -93,9 +93,8 @@ export class MapService {
     }
   }
 
-  async aiRequest(client: Socket, aiContent: string) {
+  async textAiRequest(client: Socket, aiContent: string) {
     try {
-      // await this.checkAuth(client);
       const aiCount = await this.redis.hget(client.data.connectionId, 'aiCount');
       if (Number(aiCount) === 0) {
         throw new AiRequestException('ai 요청 횟수 초과');
@@ -167,7 +166,7 @@ export class MapService {
       if (client.data.user && ownerId !== client.data.user.id) {
         this.publisherService.publish(
           'api-socket',
-          JSON.stringify({ event: 'join', data: { connectionId, userId: client.data.user, mindmapId } }),
+          JSON.stringify({ event: 'join', data: { connectionId, userId: client.data.user.id, mindmapId } }),
         );
       }
 
