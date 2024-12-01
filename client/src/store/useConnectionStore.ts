@@ -7,10 +7,6 @@ import { ConnectionStore } from "@/types/store";
 import { createSharedSlice } from "@/store/createSharedSlice";
 import { createAuthSlice } from "@/store/createAuthSlice";
 
-type PersistStates = {
-  token: string;
-};
-
 export const useConnectionStore = create<ConnectionStore>()(
   devtools(
     persist(
