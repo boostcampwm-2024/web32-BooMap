@@ -16,6 +16,8 @@ import { findRootNodeKey } from "@/konva_mindmap/utils/findRootNodeKey";
 import Konva from "konva";
 import { addNode } from "@/konva_mindmap/events/addNode";
 import { useConnectionStore } from "@/store/useConnectionStore";
+import { moveToNextNode, moveToPreviousNode } from "@/konva_mindmap/utils/moveToNode";
+
 
 export default function MindMapCanvas({ showMinutes, handleShowMinutes }) {
   const {
@@ -90,6 +92,12 @@ export default function MindMapCanvas({ showMinutes, handleShowMinutes }) {
       case "Escape":
         groupRelease();
         selectNode({});
+      case "Tab":
+        if (e.shiftKey) {
+          moveToPreviousNode(data, selectedNode, selectNode);
+        } else {
+          moveToNextNode(data, selectedNode, selectNode);
+        }
         break;
       default:
         break;

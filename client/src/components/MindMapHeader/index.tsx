@@ -17,7 +17,12 @@ export default function MindMapHeader() {
   const role = useConnectionStore((state) => state.currentRole);
 
   function handleInputBlur() {
-    if (!title.length) return;
+    if (!editTitle.length) {
+      setEditTitle(title);
+      setEditMode(false);
+      return;
+    }
+
     handleSocketEvent({
       actionType: "updateTitle",
       payload: { title: editTitle },
@@ -42,12 +47,13 @@ export default function MindMapHeader() {
       <MindMapHeaderButtons />
       {editMode ? (
         <Input
-          className="flex w-80 items-center bg-transparent text-center"
+          className="flex w-80 items-center bg-transparent text-center focus:border-none focus:outline-none"
           value={editTitle}
           onChange={(e) => setEditTitle(e.target.value)}
           onBlur={handleInputBlur}
           onKeyDown={handleInputKeyDown}
           maxLength={32}
+          autoFocus
         />
       ) : (
         <span onDoubleClick={changeToEditMode} className="flex cursor-pointer items-center gap-3 text-lg">
