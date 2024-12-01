@@ -1,10 +1,10 @@
 import Authorize from "@/components/Authorize";
-import NotFound from "@/components/common/NotFound";
+import Error from "@/components/common/Error";
 import { ErrorBoundary } from "react-error-boundary";
 
 export default function AuthorizeCallback() {
   return (
-    <ErrorBoundary fallback={<NotFound />}>
+    <ErrorBoundary fallback={<Error />}>
       <Authorize />
     </ErrorBoundary>
   );

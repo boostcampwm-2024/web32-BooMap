@@ -1,4 +1,4 @@
-import NotFound from "@/components/common/NotFound";
+import Error from "@/components/common/Error";
 import Sidebar from "@/components/Sidebar";
 import { useSideBar } from "@/store/useSideBar";
 import { ErrorBoundary } from "react-error-boundary";
@@ -17,10 +17,10 @@ export default function Layout() {
     setModalOpen(true);
   });
 
-  if (connectionStatus === "error") return <NotFound />;
+  if (connectionStatus === "error") return <Error />;
 
   return (
-    <ErrorBoundary fallback={<NotFound />}>
+    <ErrorBoundary fallback={<Error />}>
       {modalOpen && <OfflineModal open={modalOpen} closeModal={() => setModalOpen(false)} />}
       <div className="flex h-full w-full">
         <div className={`flex flex-grow flex-col transition-all duration-300 ${sidebar.open ? "ml-64" : "ml-0"}`}>
