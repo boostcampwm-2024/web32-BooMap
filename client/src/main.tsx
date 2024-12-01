@@ -4,7 +4,7 @@ import "./index.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import App from "./App";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import NotFound from "@/components/common/NotFound";
+import NotFound from "@/components/common/Error";
 import AuthorizeCallback from "@/pages/auth";
 import Layout from "@/pages/layout";
 import MindMap from "@/pages/Mindmap";
