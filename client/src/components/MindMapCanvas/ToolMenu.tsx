@@ -38,14 +38,13 @@ export default function ToolMenu({ dimensions, zoomIn, zoomOut, dragmode, setDra
       selectNode({
         nodeId: newNodeId,
         parentNodeId: selectedNode.nodeId,
-        addTo: "canvas",
       });
     });
   }
   function handleDeleteButton() {
     saveHistory(JSON.stringify(data));
     deleteNodes(JSON.stringify(data), selectedNode.nodeId, overrideNodeData);
-    selectNode({ nodeId: 0, parentNodeId: 0, addTo: "canvas" });
+    selectNode({ nodeId: 0, parentNodeId: 0 });
   }
 
   return (

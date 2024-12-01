@@ -49,8 +49,10 @@ export default function NodeItem({ node, parentNodeId, open, handleAccordion, op
 
   function handleAddButton() {
     saveHistory(JSON.stringify(data));
-    selectNode({ nodeId: node.id, parentNodeId: parentNodeId, addTo: "list" });
-    addNode(data, { nodeId: node.id, parentNodeId: parentNodeId, addTo: "list" }, overrideNodeData);
+    selectNode({ nodeId: node.id, parentNodeId: parentNodeId });
+    addNode(data, { nodeId: node.id, parentNodeId: parentNodeId }, overrideNodeData, (newNodeId) => {
+      selectNode({ nodeId: newNodeId, parentNodeId: node.id });
+    });
     openAccordion();
   }
 
@@ -78,7 +80,7 @@ export default function NodeItem({ node, parentNodeId, open, handleAccordion, op
 
         {isEditing ? (
           <Input
-            autoFocus={selectedNode.addTo === "list"}
+            autoFocus={true}
             ref={inputRef}
             className="flex-grow bg-transparent text-grayscale-200"
             value={keyword}

@@ -18,6 +18,7 @@ import { addNode } from "@/konva_mindmap/events/addNode";
 import { useConnectionStore } from "@/store/useConnectionStore";
 import { moveToNextNode, moveToPreviousNode } from "@/konva_mindmap/utils/moveToNode";
 
+
 export default function MindMapCanvas({ showMinutes, handleShowMinutes }) {
   const {
     data,
@@ -84,7 +85,6 @@ export default function MindMapCanvas({ showMinutes, handleShowMinutes }) {
           selectNode({
             nodeId: newNodeId,
             parentNodeId: selectedNode.nodeId,
-            addTo: "canvas",
           });
         });
         break;
