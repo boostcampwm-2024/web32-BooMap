@@ -72,7 +72,7 @@ export default function MindMapNode({ data, parentNode, node, depth, parentRef, 
     selectNode({ nodeId: node.id, parentNodeId: parentNode ? parentNode.id : null });
   }
 
-  const NodeStroke = selectedGroup.includes(node.id.toString()) ? "red" : "";
+  const NodeStroke = selectedGroup.includes(node.id.toString()) ? "#cb575f" : "";
 
   const handleDragMove = (e: Konva.KonvaEventObject<DragEvent>) => {
     e.evt.preventDefault();
@@ -114,12 +114,11 @@ export default function MindMapNode({ data, parentNode, node, depth, parentRef, 
       >
         <Circle
           stroke={NodeStroke}
-          fill={selectedNode?.nodeId === node.id ? "orange" : colors[depth - 1]}
+          fill={selectedNode?.nodeId === node.id ? "#EE92BA" : colors[depth - 1]}
           width={NODE_WIDTH_AND_HEIGHT}
           height={NODE_WIDTH_AND_HEIGHT}
-          strokeWidth={3}
+          strokeWidth={5}
           radius={NODE_RADIUS(depth)}
-          shadowBlur={5}
         />
         <EditableText
           id={node.id}
