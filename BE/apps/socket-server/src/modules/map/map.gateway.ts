@@ -18,7 +18,6 @@ import { Socket, Server } from 'socket.io';
 import { UpdateMindmapDto, CreateNodeDto, UpdateContentDto, UpdateTitleDto, AiRequestDto } from './dto';
 import { MindmapValidationPipe, WsValidationPipe } from '../../pipes';
 import { WsExceptionFilter } from '../../exceptionfilter/ws.exceptionFilter';
-import { AiRequestException } from '../../exceptions';
 
 @Injectable()
 @WebSocketGateway({ transports: ['websocket'] })
@@ -130,15 +129,32 @@ export class MapGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
   @SubscribeMessage('aiRequest')
   async handleAiRequest(@ConnectedSocket() client: Socket, @MessageBody(WsValidationPipe) aiRequestDto: AiRequestDto) {
     this.logging(client, 'AI 요청');
+    this.logger.log(`AI 요청 내용 : ${JSON.stringify(aiRequestDto)}`);
     this.server.to(client.data.connectionId).emit('aiPending', { status: true });
     await this.mapService.textAiRequest(client, aiRequestDto.aiContent);
   }
 
   textAiResponse(data) {
+    const room = this.server.sockets.adapter.rooms.get(data.connectionId);
     if (data.error) {
-      throw new AiRequestException(data.error);
+      this.logger.error(`AI 요청 에러 : ${data.error}`);
+      this.server.to(data.connectionId).emit('error', { error: data.error });
     } else {
-      this.server.sockets.adapter.rooms.get(data.connectionId).values().next().value.emit('aiResponse', data.nodedata);
+      this.logger.log(`AI 응답 내용 : ${JSON.stringify(data.nodeData)}`);
+
+      if (room && room.size > 0) {
+        // 첫 번째 클라이언트 ID 가져오기
+        const socketId = room.values().next().value;
+        this.logger.log('소켓 ID : ' + socketId);
+        const clientSocket = this.server.sockets.sockets.get(socketId);
+        if (clientSocket) {
+          clientSocket.emit('aiResponse', data.nodeData);
+        } else {
+          this.logger.error(`Client socket not found for ID: ${socketId}`);
+        }
+      } else {
+        this.logger.error(`Room not found or empty for connectionId: ${data.connectionId}`);
+      }
     }
     this.server.to(data.connectionId).emit('aiPending', { status: false });
   }

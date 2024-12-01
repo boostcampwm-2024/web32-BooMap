@@ -78,7 +78,7 @@ export class AiService {
 
     this.publisherService.publish(
       'api-socket',
-      JSON.stringify({ event: 'textAi', data: { nodeData, connectionId: data.connectionId } }),
+      JSON.stringify({ event: 'textAiSocket', data: { nodeData, connectionId: data.connectionId } }),
     );
   }
 }

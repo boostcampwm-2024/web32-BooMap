@@ -87,7 +87,7 @@ export class MapService {
 
   async updateTitle(client: Socket, title: string) {
     try {
-      await this.checkAuth(client);
+      // await this.checkAuth(client);
       await this.redis.hset(client.data.connectionId, 'title', title);
     } catch (error) {
       if (error instanceof UnauthorizedException) throw error;
@@ -97,13 +97,18 @@ export class MapService {
 
   async textAiRequest(client: Socket, aiContent: string) {
     try {
+      const type = await this.redis.hget(client.data.connectionId, 'type');
+      if (type === 'guest') {
+        return;
+      }
       const aiCount = await this.redis.hget(client.data.connectionId, 'aiCount');
+      const mindmapId = await this.redis.hget(client.data.connectionId, 'mindmapId');
       if (Number(aiCount) === 0) {
         throw new AiRequestException('ai 요청 횟수 초과');
       }
       this.publisherService.publish(
         'api-socket',
-        JSON.stringify({ event: 'aiText', data: { connectionId: client.data.connectionId, aiContent } }),
+        JSON.stringify({ event: 'textAiApi', data: { connectionId: client.data.connectionId, aiContent, mindmapId } }),
       );
       await this.redis.hset(client.data.connectionId, 'aiCount', Number(aiCount) - 1);
     } catch (error) {
@@ -181,6 +186,9 @@ export class MapService {
     try {
       const type = await this.redis.hget(connectionId, 'type');
       if (type === 'guest') {
+        this.redis.expire(connectionId, 60 * 60 * 24);
+        this.redis.expire(`mindmapState:${connectionId}`, 60 * 60 * 24);
+        this.redis.expire(`content:${connectionId}`, 60 * 60 * 24);
         return;
       }
 
