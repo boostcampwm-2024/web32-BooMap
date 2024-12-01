@@ -56,7 +56,6 @@ queryClient.getQueryCache().subscribe((event) => {
   if (event?.type === "updated" && event.query.queryKey[0] === "user") {
     const data = event.query.state.data;
     if (data?.email && data?.name && data?.id) useConnectionStore.getState().setUser(data?.email, data?.name, data?.id);
-    else useConnectionStore.getState().logout();
   }
 });
 
