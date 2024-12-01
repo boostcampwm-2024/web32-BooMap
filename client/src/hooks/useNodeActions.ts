@@ -10,6 +10,7 @@ export default function useNodeActions(nodeId: number, content: string) {
   const [keyword, setKeyword] = useState(content);
   const { data, saveHistory, overrideNodeData } = useNodeListContext();
   const handleSocketEvent = useConnectionStore((state) => state.handleSocketEvent);
+  const currentJobStatus = useConnectionStore((state) => state.currentJobStatus);
 
   useEffect(() => {
     setKeyword(content);
@@ -27,6 +28,9 @@ export default function useNodeActions(nodeId: number, content: string) {
           overrideNodeData(response);
         },
       });
+      if (currentJobStatus === "error") setKeyword(originalContent);
+    } else {
+      setKeyword(originalContent);
     }
     setIsEditing(false);
   }
