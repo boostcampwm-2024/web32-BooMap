@@ -22,6 +22,7 @@ export default function MindMapMainSection() {
   const disconnectSocket = useConnectionStore((state) => state.disconnectSocket);
   const wsError = useConnectionStore((state) => state.wsError);
   const [toasts, setToasts] = useState([]);
+  const token = useConnectionStore((state) => state.token);
 
   useEffect(() => {
     if (wsError.length > 0)
@@ -33,7 +34,7 @@ export default function MindMapMainSection() {
 
   useEffect(() => {
     if (mindMapId) {
-      connectSocket(mindMapId);
+      connectSocket(mindMapId, token);
       updateMindMapId(mindMapId);
     }
     return () => {
