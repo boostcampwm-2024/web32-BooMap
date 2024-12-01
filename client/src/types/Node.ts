@@ -7,7 +7,7 @@ export type Node = {
   keyword: string;
   depth: number;
   location: Location;
-  children: number[] | [];
+  children: number[];
   newNode?: boolean;
 };
 

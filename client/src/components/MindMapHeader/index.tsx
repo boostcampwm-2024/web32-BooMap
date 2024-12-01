@@ -47,7 +47,7 @@ export default function MindMapHeader() {
       <MindMapHeaderButtons />
       {editMode ? (
         <Input
-          className="flex w-80 items-center bg-transparent text-center focus:border-none focus:outline-none"
+          className="flex w-80 items-center bg-transparent text-center"
           value={editTitle}
           onChange={(e) => setEditTitle(e.target.value)}
           onBlur={handleInputBlur}

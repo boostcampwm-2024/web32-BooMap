@@ -1,4 +1,6 @@
-export function findLastLeafNode(data, nodeId) {
+import { NodeData } from "@/types/Node";
+
+export function findLastLeafNode(data: NodeData, nodeId: number) {
   const currentNode = data[nodeId];
 
   if (!currentNode.children || currentNode.children.length === 0) {

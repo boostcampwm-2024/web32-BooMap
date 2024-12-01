@@ -10,7 +10,7 @@ import { FaPencilAlt } from "react-icons/fa";
 import { FaPlus } from "react-icons/fa";
 import { FaRegTrashAlt } from "react-icons/fa";
 import useNodeActions from "@/hooks/useNodeActions";
-import { findParentNodeKey } from "@/konva_mindmap/utils/findParentNodeKey";
+import { findParentNodeKey, getParentNodeKeys } from "@/konva_mindmap/utils/findParentNodeKey";
 
 type NodeItemProps = {
   node: Node;
@@ -36,8 +36,8 @@ export default function NodeItem({ node, parentNodeId, open, handleAccordion, op
   } = useNodeActions(node.id, node.keyword);
   const { data, saveHistory, selectedNode, overrideNodeData, selectNode } = useNodeListContext();
   const inputRef = useRef<HTMLInputElement | null>(null);
-  const isSelected =
-    selectedNode.parentNodeId === node.id || findParentNodeKey(selectedNode.parentNodeId, data) === node.id;
+  const parentNodes = getParentNodeKeys(selectedNode.nodeId, data);
+  const isSelected = parentNodes.includes(node.id);
 
   useEffect(() => {
     node.newNode ? setIsEditing(true) : setIsEditing(false);
@@ -66,17 +66,18 @@ export default function NodeItem({ node, parentNodeId, open, handleAccordion, op
       onMouseLeave={handleMouseLeave}
     >
       <div className="flex min-w-0 flex-1 items-center gap-3">
-        {!isEditing &&
-          (node.depth < NODE_DEPTH_LIMIT ? (
-            <button
-              className={`flex h-5 w-5 items-center justify-center transition-all ${open ? "" : "rotate-[-90deg]"}`}
-              onClick={handleAccordion}
-            >
-              <FaChevronDown className="h-4 w-4" />
-            </button>
-          ) : (
-            <TbPointFilled className="h-3 w-3" />
-          ))}
+        {node.depth < NODE_DEPTH_LIMIT ? (
+          <button
+            className={`flex h-5 w-5 items-center justify-center p-1 transition-all ${open ? "" : "rotate-[-90deg]"}`}
+            onClick={handleAccordion}
+          >
+            <FaChevronDown className="h-4 w-4" />
+          </button>
+        ) : (
+          <div className="flex h-5 w-5 items-center justify-center">
+            <TbPointFilled />
+          </div>
+        )}
 
         {isEditing ? (
           <Input
