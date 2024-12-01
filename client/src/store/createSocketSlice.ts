@@ -86,9 +86,9 @@ export const createSocketSlice: StateCreator<ConnectionStore, [], [], SocketSlic
       const socket = get().socket;
       if (socket) socket.disconnect();
       const response = await createMindmap();
-      const newMindMapId = response.data;
-      get().connectSocket(newMindMapId, get().token);
-      return newMindMapId;
+      const connectionId = response.data.connectionId;
+      get().connectSocket(connectionId, get().token);
+      return connectionId;
     } catch (error) {
       console.error(error);
     }
