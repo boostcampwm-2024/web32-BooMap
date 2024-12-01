@@ -1,4 +1,4 @@
-import { StrictMode } from "react";
+import { StrictMode, Suspense } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
@@ -11,6 +11,7 @@ import MindMap from "@/pages/Mindmap";
 import { ErrorBoundary } from "react-error-boundary";
 import { useConnectionStore } from "@/store/useConnectionStore";
 import TestPage from "./pages/TestPage";
+import Spinner from "@/components/common/Spinner";
 
 const router = createBrowserRouter([
   {
