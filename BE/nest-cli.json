@@ -81,6 +81,15 @@
       "compilerOptions": {
         "tsConfigPath": "libs/jwt/tsconfig.lib.json"
       }
+    },
+    "publisher": {
+      "type": "library",
+      "root": "libs/publisher",
+      "entryFile": "index",
+      "sourceRoot": "libs/publisher/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/publisher/tsconfig.lib.json"
+      }
     }
   }
 }

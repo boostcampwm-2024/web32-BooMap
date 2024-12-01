@@ -22,10 +22,10 @@ export class Node {
   @Column({ type: 'varchar', length: 32 })
   keyword: string;
 
-  @Column({ name: 'location_x', type: 'float' })
+  @Column({ name: 'location_x', type: 'float', default: 0 })
   locationX: number;
 
-  @Column({ name: 'location_y', type: 'float' })
+  @Column({ name: 'location_y', type: 'float', default: 0 })
   locationY: number;
 
   @Column({ type: 'tinyint' })

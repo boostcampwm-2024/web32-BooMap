@@ -3,11 +3,11 @@ import { MapGateway } from './map.gateway';
 import { MapService } from './map.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Node } from '@app/entity';
-import { WsOptionalJwtGuard } from '../../guard/ws.jwt.auth.guard';
-import { PubsubModule } from '../pubsub/pubsub.module';
+import { WsOptionalJwtGuard } from '../../guards/ws.jwt.auth.guard';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Node]), PubsubModule],
+  imports: [TypeOrmModule.forFeature([Node])],
   providers: [MapGateway, MapService, WsOptionalJwtGuard],
+  exports: [MapGateway, MapService],
 })
 export class MapModule {}

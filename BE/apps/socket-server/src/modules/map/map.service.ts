@@ -1,6 +1,6 @@
-import { PublisherService } from './../pubsub/publisher.service';
+import { PublisherService } from '@app/publisher';
 import { Socket } from 'socket.io';
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, UseFilters } from '@nestjs/common';
 import { RedisService } from '@liaoliaots/nestjs-redis';
 import { Redis } from 'ioredis';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -15,8 +15,10 @@ import {
   AiRequestException,
   UnauthorizedException,
 } from '../../exceptions';
+import { WsExceptionFilter } from '../../exceptionfilter/ws.exceptionFilter';
 
 @Injectable()
+@UseFilters(WsExceptionFilter)
 export class MapService {
   private readonly redis: Redis | null;
   private readonly logger = new Logger(MapService.name);
@@ -85,7 +87,7 @@ export class MapService {
 
   async updateTitle(client: Socket, title: string) {
     try {
-      // await this.checkAuth(client);
+      await this.checkAuth(client);
       await this.redis.hset(client.data.connectionId, 'title', title);
     } catch (error) {
       if (error instanceof UnauthorizedException) throw error;
@@ -93,9 +95,8 @@ export class MapService {
     }
   }
 
-  async aiRequest(client: Socket, aiContent: string) {
+  async textAiRequest(client: Socket, aiContent: string) {
     try {
-      // await this.checkAuth(client);
       const aiCount = await this.redis.hget(client.data.connectionId, 'aiCount');
       if (Number(aiCount) === 0) {
         throw new AiRequestException('ai 요청 횟수 초과');
@@ -130,12 +131,11 @@ export class MapService {
   async joinRoom(client: Socket) {
     try {
       const connectionId = this.extractMindmapId(client);
-      let type = await this.redis.hget(connectionId, 'type');
+      const type = await this.redis.hget(connectionId, 'type');
       this.logger.log('연결 type: ' + type + ' 마인드맵');
 
       if (!type) {
-        type = client.data.user ? 'user' : 'guest';
-        await this.redis.hset(connectionId, 'type', type);
+        throw new JoinRoomException();
       }
 
       client.join(connectionId);
@@ -167,13 +167,12 @@ export class MapService {
       if (client.data.user && ownerId !== client.data.user.id) {
         this.publisherService.publish(
           'api-socket',
-          JSON.stringify({ event: 'join', data: { connectionId, userId: client.data.user, mindmapId } }),
+          JSON.stringify({ event: 'join', data: { connectionId, userId: client.data.user.id, mindmapId } }),
         );
       }
 
       return curruntData;
-    } catch (error) {
-      Logger.error(error);
+    } catch {
       throw new JoinRoomException();
     }
   }

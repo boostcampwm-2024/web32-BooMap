@@ -6,8 +6,9 @@ import { NodeService } from '../node/node.service';
 import { MindmapService } from '../mindmap/mindmap.service';
 import { plainToInstance } from 'class-transformer';
 import { Role } from '@app/entity/enum/role.enum';
+import { AiService } from '../ai/ai.service';
 
-interface RedisMessage {
+export interface RedisMessage {
   event: string;
   data: {
     connectionId: string;
@@ -27,6 +28,7 @@ export class SubscriberService implements OnModuleInit {
     private readonly redisService: RedisService,
     private readonly nodeService: NodeService,
     private readonly mindmapService: MindmapService,
+    private readonly aiService: AiService,
   ) {
     this.subscriberRedis = redisService.getOrThrow('subscriber');
     this.generalRedis = redisService.getOrThrow('general');
@@ -57,6 +59,8 @@ export class SubscriberService implements OnModuleInit {
           await this.handleSaveEvent(data);
         } else if (event === 'join') {
           await this.handleJoinEvent(data);
+        } else if (event === 'textAi') {
+          await this.handleTextAiEvent(data);
         }
       }
     } catch (error) {
@@ -104,5 +108,10 @@ export class SubscriberService implements OnModuleInit {
     } catch (error) {
       this.logger.error('Error processing join event:', error);
     }
+  }
+
+  private async handleTextAiEvent(data: RedisMessage['data']) {
+    await this.aiService.requestClovaX(data);
+    this.logger.log('AI 데이터 처리 완료');
   }
 }
