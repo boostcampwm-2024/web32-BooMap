@@ -11,9 +11,10 @@ export default function Profile() {
   const { open: profileModal, openModal: openProfileModal, closeModal: closeProfileModal } = useModal();
   const isAuthenticated = useConnectionStore((state) => state.token);
 
-  function handleProfileModal() {
+  function handleProfileModal(e) {
+    e.stopPropagation();
     if (isAuthenticated) {
-      openProfileModal();
+      profileModal ? closeProfileModal() : openProfileModal();
       return;
     }
     openLoginModal();
