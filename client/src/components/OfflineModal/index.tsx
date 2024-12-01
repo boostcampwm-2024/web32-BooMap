@@ -1,11 +1,8 @@
 import Modal from "../common/Modal";
 
-export default function OfflineModal() {
-  function closeModal() {
-    console.log("close modal");
-  }
+export default function OfflineModal({ open, closeModal }) {
   return (
-    <Modal open={true} closeModal={closeModal} optionalStyles="w-auto">
+    <Modal open={open} closeModal={closeModal} optionalStyles="w-auto">
       <div className="flex w-96 flex-col items-center rounded-lg bg-white p-4">
         <p className="mb-2 text-lg font-bold text-black">오프라인 상태입니다</p>
         <p className="text-m text-gray-500">인터넷 연결을 확인해주세요.</p>
