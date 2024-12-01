@@ -8,6 +8,7 @@ import {
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
+  WsException,
 } from '@nestjs/websockets';
 import { RedisService } from '@liaoliaots/nestjs-redis';
 import { Redis } from 'ioredis';
@@ -67,8 +68,15 @@ export class MapGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
       client.data.user = null;
     }
     this.logging(client, '사용자 연결');
-    const currentData = await this.mapService.joinRoom(client);
-    client.emit('joinRoom', currentData);
+    try {
+      const currentData = await this.mapService.joinRoom(client);
+      client.emit('joinRoom', currentData);
+    } catch (error) {
+      if (error instanceof WsException) {
+        client.emit('notFoundError', { message: error.message });
+        client.disconnect();
+      }
+    }
   }
 
   async handleDisconnect(@ConnectedSocket() client: Socket) {
