@@ -26,8 +26,8 @@ export default function TextUpload() {
           className="h-full w-full resize-none rounded-xl bg-grayscale-600 p-4"
           placeholder="Text를 넣어주세요. (500자 이상 2000자 이하)"
           onKeyDown={(e) => e.stopPropagation()}
-          onChange={(e) => setContent(e.target.value)}
-          maxLength={TEXT_UPLOAD_LIMIT}
+          onChange={(e) => updateContent(e.target.value)}
+          maxLength={MAX_TEXT_UPLOAD_LIMIT}
         />
         <p className="text-right text-grayscale-400">
           {content.length}/{MAX_TEXT_UPLOAD_LIMIT}
