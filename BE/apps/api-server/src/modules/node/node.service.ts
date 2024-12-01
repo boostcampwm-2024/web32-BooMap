@@ -112,7 +112,6 @@ export class NodeService {
 
       createdNodes.push(node);
 
-      // 자식 노드들을 순차적으로 처리
       for (const child of response.children) {
         await processNode(child, currentDepth + 1, node.id);
       }

@@ -12,6 +12,7 @@ export interface RedisMessage {
     userId?: string;
     mindmapId?: string;
     nodeData?: Record<string, NodeDto>;
+    error?: string;
   };
 }
 
@@ -46,7 +47,7 @@ export class SubscriberService implements OnModuleInit {
     try {
       if (channel === 'api-socket') {
         const { event, data } = JSON.parse(message) as RedisMessage;
-        if (event === 'textAi') {
+        if (event === 'textAiSocket') {
           this.textAiFinished(data);
         } else if (event === 'audioAi') {
           this.aiAudioFinish(data);

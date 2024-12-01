@@ -59,7 +59,7 @@ export class SubscriberService implements OnModuleInit {
           await this.handleSaveEvent(data);
         } else if (event === 'join') {
           await this.handleJoinEvent(data);
-        } else if (event === 'textAi') {
+        } else if (event === 'textAiApi') {
           await this.handleTextAiEvent(data);
         }
       }

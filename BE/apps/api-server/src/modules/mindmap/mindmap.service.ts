@@ -23,7 +23,7 @@ export class MindmapService {
       const mindmap = this.mindmapRepository.create({ connectionId: uuid, aiContent: '', content: '' });
       const savedMindmap = await this.mindmapRepository.save(mindmap);
       await this.assignUserToMindmap(userId, savedMindmap.id);
-      return { connectionId: uuid, mindmapId: savedMindmap.id };
+      return savedMindmap.id;
     } catch (error) {
       this.logger.error(error);
       throw new MindmapException('마인드맵 생성에 실패했습니다.');
@@ -91,7 +91,18 @@ export class MindmapService {
   async getDataByMindmapId(mindmapId: number) {
     const mindmap = await this.mindmapRepository.findOne({ where: { id: mindmapId } });
     const nodes = await this.nodeService.tableToCanvas(mindmap.id);
+    if (!mindmap) {
+      throw new MindmapException('마인드맵을 찾을 수 없습니다.');
+    }
 
+    if (!nodes) {
+      return {
+        title: mindmap.title,
+        content: mindmap.content,
+        aiCount: mindmap.aiCount,
+        connectionId: mindmap.connectionId,
+      };
+    }
     return {
       title: mindmap.title,
       content: mindmap.content,
