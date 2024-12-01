@@ -2,7 +2,7 @@ import useGroupSelect from "@/hooks/useGroupSelect";
 import useHistoryState from "@/hooks/useHistoryState";
 import { Node, NodeData, SelectedNode } from "@/types/Node";
 import Konva from "konva";
-import { createContext, ReactNode, useContext, useState } from "react";
+import { createContext, ReactNode, useContext, useEffect, useState } from "react";
 import { deleteNodes } from "@/konva_mindmap/events/deleteNode";
 import { setLatestMindMap } from "@/utils/localstorage";
 import useMindMapTitle from "@/hooks/useMindMapTitle";
@@ -53,39 +53,52 @@ export default function NodeListProvider({ children }: { children: ReactNode }) 
   const socket = useConnectionStore((state) => state.socket);
   const handleSocketEvent = useConnectionStore((state) => state.handleSocketEvent);
 
-  socket?.on("joinRoom", (initialData) => {
-    setLoading(true);
-    setTimeout(() => {
-      setData({ ...initialData.nodeData });
-      overrideHistory(JSON.stringify(initialData));
-      initializeTitle(initialData);
-      initializeContent(initialData);
-      setLoading(false);
-    }, 0);
-  });
+  useEffect(() => {
+    socket?.on("joinRoom", (initialData) => {
+      setLoading(true);
+      setTimeout(() => {
+        setData({ ...initialData.nodeData });
+        overrideHistory(JSON.stringify(initialData));
+        initializeTitle(initialData);
+        initializeContent(initialData);
+        setLoading(false);
+      }, 0);
+    });
 
-  socket?.on("updateNode", (updatedNodeData) => {
-    overrideNodeData(updatedNodeData);
-  });
+    socket?.on("updateNode", (updatedNodeData) => {
+      console.log("updatedNodeData", updatedNodeData);
+      overrideNodeData(updatedNodeData);
+    });
 
-  socket?.on("updateTitle", (updatedTitle) => {
-    updateTitle(updatedTitle.title);
-  });
+    socket?.on("updateTitle", (updatedTitle) => {
+      updateTitle(updatedTitle.title);
+    });
 
-  socket?.on("updateContent", (updatedContent) => {
-    updateContent(updatedContent.content);
-  });
+    socket?.on("updateContent", (updatedContent) => {
+      updateContent(updatedContent.content);
+    });
 
-  socket?.on("disconnect", () => {
-    setData({});
-    overrideHistory(JSON.stringify({}));
-    setLatestMindMap(mindMapId);
-  });
+    socket?.on("disconnect", () => {
+      setData({});
+      overrideHistory(JSON.stringify({}));
+      setLatestMindMap(mindMapId);
+    });
 
-  socket?.on("aiResponse", (response) => {
-    const initializedNodes = initializeNodePosition(response.nodeData);
-    handleSocketEvent({ actionType: "updateNode", payload: initializedNodes });
-  });
+    socket?.on("aiResponse", (response) => {
+      const initializedNodes = initializeNodePosition(response);
+      handleSocketEvent({
+        actionType: "updateNode",
+        payload: initializedNodes,
+        callback: (response) => {
+          overrideNodeData(response);
+        },
+      });
+    });
+
+    return () => {
+      socket?.offAny();
+    };
+  }, [socket]);
 
   function updateNode(id: number, updatedNode: Partial<Node>) {
     setData((prevData) => ({
