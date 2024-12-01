@@ -6,7 +6,6 @@ export function useCollisionDetection(nodeData: NodeData, updateNode: (id: numbe
   const [collisionWorker, setCollisionWorker] = useState<Worker | null>(null);
   const layer = useRef<Konva.Layer>(null);
 
-  // Web Worker 초기화
   useEffect(() => {
     const worker = new Worker(new URL("../utils/collision-worker.ts", import.meta.url));
 
@@ -28,9 +27,8 @@ export function useCollisionDetection(nodeData: NodeData, updateNode: (id: numbe
     return () => {
       worker.terminate();
     };
-  }, []); // 의존성 배열에서 updateNode 제거
+  }, []);
 
-  // 드래그 중 충돌 감지 트리거
   const detectCollisions = useCallback(() => {
     if (layer.current && collisionWorker) {
       const nodes = layer.current.children
@@ -44,7 +42,6 @@ export function useCollisionDetection(nodeData: NodeData, updateNode: (id: numbe
           rect: node.getClientRect(),
         }));
 
-      // 노드 상태가 실제로 변경된 경우에만 충돌 감지
       collisionWorker.postMessage({
         type: "detectCollisions",
         nodes,
@@ -52,7 +49,6 @@ export function useCollisionDetection(nodeData: NodeData, updateNode: (id: numbe
     }
   }, [collisionWorker]);
 
-  // 드래그 이벤트에 연결
   useEffect(() => {
     requestAnimationFrame(detectCollisions);
   }, [detectCollisions, layer, nodeData]);

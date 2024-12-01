@@ -1,5 +1,3 @@
-// collision-worker.ts
-
 import { Location } from "@/konva_mindmap/types/location";
 import Konva from "konva";
 import { RectConfig } from "konva/lib/shapes/Rect";
@@ -53,14 +51,13 @@ self.addEventListener("message", (event: MessageEvent<CollisionMessage>) => {
   if (event.data.type === "detectCollisions") {
     const nodes = event.data.nodes;
     const collisions: CollisionResult["collisions"] = [];
-    // 각 노드에 대해 충돌 검사
+
     for (let i = 0; i < nodes.length; i++) {
       for (let j = 0; j < nodes.length; j++) {
         const baseNode = nodes[i];
         const targetNode = nodes[j];
 
         if (isCollided(baseNode.rect, targetNode.rect) && baseNode.id !== targetNode.id) {
-          // 충돌 시 이동 위치 계산
           const newPosition = moveOnCollision(targetNode, baseNode);
 
           collisions.push({
@@ -71,7 +68,6 @@ self.addEventListener("message", (event: MessageEvent<CollisionMessage>) => {
       }
     }
 
-    // 충돌 결과 전송
     self.postMessage({
       type: "collisionResult",
       collisions,
