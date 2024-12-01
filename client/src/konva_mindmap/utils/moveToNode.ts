@@ -1,8 +1,13 @@
+import { NodeData, SelectedNode } from "@/types/Node";
 import { findLastLeafNode } from "./findLastLeafNode";
 import { findParentNodeKey } from "./findParentNodeKey";
 import { findRootNodeKey } from "./findRootNodeKey";
 
-export function moveToNextNode(data, selectedNode, selectNode) {
+export function moveToNextNode(
+  data: NodeData,
+  selectedNode: SelectedNode,
+  selectNode: ({ nodeId, parentNodeId }: SelectedNode) => void,
+) {
   const { nodeId, parentNodeId } = selectedNode;
   const currentNode = data[nodeId];
 
@@ -47,7 +52,11 @@ export function moveToNextNode(data, selectedNode, selectNode) {
   }
 }
 
-export function moveToPreviousNode(data, selectedNode, selectNode) {
+export function moveToPreviousNode(
+  data: NodeData,
+  selectedNode: SelectedNode,
+  selectNode: ({ nodeId, parentNodeId }: SelectedNode) => void,
+) {
   const { nodeId, parentNodeId } = selectedNode;
   const currentNode = data[nodeId];
   const parentNode = data[parentNodeId];
