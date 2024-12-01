@@ -1,17 +1,15 @@
-import { MiddlewareConsumer, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { WinstonModule } from 'nest-winston';
 import { RedisModule } from '@liaoliaots/nestjs-redis';
 import { TypeOrmModule } from '@nestjs/typeorm';
-
 import { getWinstonConfig, getTypeOrmConfig, getRedisConfig, getJwtConfig } from '@app/config';
 import { MapModule } from './modules/map/map.module';
 
-import { LoggerMiddleware } from './middlewares/logger.middleware';
 import { join } from 'path';
 import { JwtModule } from '@nestjs/jwt';
-
-import { PubsubModule } from './modules/pubsub/pubsub.module';
+import { SubscriberModule } from './modules/subscriber/subscriber.module';
+import { PublisherModule } from '@app/publisher';
 
 @Module({
   imports: [
@@ -37,13 +35,11 @@ import { PubsubModule } from './modules/pubsub/pubsub.module';
       useFactory: getJwtConfig,
     }),
     MapModule,
-    PubsubModule,
+    SubscriberModule,
+    PublisherModule,
   ],
   controllers: [],
   providers: [],
+  exports: [],
 })
-export class AppModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer.apply(LoggerMiddleware).forRoutes('*');
-  }
-}
+export class AppModule {}

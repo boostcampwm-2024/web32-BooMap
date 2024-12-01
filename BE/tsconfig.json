@@ -53,6 +53,12 @@
       ],
       "@app/jwt/*": [
         "libs/jwt/src/*"
+      ],
+      "@app/publisher": [
+        "libs/publisher/src"
+      ],
+      "@app/publisher/*": [
+        "libs/publisher/src/*"
       ]
     }
   }
