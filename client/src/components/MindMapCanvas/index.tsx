@@ -29,6 +29,7 @@ export default function MindMapCanvas({ showMinutes, handleShowMinutes }) {
     deleteSelectedNodes,
     selectedNode,
     selectNode,
+    groupRelease,
   } = useNodeListContext();
   const [isDragMode, setDragMode] = useState(false);
   const { dimensions, targetRef, handleWheel, zoomIn, zoomOut, reArrange } = useDimension(data);
@@ -85,6 +86,10 @@ export default function MindMapCanvas({ showMinutes, handleShowMinutes }) {
             parentNodeId: selectedNode.nodeId,
           });
         });
+        break;
+      case "Escape":
+        groupRelease();
+        selectNode({});
         break;
       default:
         break;
