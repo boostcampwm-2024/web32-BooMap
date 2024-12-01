@@ -10,6 +10,7 @@ import { FaPencilAlt } from "react-icons/fa";
 import { FaPlus } from "react-icons/fa";
 import { FaRegTrashAlt } from "react-icons/fa";
 import useNodeActions from "@/hooks/useNodeActions";
+import { findParentNodeKey } from "@/konva_mindmap/utils/findParentNodeKey";
 
 type NodeItemProps = {
   node: Node;
@@ -36,7 +37,7 @@ export default function NodeItem({ node, parentNodeId, open, handleAccordion, op
   const { data, saveHistory, selectedNode, overrideNodeData, selectNode } = useNodeListContext();
   const inputRef = useRef<HTMLInputElement | null>(null);
   const isSelected =
-    selectedNode.parentNodeId === node.id || findParentNodeId(selectedNode.parentNodeId, data) === node.id;
+    selectedNode.parentNodeId === node.id || findParentNodeKey(selectedNode.parentNodeId, data) === node.id;
 
   useEffect(() => {
     node.newNode ? setIsEditing(true) : setIsEditing(false);
@@ -45,16 +46,6 @@ export default function NodeItem({ node, parentNodeId, open, handleAccordion, op
   useEffect(() => {
     if (isSelected) openAccordion();
   }, [isSelected]);
-
-  function findParentNodeId(nodeId, nodeData) {
-    for (const id in nodeData) {
-      const node = nodeData[parseInt(id)];
-      if (node.children.includes(nodeId)) {
-        return node.id;
-      }
-    }
-    return null;
-  }
 
   function handleAddButton() {
     saveHistory(JSON.stringify(data));
