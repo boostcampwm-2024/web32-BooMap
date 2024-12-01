@@ -21,7 +21,6 @@ import { deleteNodes } from "@/konva_mindmap/events/deleteNode";
 import { useConnectionStore } from "@/store/useConnectionStore";
 import { addNode } from "@/konva_mindmap/events/addNode";
 import useWindowEventListener from "@/hooks/useWindowEventListener";
-import { useConnectionStore } from "@/store/useConnectionStore";
 
 export default function MindMapNode({ data, parentNode, node, depth, parentRef, dragmode }: NodeProps) {
   const nodeRef = useRef<Konva.Group>(null);
