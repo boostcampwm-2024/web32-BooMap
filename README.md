@@ -47,7 +47,7 @@
 ### 🛠️ 기술스택
 
 <div align="center">
-<img width="697" alt="image" src="https://github.com/user-attachments/assets/1d0ff657-53b7-4053-8802-c98ab249a316">
+<img width="697" alt="image" src="https://github.com/user-attachments/assets/47f18052-b896-4c99-9b2b-6a18860de0aa">
 </div>
 
 <br>
