@@ -1,3 +1,4 @@
+import { signOut } from "@/api/auth";
 import profileIcon from "@/assets/profile.png";
 import { useConnectionStore } from "@/store/useConnectionStore";
 import { Button } from "@headlessui/react";
@@ -15,7 +16,8 @@ export default function ProfileModal({ open, close }: ProfileModalProps) {
   const modalRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    await signOut();
     logout();
     navigate("/");
     close();
