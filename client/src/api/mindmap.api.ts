@@ -12,3 +12,7 @@ export function getMindMap(mindMapId: string): Promise<MindMap> {
 export function deleteMindMap(mindMapId: string) {
   return instance.delete(`/mindmap/${mindMapId}`);
 }
+
+export function getMindMapByConnectionId(connectionId: string): Promise<MindMap> {
+  return instance.get(`/mindmap/${connectionId}`);
+}
