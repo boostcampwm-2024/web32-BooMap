@@ -3,11 +3,11 @@ import { AiService } from './ai.service';
 import { HttpModule } from '@nestjs/axios';
 import { NodeModule } from '../node/node.module';
 import { AiController } from './ai.controller';
-import { FileValidationPipe } from '../../pipes';
+import { AudioFileValidationPipe } from '../../pipes';
 
 @Module({
   imports: [HttpModule, NodeModule],
-  providers: [AiService, FileValidationPipe],
+  providers: [AiService, AudioFileValidationPipe],
   exports: [AiService],
   controllers: [AiController],
 })
