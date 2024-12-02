@@ -4,6 +4,11 @@ import { actionType, HandleSocketEventPayloads } from "@/types/NodePayload";
 import { createMindmap, getMindMap } from "@/api/mindmap.api";
 import { ConnectionStore } from "@/types/store";
 
+type NodeError = {
+  message: string;
+  status: string;
+};
+
 export type SocketSlice = {
   socket: Socket | null;
   connectSocket: (id: string, token: string) => void;
@@ -11,7 +16,7 @@ export type SocketSlice = {
   handleSocketEvent: (props: HandleSocketEventProps) => void;
   handleConnection: () => Promise<string>;
   getConnection: (mindMapId: number, connectionId: string) => void;
-  wsError: string[];
+  nodeError: NodeError[];
   currentJobStatus: string;
   connectionStatus: string;
 };
@@ -25,7 +30,7 @@ type HandleSocketEventProps = {
 export const createSocketSlice: StateCreator<ConnectionStore, [], [], SocketSlice> = (set, get) => ({
   socket: null,
   role: null,
-  wsError: [],
+  nodeError: [],
   currentJobStatus: "",
   connectionStatus: "",
 
@@ -46,7 +51,7 @@ export const createSocketSlice: StateCreator<ConnectionStore, [], [], SocketSlic
     const socket = io(import.meta.env.VITE_APP_SOCKET_SERVER_BASE_URL, options);
 
     socket.on("error", () => {
-      set({ wsError: [...get().wsError, "작업 중 에러가 발생했어요"] });
+      set({ nodeError: [...get().nodeError, { message: "작업 중 에러가 발생했어요", status: "fail" }] });
       set({ currentJobStatus: "error" });
     });
 
