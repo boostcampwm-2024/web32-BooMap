@@ -19,7 +19,7 @@ export class Node {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'varchar', length: 32 })
+  @Column({ type: 'varchar', length: 128 })
   keyword: string;
 
   @Column({ name: 'location_x', type: 'float', default: 0 })
