@@ -1,10 +1,10 @@
 import ArrowBox from "@/components/common/ArrowBox";
-import Spinner from "@/components/common/Spinner";
 import { MAX_TEXT_UPLOAD_LIMIT } from "@/constants/textUploadLimit";
 import useUpload from "@/hooks/useUpload";
 import { Button, Textarea } from "@headlessui/react";
 import { createPortal } from "react-dom";
 import clovaX from "@/assets/clovaX.png";
+import AiSpinner from "@/components/common/aiSpinner";
 
 export default function TextUpload() {
   const {
@@ -50,7 +50,7 @@ export default function TextUpload() {
           </ArrowBox>
         )}
       </Button>
-      {aiProcessing && createPortal(<Spinner />, document.body)}
+      {aiProcessing && createPortal(<AiSpinner />, document.body)}
       <div className="flex w-48 justify-end">
         <img src={clovaX} alt="clovaX" />
       </div>
