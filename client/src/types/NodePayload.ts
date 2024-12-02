@@ -1,6 +1,13 @@
 import { NodeData } from "./Node";
 
-export type actionType = "createNode" | "deleteNode" | "updateNode" | "updateTitle" | "updateContent" | "aiRequest";
+export type actionType =
+  | "createNode"
+  | "deleteNode"
+  | "updateNode"
+  | "updateTitle"
+  | "updateContent"
+  | "aiRequest"
+  | "audioAiRequest";
 
 export type HandleSocketEventPayloads =
   | createNodePayload
