@@ -126,7 +126,7 @@ export default function MindMapCanvas({ showMinutes, handleShowMinutes }) {
       >
         <Layer ref={registerLayer}>
           {Object.keys(data).length >= 1 && (
-            <DrawMindMap data={data} root={data[rootKey]} depth={1} dragmode={isDragMode} />
+            <DrawMindMap data={data} root={data[rootKey]} depth={1} dragmode={isDragMode} scale={dimensions.scale} />
           )}
           <SelectionRect stage={stageRef} dragmode={isDragMode} />
         </Layer>

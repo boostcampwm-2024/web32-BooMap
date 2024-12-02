@@ -9,6 +9,7 @@ interface EditableTextInputProps {
   offsetY: number;
   width: number;
   focus: boolean;
+  scale: number;
 }
 
 export default function EditableTextInput({
@@ -20,7 +21,10 @@ export default function EditableTextInput({
   offsetY,
   width,
   focus,
+  scale,
 }: EditableTextInputProps) {
+  const fontSize = 16 / scale;
+
   return (
     <Html groupProps={{ offset: { x: offsetX, y: offsetY } }}>
       <input
@@ -31,7 +35,7 @@ export default function EditableTextInput({
         onKeyDown={onKeyDown}
         onBlur={onBlur}
         maxLength={50}
-        style={{ width }}
+        style={{ width, fontSize }}
       />
     </Html>
   );
