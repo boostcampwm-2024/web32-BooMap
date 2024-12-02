@@ -1,8 +1,9 @@
 import { RedisService } from '@liaoliaots/nestjs-redis';
-import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '@app/entity';
 import Redis from 'ioredis';
+import { authException } from '../../exceptions';
 
 interface tokenPayload {
   email: string;
@@ -33,23 +34,28 @@ export class AuthService {
   }
 
   async verifiedRefreshToken(refreshToken: string) {
-    const isBlacklisted = await this.GeneralRedis.get(refreshToken);
-    if (isBlacklisted === 'true') {
-      throw new UnauthorizedException('다시 로그인해주세요.');
-    }
-    this.jwtService.verify(refreshToken);
-    const decoded = this.jwtService.decode(refreshToken);
-    if (!decoded || typeof decoded !== 'object') {
-      throw new UnauthorizedException('Invalid token format');
-    }
+    try {
+      const isBlacklisted = await this.GeneralRedis.get(refreshToken);
+      if (isBlacklisted === 'true') {
+        throw new Error('다시 로그인해주세요.');
+      }
+      this.jwtService.verify(refreshToken);
+      const decoded = this.jwtService.decode(refreshToken);
+      if (!decoded || typeof decoded !== 'object') {
+        throw new Error('Invalid token format');
+      }
 
-    const payload: tokenPayload = {
-      email: decoded.email,
-      id: decoded.id,
-    };
+      const payload: tokenPayload = {
+        email: decoded.email,
+        id: decoded.id,
+      };
 
-    const accessToken = this.jwtService.sign(payload, { expiresIn: 60 * 30 });
-    return accessToken;
+      const accessToken = this.jwtService.sign(payload, { expiresIn: 60 * 30 });
+      return accessToken;
+    } catch (error) {
+      this.logger.error(error);
+      throw new authException('다시 로그인해주세요.');
+    }
   }
 
   async logout(refreshToken: string) {
@@ -57,7 +63,7 @@ export class AuthService {
       await this.GeneralRedis.set(refreshToken, 'true', 'EX', 60 * 60 * 24 * 3);
     } catch (error) {
       this.logger.error(error);
-      throw new UnauthorizedException('로그아웃에 실패했습니다.');
+      throw new authException('로그아웃에 실패했습니다.');
     }
   }
 }
