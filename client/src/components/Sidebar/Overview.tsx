@@ -18,10 +18,10 @@ export default function Overview() {
   const { getmode, handleViewMode } = useSection();
   const socket = useConnectionStore((state) => state.socket);
   const createConnection = useConnectionStore((state) => state.createConnection);
-  const latestMindMap = useConnectionStore((state) => state.latest);
   const { open, closeModal, openModal } = useModal();
   const [selectMode, setSelcetMode] = useState<ViewMode>("listview");
 
+  const latestMindMap = sessionStorage.getItem("latest");
   const navigateMindmap = (mode: ViewMode) => {
     if (socket) {
       handleViewMode(mode);

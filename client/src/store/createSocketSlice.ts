@@ -44,7 +44,7 @@ export const createSocketSlice: StateCreator<ConnectionStore, [], [], SocketSlic
     get().checkRole(connectionId);
 
     const socket = io(import.meta.env.VITE_APP_SOCKET_SERVER_BASE_URL, options);
-    get().updateLatestMindMap(connectionId);
+    sessionStorage.setItem("latest", connectionId);
 
     socket.on("error", () => {
       set({ wsError: [...get().wsError, "작업 중 에러가 발생했어요"] });
