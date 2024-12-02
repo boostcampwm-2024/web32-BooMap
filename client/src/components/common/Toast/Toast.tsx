@@ -1,6 +1,12 @@
 import { useEffect, useState } from "react";
 
-export default function Toast({ message, status, onClose }) {
+type ToastProps = {
+  message: string;
+  status: "success" | "fail" | "error";
+  onClose: () => void;
+};
+
+export default function Toast({ message, status, onClose }: ToastProps) {
   const [progress, setProgress] = useState(0);
   const duration = 3000;
 
