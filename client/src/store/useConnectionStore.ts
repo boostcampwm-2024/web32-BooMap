@@ -24,6 +24,7 @@ export const useConnectionStore = create<ConnectionStore>()(
             token: state.token,
             ownedMindMap: state.ownedMindMap,
             ownedMindMapForGuest: state.ownedMindMapForGuest,
+            latest: state.latest,
           };
         },
         storage: createJSONStorage(() => localStorage),

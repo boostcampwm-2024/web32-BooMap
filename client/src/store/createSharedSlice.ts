@@ -3,9 +3,12 @@ import { NavigateFunction } from "react-router-dom";
 import { StateCreator } from "zustand";
 
 export interface SharedSlice {
+  latest: string;
   createConnection: (navigate: NavigateFunction, targetMode: string) => void;
+  updateLatestMindMap: (connectionId: string) => void;
 }
 export const createSharedSlice: StateCreator<ConnectionStore, [], [], SharedSlice> = (set, get) => ({
+  latest: "",
   createConnection: async (navigate: NavigateFunction, targetMode: string) => {
     try {
       const newMindMapConnectionId = await get().handleConnection();
@@ -17,4 +20,6 @@ export const createSharedSlice: StateCreator<ConnectionStore, [], [], SharedSlic
       throw error;
     }
   },
+
+  updateLatestMindMap: (connectionId: string) => set({ latest: connectionId }),
 });
