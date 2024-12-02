@@ -18,6 +18,9 @@ export class User {
   @CreateDateColumn({ type: 'timestamp', name: 'create_date' })
   createDate: Date;
 
-  @OneToMany(() => UserMindmapRole, (userMindmapRole) => userMindmapRole.user)
+  @OneToMany(() => UserMindmapRole, (userMindmapRole) => userMindmapRole.user, {
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
   userMindmapRoles: UserMindmapRole[];
 }
