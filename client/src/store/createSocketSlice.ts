@@ -52,6 +52,15 @@ export const createSocketSlice: StateCreator<ConnectionStore, [], [], SocketSlic
     const socket = io(import.meta.env.VITE_APP_SOCKET_SERVER_BASE_URL, options);
     sessionStorage.setItem("latest", connectionId);
 
+    socket.on("notFoundError", async () => {
+      try {
+        const response = await getMindMap(connectionId);
+        get().connectSocket(connectionId);
+      } catch (error) {
+        set({ connectionStatus: "notFound" });
+      }
+    });
+
     socket.on("error", () => {
       set({ nodeError: [...get().nodeError, { message: "작업 중 에러가 발생했어요", status: "fail" }] });
       set({ currentJobStatus: "error" });
