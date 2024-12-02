@@ -87,15 +87,18 @@ export class MindmapService {
       where: { id: mindmapId },
       relations: ['nodes', 'userMindmapRoles'],
     });
+
     if (!mindmap) {
-      throw new MindmapException('마인드맵을 찾을 수 없습니다.');
+      throw new NotFoundException('마인드맵을 찾을 수 없습니다.');
     }
+
     await this.mindmapRepository.softRemove(mindmap);
   }
 
   async getDataByMindmapId(mindmapId: number) {
     const mindmap = await this.mindmapRepository.findOne({ where: { id: mindmapId } });
     const nodes = await this.nodeService.tableToCanvas(mindmap.id);
+
     if (!mindmap) {
       throw new NotFoundException('마인드맵을 찾을 수 없습니다.');
     }

@@ -1,1 +1,1 @@
-export * from './file.validation.pipe';
+export * from './audio.file.validation.pipe';
