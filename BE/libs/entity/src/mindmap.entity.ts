@@ -28,13 +28,19 @@ export class Mindmap {
   @Column({ name: 'ai_count', default: 5 })
   aiCount: number;
 
-  @OneToMany(() => UserMindmapRole, (userMindmapRole) => userMindmapRole.mindmap)
+  @OneToMany(() => UserMindmapRole, (userMindmapRole) => userMindmapRole.mindmap, {
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
   userMindmapRoles: UserMindmapRole[];
 
   @Column({ name: 'connection_id' })
   connectionId: string;
 
-  @OneToMany(() => Node, (node) => node.mindmap)
+  @OneToMany(() => Node, (node) => node.mindmap, {
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
   nodes: Node[];
 
   @CreateDateColumn({ type: 'timestamp', name: 'create_date' })

@@ -95,14 +95,6 @@ export class MindmapService {
       throw new MindmapException('마인드맵을 찾을 수 없습니다.');
     }
 
-    if (!nodes) {
-      return {
-        title: mindmap.title,
-        content: mindmap.content,
-        aiCount: mindmap.aiCount,
-        connectionId: mindmap.connectionId,
-      };
-    }
     return {
       title: mindmap.title,
       content: mindmap.content,

@@ -8,11 +8,11 @@ export class UserMindmapRole {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => User, (user) => user.userMindmapRoles, { onDelete: 'CASCADE', nullable: false })
+  @ManyToOne(() => User, (user) => user.userMindmapRoles, { nullable: false })
   @JoinColumn({ name: 'user_id' })
   user: User;
 
-  @ManyToOne(() => Mindmap, (mindmap) => mindmap.userMindmapRoles, { onDelete: 'CASCADE', nullable: false })
+  @ManyToOne(() => Mindmap, (mindmap) => mindmap.userMindmapRoles, { nullable: false })
   @JoinColumn({ name: 'mindmap_id' })
   mindmap: Mindmap;
 
