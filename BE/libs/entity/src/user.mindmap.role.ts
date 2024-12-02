@@ -20,5 +20,5 @@ export class UserMindmapRole {
   role: Role;
 
   @DeleteDateColumn()
-  deleteAt: Date | null;
+  deletedAt: Date | null;
 }
