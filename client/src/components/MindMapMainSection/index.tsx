@@ -2,11 +2,11 @@ import MindMapHeader from "@/components/MindMapHeader";
 import MindMapView from "@/components/MindMapMainSection/MindMapView";
 import useSection from "@/hooks/useSection";
 import { useNodeListContext } from "@/store/NodeListProvider";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import ToastContainer from "../common/Toast/ToastContainer";
-import useAuth from "@/hooks/useAuth";
 import { useConnectionStore } from "@/store/useConnectionStore";
+import useToast from "@/hooks/useToast";
 
 const modeView = {
   voiceupload: "음성 파일 업로드",
@@ -20,17 +20,8 @@ export default function MindMapMainSection() {
   const { updateMindMapId } = useNodeListContext();
   const connectSocket = useConnectionStore((state) => state.connectSocket);
   const disconnectSocket = useConnectionStore((state) => state.disconnectSocket);
-  const wsError = useConnectionStore((state) => state.wsError);
-  const [toasts, setToasts] = useState([]);
   const token = useConnectionStore((state) => state.token);
-
-  useEffect(() => {
-    if (wsError.length > 0)
-      setToasts((prevToasts) => [
-        ...prevToasts,
-        { id: new Date().getTime(), message: wsError[wsError.length - 1], status: "fail" },
-      ]);
-  }, [wsError]);
+  const { toasts, setToasts } = useToast();
 
   useEffect(() => {
     if (mindMapId) {
