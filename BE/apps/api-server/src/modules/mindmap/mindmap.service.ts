@@ -64,7 +64,6 @@ export class MindmapService {
     });
 
     if (!myRoles) {
-      this.logger.log('myRoles is empty');
       return [];
     }
 
@@ -129,5 +128,9 @@ export class MindmapService {
         ownerName: owner.user.name,
       },
     ];
+  }
+
+  async getMindmapByConnectionId(connectionId: string) {
+    return await this.mindmapRepository.findOne({ where: { connectionId } });
   }
 }
