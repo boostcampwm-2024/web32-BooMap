@@ -1,8 +1,8 @@
-import { calculateVector } from "@/konva_mindmap/utils/vector";
-import { Node, NodeData, SelectedNode } from "@/types/Node";
-import { findRootNodeKey } from "../utils/findRootNodeKey";
+import { NodeData, SelectedNode } from "@/types/Node";
 import { NODE_DEPTH_LIMIT } from "@/constants/node";
 import { useConnectionStore } from "@/store/useConnectionStore";
+import { getNewNodePosition } from "../utils/getNewNodePosition";
+import { checkAllNodeCount, checkNodeCount } from "../utils/checkNodeCount";
 
 export function addNode(
   data: NodeData,
@@ -11,6 +11,24 @@ export function addNode(
   onNodeCreated?: (id: number) => void,
 ) {
   const handleSocketEvent = useConnectionStore.getState().handleSocketEvent;
+
+  if (selectedNode.nodeId === 0) {
+    useConnectionStore.getState().propagateError("노드가 선택되지 않았습니다.", "error");
+    return;
+  }
+
+  const isCheckNodeCount = checkNodeCount(data, selectedNode.nodeId);
+  const isCheckAllNodeCount = checkAllNodeCount(data);
+
+  if (!isCheckNodeCount) {
+    useConnectionStore.getState().propagateError("한 노드당 최대 15개 생성 가능해요.", "error");
+    return;
+  }
+  if (!isCheckAllNodeCount) {
+    useConnectionStore.getState().propagateError("노드는 최대 150개 생성 가능해요.", "error");
+    return;
+  }
+
   // 아무 노드도 없을 때는 임의로 id 생성해서 현재는 넣음
   if (!Object.keys(data).length) {
     const newNode = {
@@ -79,26 +97,4 @@ export function addNode(
     },
   });
   return newNodeId;
-}
-
-// 수직벡터 -> 벡터 구한 다음에 벡터의 y값이 x값으로 가고 x값의 반대 부호값이 y좌표
-// 단위벡터 * 내가 원하는 만큼 떼놓을 거리값을 마지막 요소의 x와 y좌표에 더한다,
-function getNewNodePosition(children: number[], data: NodeData, parentNode: Node) {
-  const rootKey = findRootNodeKey(data);
-
-  if (!children.length) {
-    if (parentNode.id === rootKey)
-      return {
-        x: parentNode.location.x + 300,
-        y: parentNode.location.y,
-      };
-    const { x, y } = calculateVector(data[rootKey].location, parentNode.location, -80, 240);
-    return parentNode ? { x: parentNode.location.x + x, y: parentNode.location.y + y } : { x: 0, y: 0 };
-  }
-  const lastChildren = data[children[children.length - 1]];
-  const uv = calculateVector(parentNode.location, lastChildren.location, 110, 240);
-  return {
-    x: lastChildren.location.x + uv.x,
-    y: lastChildren.location.y + uv.y,
-  };
 }
