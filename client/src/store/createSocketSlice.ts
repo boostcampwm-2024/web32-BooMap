@@ -54,6 +54,8 @@ export const createSocketSlice: StateCreator<ConnectionStore, [], [], SocketSlic
 
     socket.on("notFoundError", async () => {
       try {
+        // TODO: connectionId를 기준으로 mindMapId를 가져오는 API 호출하기
+        // 여기서 403이면 forbidden 페이지, 404면 notFound 페이지로 이동
         const response = await getMindMap(connectionId);
         get().connectSocket(connectionId);
       } catch (error) {
