@@ -147,6 +147,7 @@ export class MapGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
         const socketId = room.values().next().value;
         this.logger.log('소켓 ID : ' + socketId);
         const clientSocket = this.server.sockets.sockets.get(socketId);
+
         if (clientSocket) {
           clientSocket.emit('aiResponse', data.nodeData);
         } else {
@@ -156,6 +157,12 @@ export class MapGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
         this.logger.error(`Room not found or empty for connectionId: ${data.connectionId}`);
       }
     }
+    this.server.to(data.connectionId).emit('aiPending', { status: false });
+  }
+
+  textAiError(data) {
+    this.logger.error(`AI 요청 에러 : ${data.error}`);
+    this.server.to(data.connectionId).emit('error', { error: data.error });
     this.server.to(data.connectionId).emit('aiPending', { status: false });
   }
 
