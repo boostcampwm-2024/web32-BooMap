@@ -11,7 +11,7 @@ type NodeError = {
 
 export type SocketSlice = {
   socket: Socket | null;
-  connectSocket: (id: string, token: string) => void;
+  connectSocket: (id: string) => void;
   disconnectSocket: () => void;
   handleSocketEvent: (props: HandleSocketEventProps) => void;
   handleConnection: () => Promise<string>;
@@ -34,7 +34,7 @@ export const createSocketSlice: StateCreator<ConnectionStore, [], [], SocketSlic
   currentJobStatus: "",
   connectionStatus: "",
 
-  connectSocket: (connectionId, token) => {
+  connectSocket: (connectionId) => {
     if (get().socket) return;
 
     const options: any = {
@@ -44,6 +44,7 @@ export const createSocketSlice: StateCreator<ConnectionStore, [], [], SocketSlic
       transports: ["websocket"],
     };
 
+    const token = get().token;
     if (token) options.auth = { token };
 
     get().checkRole(connectionId);
@@ -58,10 +59,6 @@ export const createSocketSlice: StateCreator<ConnectionStore, [], [], SocketSlic
 
     socket.on("connect_error", () => {
       set({ connectionStatus: "error" });
-    });
-
-    socket.on("reconnect", () => {
-      set({ connectionStatus: "connected" });
     });
 
     set({ socket: socket, connectionStatus: "connected" });
@@ -93,7 +90,7 @@ export const createSocketSlice: StateCreator<ConnectionStore, [], [], SocketSlic
       if (socket) socket.disconnect();
       const response = await createMindmap();
       const connectionId = response.data.connectionId;
-      get().connectSocket(connectionId, get().token);
+      get().connectSocket(connectionId);
       return connectionId;
     } catch (error) {
       console.error(error);
@@ -105,7 +102,7 @@ export const createSocketSlice: StateCreator<ConnectionStore, [], [], SocketSlic
       const socket = get().socket;
       if (socket) socket.disconnect();
       const response = await getMindMap(mindMapId.toString());
-      get().connectSocket(connectionId, get().token);
+      get().connectSocket(connectionId);
     } catch (error) {
       throw error;
     }

@@ -24,7 +24,7 @@ export default function MindMapMainSection() {
 
   useEffect(() => {
     if (mindMapId) {
-      connectSocket(mindMapId, token);
+      connectSocket(mindMapId);
     }
     return () => {
       disconnectSocket();
