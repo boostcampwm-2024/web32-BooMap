@@ -1,6 +1,6 @@
 import { MIN_TEXT_UPLOAD_LIMIT } from "@/constants/textUploadLimit";
 import { useConnectionStore } from "@/store/useConnectionStore";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function useUpload() {
   const [content, setContent] = useState("");
@@ -12,9 +12,11 @@ export default function useUpload() {
 
   const buttonAvailability = role === "owner";
 
-  socket?.on("aiPending", (response) => {
-    setAiProcessing(response.status);
-  });
+  useEffect(() => {
+    socket?.on("aiPending", (response) => {
+      setAiProcessing(response.status);
+    });
+  }, [socket]);
 
   function handleAiProcessButton() {
     if (content.length <= MIN_TEXT_UPLOAD_LIMIT || !buttonAvailability) return;
