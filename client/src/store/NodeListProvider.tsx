@@ -4,7 +4,6 @@ import { Node, NodeData, SelectedNode } from "@/types/Node";
 import Konva from "konva";
 import { createContext, ReactNode, useContext, useEffect, useState } from "react";
 import { deleteNodes } from "@/konva_mindmap/events/deleteNode";
-import { setLatestMindMap } from "@/utils/localstorage";
 import useMindMapTitle from "@/hooks/useMindMapTitle";
 import useContent from "@/hooks/useContent";
 import { useConnectionStore } from "@/store/useConnectionStore";
@@ -27,7 +26,6 @@ export type NodeListContextType = {
   selectedGroup: string[];
   loading: boolean;
   deleteSelectedNodes: () => void;
-  updateMindMapId: (mindMapId: string) => void;
   content: string;
   updateContent: (updatedContent: string) => void;
 };
@@ -48,7 +46,6 @@ export default function NodeListProvider({ children }: { children: ReactNode }) 
   const { title, initializeTitle, updateTitle } = useMindMapTitle();
   const { content, updateContent, initializeContent } = useContent();
   const [loading, setLoading] = useState(true);
-  const [mindMapId, setMindMapId] = useState("");
   const { selectedGroup, groupRelease, groupSelect } = useGroupSelect();
   const socket = useConnectionStore((state) => state.socket);
   const handleSocketEvent = useConnectionStore((state) => state.handleSocketEvent);
@@ -81,7 +78,6 @@ export default function NodeListProvider({ children }: { children: ReactNode }) 
     socket?.on("disconnect", () => {
       setData({});
       overrideHistory(JSON.stringify({}));
-      setLatestMindMap(mindMapId);
     });
 
     socket?.on("aiResponse", (response) => {
@@ -136,9 +132,6 @@ export default function NodeListProvider({ children }: { children: ReactNode }) 
     }
     if (selectedNode.nodeId) deleteNodes(JSON.stringify(data), selectedNode.nodeId, overrideNodeData);
   }
-  function updateMindMapId(mindMapId: string) {
-    setMindMapId(mindMapId);
-  }
 
   return (
     <NodeListContext.Provider
@@ -159,7 +152,6 @@ export default function NodeListProvider({ children }: { children: ReactNode }) 
         selectedGroup,
         loading,
         deleteSelectedNodes,
-        updateMindMapId,
         content,
         updateContent,
       }}

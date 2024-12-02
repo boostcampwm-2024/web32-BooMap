@@ -16,12 +16,12 @@ export function useCollisionDetection(nodeData: NodeData, updateNode: (id: numbe
   );
 
   const detectCollisions = useCallback(
-    (layer: Konva.Layer) => {
+    (layer) => {
       const nodes = layer.children.filter((child) => child.attrs.name === "node");
       nodes.forEach((base) => {
         nodes.forEach((target) => {
           if (base !== target) {
-            if (isCollided(base.getClientRect(), target.getClientRect())) {
+            if (isCollided(base.children[0].getClientRect(), target.children[0].getClientRect())) {
               handleCollision(base, target);
             }
           }

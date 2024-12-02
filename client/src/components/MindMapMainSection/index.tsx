@@ -1,11 +1,9 @@
 import MindMapHeader from "@/components/MindMapHeader";
 import MindMapView from "@/components/MindMapMainSection/MindMapView";
 import useSection from "@/hooks/useSection";
-import { useNodeListContext } from "@/store/NodeListProvider";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import ToastContainer from "../common/Toast/ToastContainer";
-import useAuth from "@/hooks/useAuth";
 import { useConnectionStore } from "@/store/useConnectionStore";
 
 const modeView = {
@@ -17,7 +15,6 @@ const modeView = {
 export default function MindMapMainSection() {
   const mode = useSection().searchParams.get("mode") as keyof typeof modeView;
   const { mindMapId } = useParams<{ mindMapId: string }>();
-  const { updateMindMapId } = useNodeListContext();
   const connectSocket = useConnectionStore((state) => state.connectSocket);
   const disconnectSocket = useConnectionStore((state) => state.disconnectSocket);
   const wsError = useConnectionStore((state) => state.wsError);
@@ -35,7 +32,6 @@ export default function MindMapMainSection() {
   useEffect(() => {
     if (mindMapId) {
       connectSocket(mindMapId, token);
-      updateMindMapId(mindMapId);
     }
     return () => {
       disconnectSocket();

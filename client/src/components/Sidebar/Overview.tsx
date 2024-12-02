@@ -1,8 +1,6 @@
-import aiIcon from "@/assets/ai.png";
 import OverviewButton from "@/components/Sidebar/OverviewButton";
 import useSection from "@/hooks/useSection";
 import { useNavigate } from "react-router-dom";
-import { getLatestMindMap } from "@/utils/localstorage";
 import useModal from "@/hooks/useModal";
 import { createPortal } from "react-dom";
 import LatestMindMapModal from "@/components/Sidebar/LatestMindMapModal";
@@ -23,13 +21,13 @@ export default function Overview() {
   const { open, closeModal, openModal } = useModal();
   const [selectMode, setSelcetMode] = useState<ViewMode>("listview");
 
+  const latestMindMap = sessionStorage.getItem("latest");
   const navigateMindmap = (mode: ViewMode) => {
     if (socket) {
       handleViewMode(mode);
       return;
     }
 
-    const latestMindMap = getLatestMindMap();
     if (!latestMindMap) {
       createConnection(navigate, mode);
       return;
@@ -40,7 +38,7 @@ export default function Overview() {
   //비회원은 삭제를 안한다
   //setConnection
   function navigateToLatestMindap() {
-    navigate(`/mindmap/${getLatestMindMap()}?mode=${selectMode}`);
+    navigate(`/mindmap/${latestMindMap}?mode=${selectMode}`);
     closeModal();
   }
 
