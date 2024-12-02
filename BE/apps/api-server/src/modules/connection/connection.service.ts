@@ -1,6 +1,6 @@
 import { MindmapService } from './../mindmap/mindmap.service';
 import { UserService } from './../user/user.service';
-import { Injectable, Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { ForbiddenException, Injectable, Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { Redis } from 'ioredis';
 import { RedisService } from '@liaoliaots/nestjs-redis';
 import { v4 as uuidv4 } from 'uuid';
@@ -42,7 +42,7 @@ export class ConnectionService {
     try {
       const role = await this.userService.getRole(userId, mindmapId);
       if (!role) {
-        throw new UnauthorizedException('권한이 없습니다.');
+        throw new ForbiddenException('권한이 없습니다.');
       }
 
       const owner = await this.mindmapService.getOwner(mindmapId);
