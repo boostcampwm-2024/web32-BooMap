@@ -25,7 +25,7 @@ export function addNode(
     return;
   }
   if (!isCheckAllNodeCount) {
-    useConnectionStore.getState().propagateError("노드는 최대 150개 생성 가능해요.", "error");
+    useConnectionStore.getState().propagateError("노드는 최대 150개까지 생성 가능해요.", "error");
     return;
   }
 
