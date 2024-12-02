@@ -23,7 +23,7 @@ export type SocketSlice = {
 
 type HandleSocketEventProps = {
   actionType: actionType;
-  payload: HandleSocketEventPayloads;
+  payload?: HandleSocketEventPayloads;
   callback?: (response?: any) => void;
 };
 
@@ -49,6 +49,7 @@ export const createSocketSlice: StateCreator<ConnectionStore, [], [], SocketSlic
     get().checkRole(connectionId);
 
     const socket = io(import.meta.env.VITE_APP_SOCKET_SERVER_BASE_URL, options);
+    sessionStorage.setItem("latest", connectionId);
 
     socket.on("error", () => {
       set({ nodeError: [...get().nodeError, { message: "작업 중 에러가 발생했어요", status: "fail" }] });

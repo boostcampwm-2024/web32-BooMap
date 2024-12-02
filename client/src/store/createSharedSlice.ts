@@ -14,7 +14,6 @@ export interface SharedSlice {
 }
 export const createSharedSlice: StateCreator<ConnectionStore, [], [], SharedSlice> = (set, get) => ({
   nodeError: [],
-
   createConnection: async (navigate: NavigateFunction, targetMode: string) => {
     try {
       const newMindMapConnectionId = await get().handleConnection();

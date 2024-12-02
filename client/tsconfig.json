@@ -15,7 +15,8 @@
     "outDir": "./dist", // 번들된 파일을 dist 폴더에 출력
     "noEmit": false, // emit을 true로 설정해야 실제 파일이 생성됨
     "isolatedModules": true, // 모듈로 분리된 파일을 처리
-    "skipDefaultLibCheck": true // 기본 라이브러리 파일 체크 건너뛰기
+    "skipDefaultLibCheck": true, // 기본 라이브러리 파일 체크 건너뛰기
+    "resolveJsonModule": true
   },
   "include": [
     "src/**/*", // 모든 src 파일 포함

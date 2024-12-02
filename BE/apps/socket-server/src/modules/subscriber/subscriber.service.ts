@@ -59,6 +59,10 @@ export class SubscriberService implements OnModuleInit {
   }
 
   textAiFinished(data) {
+    if (data.error) {
+      this.mapGateway.textAiError(data);
+      return;
+    }
     this.mapGateway.textAiResponse(data);
   }
 

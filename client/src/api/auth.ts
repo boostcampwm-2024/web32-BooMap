@@ -10,3 +10,7 @@ export const getUser = async (): Promise<User> => {
   const { data } = await instance.get("/user/info");
   return data;
 };
+
+export const signOut = async () => {
+  return instance.post("/auth/logout");
+};

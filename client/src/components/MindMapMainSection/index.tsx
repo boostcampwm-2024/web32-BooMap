@@ -17,7 +17,6 @@ const modeView = {
 export default function MindMapMainSection() {
   const mode = useSection().searchParams.get("mode") as keyof typeof modeView;
   const { mindMapId } = useParams<{ mindMapId: string }>();
-  const { updateMindMapId } = useNodeListContext();
   const connectSocket = useConnectionStore((state) => state.connectSocket);
   const disconnectSocket = useConnectionStore((state) => state.disconnectSocket);
   const token = useConnectionStore((state) => state.token);
@@ -26,7 +25,6 @@ export default function MindMapMainSection() {
   useEffect(() => {
     if (mindMapId) {
       connectSocket(mindMapId, token);
-      updateMindMapId(mindMapId);
     }
     return () => {
       disconnectSocket();
