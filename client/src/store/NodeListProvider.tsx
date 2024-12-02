@@ -92,7 +92,7 @@ export default function NodeListProvider({ children }: { children: ReactNode }) 
     });
 
     return () => {
-      socket?.off;
+      socket?.offAny();
     };
   }, [socket]);
 
