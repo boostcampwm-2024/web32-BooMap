@@ -134,6 +134,12 @@ export class MapGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
     await this.mapService.textAiRequest(client, aiRequestDto.aiContent);
   }
 
+  @SubscribeMessage('audioAiRequest')
+  async handleAudioAiRequest(@ConnectedSocket() client: Socket) {
+    this.logging(client, '오디오 AI 요청');
+    this.server.to(client.data.connectionId).emit('aiPending', { status: true });
+  }
+
   textAiResponse(data) {
     const room = this.server.sockets.adapter.rooms.get(data.connectionId);
     if (data.error) {
@@ -145,7 +151,6 @@ export class MapGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
       if (room && room.size > 0) {
         // 첫 번째 클라이언트 ID 가져오기
         const socketId = room.values().next().value;
-        this.logger.log('소켓 ID : ' + socketId);
         const clientSocket = this.server.sockets.sockets.get(socketId);
 
         if (clientSocket) {
