@@ -12,23 +12,6 @@ export function addNode(
 ) {
   const handleSocketEvent = useConnectionStore.getState().handleSocketEvent;
 
-  if (selectedNode.nodeId === 0) {
-    useConnectionStore.getState().propagateError("노드가 선택되지 않았습니다.", "error");
-    return;
-  }
-
-  const isCheckNodeCount = checkNodeCount(data, selectedNode.nodeId);
-  const isCheckAllNodeCount = checkAllNodeCount(data);
-
-  if (!isCheckNodeCount) {
-    useConnectionStore.getState().propagateError("한 노드당 최대 15개 생성 가능해요.", "error");
-    return;
-  }
-  if (!isCheckAllNodeCount) {
-    useConnectionStore.getState().propagateError("노드는 최대 150개까지 생성 가능해요.", "error");
-    return;
-  }
-
   // 아무 노드도 없을 때는 임의로 id 생성해서 현재는 넣음
   if (!Object.keys(data).length) {
     const newNode = {
@@ -62,6 +45,24 @@ export function addNode(
     });
     return;
   }
+
+  if (selectedNode.nodeId === 0) {
+    useConnectionStore.getState().propagateError("노드가 선택되지 않았습니다.", "error");
+    return;
+  }
+
+  const isCheckNodeCount = checkNodeCount(data, selectedNode.nodeId);
+  const isCheckAllNodeCount = checkAllNodeCount(data);
+
+  if (!isCheckNodeCount) {
+    useConnectionStore.getState().propagateError("한 노드당 최대 15개 생성 가능해요.", "error");
+    return;
+  }
+  if (!isCheckAllNodeCount) {
+    useConnectionStore.getState().propagateError("노드는 최대 150개까지 생성 가능해요.", "error");
+    return;
+  }
+
   if (!selectedNode.nodeId || data[selectedNode.nodeId].depth === NODE_DEPTH_LIMIT) return;
 
   const newNodeId = parseInt(Object.keys(data)[Object.keys(data).length - 1]) + 1;
