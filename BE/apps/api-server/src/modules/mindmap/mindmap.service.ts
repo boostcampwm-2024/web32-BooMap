@@ -83,8 +83,14 @@ export class MindmapService {
       throw new ForbiddenException('권한이 없습니다.');
     }
 
-    await this.mindmapRepository.softRemove({ id: mindmapId });
-    await this.userMindmapRoleRepository.softDelete({ mindmap: { id: mindmapId } });
+    const mindmap = await this.mindmapRepository.findOne({
+      where: { id: mindmapId },
+      relations: ['nodes', 'userMindmapRoles'],
+    });
+    if (!mindmap) {
+      throw new MindmapException('마인드맵을 찾을 수 없습니다.');
+    }
+    await this.mindmapRepository.softRemove(mindmap);
   }
 
   async getDataByMindmapId(mindmapId: number) {
