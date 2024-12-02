@@ -26,7 +26,7 @@ export default function DrawMindMap({ data, root, depth = 0, parentNode, dragmod
       )}
       <MindMapNode data={data} depth={depth} parentNode={parentNode} node={root} dragmode={dragmode} />
       {root.children?.map((childNode, index) => (
-        <React.Fragment key={index}>
+        <React.Fragment key={`mindMapNode-${index}`}>
           <DrawMindMap data={data} root={data[childNode]} depth={depth + 1} parentNode={root} dragmode={dragmode} />
         </React.Fragment>
       ))}

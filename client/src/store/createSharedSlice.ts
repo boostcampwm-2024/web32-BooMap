@@ -2,11 +2,18 @@ import { ConnectionStore } from "@/types/store";
 import { NavigateFunction } from "react-router-dom";
 import { StateCreator } from "zustand";
 
+type NodeError = {
+  message: string;
+  status: string;
+};
+
 export interface SharedSlice {
   createConnection: (navigate: NavigateFunction, targetMode: string) => void;
+  propagateError: (error: string, status: string) => void;
+  nodeError: NodeError[];
 }
 export const createSharedSlice: StateCreator<ConnectionStore, [], [], SharedSlice> = (set, get) => ({
-  latest: "",
+  nodeError: [],
   createConnection: async (navigate: NavigateFunction, targetMode: string) => {
     try {
       const newMindMapConnectionId = await get().handleConnection();
@@ -17,5 +24,9 @@ export const createSharedSlice: StateCreator<ConnectionStore, [], [], SharedSlic
     } catch (error) {
       throw error;
     }
+  },
+
+  propagateError: (message, status) => {
+    set({ nodeError: [...get().nodeError, { message, status }] });
   },
 });
