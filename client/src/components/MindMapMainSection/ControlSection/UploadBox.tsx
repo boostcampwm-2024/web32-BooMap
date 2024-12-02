@@ -18,7 +18,12 @@ export default function UploadBox({ file, setFile }: UploadBoxProps) {
 
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     if (e.target.files !== null) {
-      setFile(e.target.files[0]);
+      const allowedExtensions = ["m4a", "ogg", "aac", "mp3"];
+
+      const fileExtension = e.target.files[0].name.split(".").pop()?.toLowerCase();
+      if (fileExtension && allowedExtensions.includes(fileExtension)) {
+        setFile(e.target.files[0]);
+      }
     }
   }
 
@@ -60,7 +65,14 @@ export default function UploadBox({ file, setFile }: UploadBoxProps) {
     >
       <Input type="file" ref={fileInputRef} className="hidden h-full w-full" onChange={handleFileChange} />
       <FaFileAudio size={50} />
-      {file ? file.name : <p>음성 파일을 업로드해주세요(머시기 확장자)</p>}
+      {file ? (
+        file.name
+      ) : (
+        <div>
+          <p>음성 파일을 업로드해주세요 </p>
+          <p>(m4a, ogg, aac, mp3만 가능)</p>
+        </div>
+      )}
     </div>
   );
 }
