@@ -1,11 +1,9 @@
 import MindMapHeader from "@/components/MindMapHeader";
 import MindMapView from "@/components/MindMapMainSection/MindMapView";
 import useSection from "@/hooks/useSection";
-import { useNodeListContext } from "@/store/NodeListProvider";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import ToastContainer from "../common/Toast/ToastContainer";
-import useAuth from "@/hooks/useAuth";
 import { useConnectionStore } from "@/store/useConnectionStore";
 
 const modeView = {
