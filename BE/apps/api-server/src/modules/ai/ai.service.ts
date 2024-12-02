@@ -26,59 +26,67 @@ export class AiService {
   ) {}
 
   async requestClovaX(data: RedisMessage['data']) {
-    if (BAD_WORDS_REGEX.test(data.aiContent)) {
+    try {
+      if (BAD_WORDS_REGEX.test(data.aiContent)) {
+        this.publisherService.publish(
+          'api-socket',
+          JSON.stringify({ event: 'textAi', data: { error: '욕설이 포함되어 있습니다.' } }),
+        );
+        return;
+      }
+
+      const URL = this.configService.get('CLOVA_URL');
+      const headers = {
+        'X-NCP-CLOVASTUDIO-API-KEY': this.configService.get('X_NCP_CLOVASTUDIO_API_KEY'),
+        'X-NCP-APIGW-API-KEY': this.configService.get('X_NCP_APIGW_API_KEY'),
+        'X-NCP-CLOVASTUDIO-REQUEST-ID': this.configService.get('X_NCP_CLOVASTUDIO_REQUEST_ID'),
+        'Content-Type': 'application/json',
+      };
+
+      const messages = [
+        {
+          role: 'system',
+          content: CLOVA_X_PROMPT,
+        },
+        {
+          role: 'user',
+          content: data.aiContent,
+        },
+      ];
+
+      const requestData = {
+        messages,
+        topP: 0.8,
+        topK: 0,
+        maxTokens: 2272,
+        temperature: 0.06,
+        repeatPenalty: 5.0,
+        stopBefore: [],
+        includeAiFilters: false,
+        seed: 0,
+      };
+
+      const response = await firstValueFrom(this.httpService.post(URL, requestData, { headers }));
+
+      let result: string = response.data.result.message.content;
+
+      if (result[result.length - 1] !== '}') {
+        result = result + '}';
+      }
+
+      const resultJson = JSON.parse(result) as TextAiResponse;
+      const nodeData = await this.nodeService.aiCreateNode(resultJson, Number(data.mindmapId));
+
       this.publisherService.publish(
         'api-socket',
-        JSON.stringify({ event: 'textAi', data: { error: '욕설이 포함되어 있습니다.' } }),
+        JSON.stringify({ event: 'textAiSocket', data: { nodeData, connectionId: data.connectionId } }),
       );
-      return;
+    } catch (error) {
+      this.logger.error('텍스트 AI 요청 에러 : ' + error);
+      this.publisherService.publish(
+        'api-socket',
+        JSON.stringify({ event: 'textAiSocket', data: { error: 'AI 요청에 실패했습니다.' } }),
+      );
     }
-
-    const URL = this.configService.get('CLOVA_URL');
-    const headers = {
-      'X-NCP-CLOVASTUDIO-API-KEY': this.configService.get('X_NCP_CLOVASTUDIO_API_KEY'),
-      'X-NCP-APIGW-API-KEY': this.configService.get('X_NCP_APIGW_API_KEY'),
-      'X-NCP-CLOVASTUDIO-REQUEST-ID': this.configService.get('X_NCP_CLOVASTUDIO_REQUEST_ID'),
-      'Content-Type': 'application/json',
-    };
-
-    const messages = [
-      {
-        role: 'system',
-        content: CLOVA_X_PROMPT,
-      },
-      {
-        role: 'user',
-        content: data.aiContent,
-      },
-    ];
-
-    const requestData = {
-      messages,
-      topP: 0.8,
-      topK: 0,
-      maxTokens: 2272,
-      temperature: 0.06,
-      repeatPenalty: 5.0,
-      stopBefore: [],
-      includeAiFilters: false,
-      seed: 0,
-    };
-
-    const response = await firstValueFrom(this.httpService.post(URL, requestData, { headers }));
-
-    let result: string = response.data.result.message.content;
-
-    if (result[result.length - 1] !== '}') {
-      result = result + '}';
-    }
-
-    const resultJson = JSON.parse(result) as TextAiResponse;
-    const nodeData = await this.nodeService.aiCreateNode(resultJson, Number(data.mindmapId));
-
-    this.publisherService.publish(
-      'api-socket',
-      JSON.stringify({ event: 'textAiSocket', data: { nodeData, connectionId: data.connectionId } }),
-    );
   }
 }

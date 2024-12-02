@@ -22,4 +22,10 @@ export class ConnectionController {
   async setConnection(@User() user, @Param('mindmapId') mindmapId: number) {
     return await this.connectionService.setConnection(mindmapId, user.id);
   }
+
+  @Get(':connectionId')
+  @UseGuards(AuthGuard('jwt'))
+  async getConnection(@User() user, @Param('connectionId') connectionId: string) {
+    return await this.connectionService.getConnection(connectionId, user.id);
+  }
 }

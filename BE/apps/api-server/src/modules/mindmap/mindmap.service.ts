@@ -1,5 +1,5 @@
 import { InjectRepository } from '@nestjs/typeorm';
-import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
+import { ForbiddenException, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { In, Repository } from 'typeorm';
 import { Mindmap, UserMindmapRole } from '@app/entity';
 import { v4 as uuidv4 } from 'uuid';
@@ -64,7 +64,6 @@ export class MindmapService {
     });
 
     if (!myRoles) {
-      this.logger.log('myRoles is empty');
       return [];
     }
 
@@ -81,7 +80,7 @@ export class MindmapService {
     });
 
     if (role.role !== Role.OWNER) {
-      throw new UnauthorizedException('권한이 없습니다.');
+      throw new ForbiddenException('권한이 없습니다.');
     }
 
     await this.mindmapRepository.softRemove({ id: mindmapId });
@@ -92,7 +91,7 @@ export class MindmapService {
     const mindmap = await this.mindmapRepository.findOne({ where: { id: mindmapId } });
     const nodes = await this.nodeService.tableToCanvas(mindmap.id);
     if (!mindmap) {
-      throw new MindmapException('마인드맵을 찾을 수 없습니다.');
+      throw new NotFoundException('마인드맵을 찾을 수 없습니다.');
     }
 
     return {
@@ -129,5 +128,9 @@ export class MindmapService {
         ownerName: owner.user.name,
       },
     ];
+  }
+
+  async getMindmapByConnectionId(connectionId: string) {
+    return await this.mindmapRepository.findOne({ where: { connectionId } });
   }
 }
