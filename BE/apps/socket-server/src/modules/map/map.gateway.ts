@@ -8,6 +8,7 @@ import {
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
+  WsException,
 } from '@nestjs/websockets';
 import { RedisService } from '@liaoliaots/nestjs-redis';
 import { Redis } from 'ioredis';
@@ -65,15 +66,20 @@ export class MapGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
     } else {
       client.data.user = null;
     }
-    this.logger.log(
-      '사용자 연결 : ' + (client.data.user ? `유저 ID : ${client.data.user.id}` : `guest ID : ${client.id}`),
-    );
-    const currentData = await this.mapService.joinRoom(client);
-    client.emit('joinRoom', currentData);
+    this.logging(client, '사용자 연결');
+    try {
+      const currentData = await this.mapService.joinRoom(client);
+      client.emit('joinRoom', currentData);
+    } catch (error) {
+      if (error instanceof WsException) {
+        client.emit('notFoundError', { message: error.message });
+        client.disconnect();
+      }
+    }
   }
 
   async handleDisconnect(@ConnectedSocket() client: Socket) {
-    this.logger.log('사용자 연결 종료 : ' + (client.data.user ? client.data.user.id : `guest ${client.id}`));
+    this.logging(client, '사용자 연결 해제');
     const connectionId = client.data.connectionId;
     const roomSize = this.server.sockets.adapter.rooms.get(connectionId)?.size;
     this.logger.log(`${connectionId} 방 남은 인원 수 : ${roomSize}`);
@@ -88,7 +94,7 @@ export class MapGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
     @ConnectedSocket() client: Socket,
     @MessageBody(WsValidationPipe) nodeCreateDto: CreateNodeDto,
   ) {
-    this.logger.log('createNode 이벤트 : ' + (client.data.user ? client.data.user.id : `guest ${client.id}`));
+    this.logging(client, '노드 생성');
     const result = await this.mapService.createNode(client, nodeCreateDto);
     return { event: 'createNode', data: result };
   }
@@ -98,7 +104,7 @@ export class MapGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
     @ConnectedSocket() client: Socket,
     @MessageBody(MindmapValidationPipe) mindmapDto: UpdateMindmapDto,
   ) {
-    this.logger.log('updateNode 이벤트 : ' + +(client.data.user ? client.data.user.id : `guest ${client.id}`));
+    this.logging(client, '노드 업데이트');
     this.mapService.updateNodeList(client, mindmapDto);
     this.server.to(client.data.connectionId).emit('updateNode', mindmapDto);
   }
@@ -108,24 +114,52 @@ export class MapGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
     @ConnectedSocket() client: Socket,
     @MessageBody(WsValidationPipe) updateContentDto: UpdateContentDto,
   ) {
-    this.logger.log('updateContent 이벤트 : ' + (client.data.user ? client.data.user.id : `guest ${client.id}`));
+    this.logging(client, '회의록 업데이트');
     this.mapService.updateContent(client, updateContentDto.content);
     this.server.to(client.data.connectionId).emit('updateContent', updateContentDto);
   }
 
   @SubscribeMessage('updateTitle')
   handleUpdateTitle(@ConnectedSocket() client: Socket, @MessageBody(WsValidationPipe) updateTitleDto: UpdateTitleDto) {
-    this.logger.log('updateTitle 이벤트 : ' + (client.data.user ? client.data.user.id : `guest ${client.id}`));
+    this.logging(client, '제목 업데이트');
     this.mapService.updateTitle(client, updateTitleDto.title);
     this.server.to(client.data.connectionId).emit('updateTitle', updateTitleDto);
   }
 
   @SubscribeMessage('aiRequest')
   async handleAiRequest(@ConnectedSocket() client: Socket, @MessageBody(WsValidationPipe) aiRequestDto: AiRequestDto) {
-    this.logger.log('aiRequest 이벤트 : ' + (client.data.user ? client.data.user.id : `guest ${client.id}`));
+    this.logging(client, 'AI 요청');
+    this.logger.log(`AI 요청 내용 : ${JSON.stringify(aiRequestDto)}`);
     this.server.to(client.data.connectionId).emit('aiPending', { status: true });
-    const result = await this.mapService.aiRequest(client, aiRequestDto.aiContent);
-    client.emit('aiResponse', result);
-    this.server.to(client.data.connectionId).emit('aiPending', { status: false });
+    await this.mapService.textAiRequest(client, aiRequestDto.aiContent);
+  }
+
+  textAiResponse(data) {
+    const room = this.server.sockets.adapter.rooms.get(data.connectionId);
+    if (data.error) {
+      this.logger.error(`AI 요청 에러 : ${data.error}`);
+      this.server.to(data.connectionId).emit('error', { error: data.error });
+    } else {
+      this.logger.log(`AI 응답 내용 : ${JSON.stringify(data.nodeData)}`);
+
+      if (room && room.size > 0) {
+        // 첫 번째 클라이언트 ID 가져오기
+        const socketId = room.values().next().value;
+        this.logger.log('소켓 ID : ' + socketId);
+        const clientSocket = this.server.sockets.sockets.get(socketId);
+        if (clientSocket) {
+          clientSocket.emit('aiResponse', data.nodeData);
+        } else {
+          this.logger.error(`Client socket not found for ID: ${socketId}`);
+        }
+      } else {
+        this.logger.error(`Room not found or empty for connectionId: ${data.connectionId}`);
+      }
+    }
+    this.server.to(data.connectionId).emit('aiPending', { status: false });
+  }
+
+  private logging(client: Socket, message: string) {
+    this.logger.log(`Event: ${message} | User: ${client.data.user ? client.data.user.id : `guest ${client.id}`}`);
   }
 }

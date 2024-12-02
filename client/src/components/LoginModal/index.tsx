@@ -1,5 +1,4 @@
 import { Button } from "@headlessui/react";
-import closeIcon from "@/assets/close.png";
 import gitHubIcon from "@/assets/github-mark-white.png";
 import kakaoIcon from "@/assets/kakao_login.png";
 import { createPortal } from "react-dom";
@@ -22,7 +21,7 @@ export default function LoginModal({ open, close }: LoginModalProps) {
               onClick={(e) => e.stopPropagation()}
             >
               <Button className="absolute right-5 top-5 w-6 hover:bg-grayscale-100" onClick={close}>
-                <img src={closeIcon} alt="close" />
+                <p className="font-black text-grayscale-300">✕</p>
               </Button>
               <p className="text-2xl font-bold">로그인</p>
               <div className="flex flex-col gap-3">

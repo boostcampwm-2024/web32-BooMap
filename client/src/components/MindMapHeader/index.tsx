@@ -3,7 +3,7 @@ import MindMapHeaderButtons from "@/components/MindMapHeader/MindMapHeaderButton
 import Profile from "@/components/MindMapHeader/Profile";
 import useAuth from "@/hooks/useAuth";
 import { useNodeListContext } from "@/store/NodeListProvider";
-import { useSocketStore } from "@/store/useSocketStore";
+import { useConnectionStore } from "@/store/useConnectionStore";
 import { Input } from "@headlessui/react";
 import { useState } from "react";
 import { createPortal } from "react-dom";
@@ -11,17 +11,25 @@ import { FaPencilAlt } from "react-icons/fa";
 
 export default function MindMapHeader() {
   const { title, updateTitle } = useNodeListContext();
-  const { isLoading } = useAuth();
   const [editMode, setEditMode] = useState(false);
-  const handleSocketEvent = useSocketStore((state) => state.handleSocketEvent);
+  const handleSocketEvent = useConnectionStore((state) => state.handleSocketEvent);
   const [editTitle, setEditTitle] = useState(title);
-  const role = useSocketStore((state) => state.role);
+  const role = useConnectionStore((state) => state.currentRole);
 
   function handleInputBlur() {
-    if (!title.length) return;
+    if (!editTitle.length) {
+      setEditTitle(title);
+      setEditMode(false);
+      return;
+    }
+
     handleSocketEvent({
       actionType: "updateTitle",
       payload: { title: editTitle },
+      callback: (response) => {
+        updateTitle(response.title);
+        setEditTitle(response.title);
+      },
     });
     setEditMode(false);
   }
@@ -49,6 +57,7 @@ export default function MindMapHeader() {
           onBlur={handleInputBlur}
           onKeyDown={handleInputKeyDown}
           maxLength={32}
+          autoFocus
         />
       ) : (
         <span onDoubleClick={changeToEditMode} className="flex cursor-pointer items-center gap-3 text-lg">
@@ -57,7 +66,6 @@ export default function MindMapHeader() {
         </span>
       )}
       <Profile />
-      {isLoading && createPortal(<Spinner />, document.body)}
     </header>
   );
 }

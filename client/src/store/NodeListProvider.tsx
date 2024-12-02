@@ -2,13 +2,13 @@ import useGroupSelect from "@/hooks/useGroupSelect";
 import useHistoryState from "@/hooks/useHistoryState";
 import { Node, NodeData, SelectedNode } from "@/types/Node";
 import Konva from "konva";
-import { createContext, ReactNode, useContext, useState } from "react";
-
-import { useSocketStore } from "./useSocketStore";
+import { createContext, ReactNode, useContext, useEffect, useState } from "react";
 import { deleteNodes } from "@/konva_mindmap/events/deleteNode";
-import { checkOwner, setLatestMindMap } from "@/utils/localstorage";
+import { setLatestMindMap } from "@/utils/localstorage";
 import useMindMapTitle from "@/hooks/useMindMapTitle";
 import useContent from "@/hooks/useContent";
+import { useConnectionStore } from "@/store/useConnectionStore";
+import initializeNodePosition from "@/konva_mindmap/utils/initializeNodePosition";
 
 export type NodeListContextType = {
   data: NodeData | null;
@@ -19,7 +19,7 @@ export type NodeListContextType = {
   saveHistory: (newState: string) => void;
   undoData: () => void;
   redoData: () => void;
-  selectNode: ({ nodeId, parentNodeId, addTo }: SelectedNode) => void;
+  selectNode: ({ nodeId, parentNodeId }: SelectedNode) => void;
   title: string;
   updateTitle: (title: string) => void;
   groupSelect: (group: Konva.Group[]) => void;
@@ -28,7 +28,6 @@ export type NodeListContextType = {
   loading: boolean;
   deleteSelectedNodes: () => void;
   updateMindMapId: (mindMapId: string) => void;
-  isOwner: boolean;
   content: string;
   updateContent: (updatedContent: string) => void;
 };
@@ -44,44 +43,62 @@ export function useNodeListContext() {
 
 export default function NodeListProvider({ children }: { children: ReactNode }) {
   const [data, setData] = useState({});
-  const [selectedNode, setSelectedNode] = useState<SelectedNode>({ nodeId: 0, parentNodeId: 0, addTo: "canvas" });
+  const [selectedNode, setSelectedNode] = useState<SelectedNode>({ nodeId: 0, parentNodeId: 0 });
   const { saveHistory, overrideHistory, undo, redo, history } = useHistoryState<NodeData>(JSON.stringify(data));
   const { title, initializeTitle, updateTitle } = useMindMapTitle();
   const { content, updateContent, initializeContent } = useContent();
   const [loading, setLoading] = useState(true);
   const [mindMapId, setMindMapId] = useState("");
-  const [isOwner, setOwner] = useState(true);
   const { selectedGroup, groupRelease, groupSelect } = useGroupSelect();
-  const socket = useSocketStore((state) => state.socket);
+  const socket = useConnectionStore((state) => state.socket);
+  const handleSocketEvent = useConnectionStore((state) => state.handleSocketEvent);
 
-  socket?.on("joinRoom", (initialData) => {
-    setLoading(true);
-    setTimeout(() => {
-      setData({ ...initialData.nodeData });
-      overrideHistory(JSON.stringify(initialData));
-      initializeTitle(initialData);
-      initializeContent(initialData);
-      setLoading(false);
-    }, 0);
-  });
+  useEffect(() => {
+    socket?.on("joinRoom", (initialData) => {
+      setLoading(true);
+      setTimeout(() => {
+        setData({ ...initialData.nodeData });
+        overrideHistory(JSON.stringify(initialData));
+        initializeTitle(initialData);
+        initializeContent(initialData);
+        setLoading(false);
+      }, 0);
+    });
 
-  socket?.on("updateNode", (updatedNodeData) => {
-    overrideNodeData(updatedNodeData);
-  });
+    socket?.on("updateNode", (updatedNodeData) => {
+      console.log("updatedNodeData", updatedNodeData);
+      overrideNodeData(updatedNodeData);
+    });
 
-  socket?.on("updateTitle", (updatedTitle) => {
-    updateTitle(updatedTitle.title);
-  });
+    socket?.on("updateTitle", (updatedTitle) => {
+      updateTitle(updatedTitle.title);
+    });
 
-  socket?.on("updateContent", (updatedContent) => {
-    updateContent(updatedContent.content);
-  });
+    socket?.on("updateContent", (updatedContent) => {
+      updateContent(updatedContent.content);
+    });
 
-  socket?.on("disconnect", () => {
-    setData({});
-    overrideHistory(JSON.stringify({}));
-    setLatestMindMap(mindMapId);
-  });
+    socket?.on("disconnect", () => {
+      setData({});
+      overrideHistory(JSON.stringify({}));
+      setLatestMindMap(mindMapId);
+    });
+
+    socket?.on("aiResponse", (response) => {
+      const initializedNodes = initializeNodePosition(response);
+      handleSocketEvent({
+        actionType: "updateNode",
+        payload: initializedNodes,
+        callback: (response) => {
+          overrideNodeData(response);
+        },
+      });
+    });
+
+    return () => {
+      socket?.offAny();
+    };
+  }, [socket]);
 
   function updateNode(id: number, updatedNode: Partial<Node>) {
     setData((prevData) => ({
@@ -102,15 +119,14 @@ export default function NodeListProvider({ children }: { children: ReactNode }) 
     redo(setData);
   }
 
-  function selectNode({ nodeId, parentNodeId, addTo }: SelectedNode) {
+  function selectNode({ nodeId, parentNodeId }: SelectedNode) {
     if (!nodeId) {
-      setSelectedNode({ nodeId: 0, parentNodeId: 0, addTo: addTo });
+      setSelectedNode({ nodeId: 0, parentNodeId: 0 });
       return;
     }
     setSelectedNode({
       nodeId,
       parentNodeId,
-      addTo,
     });
   }
 
@@ -144,7 +160,6 @@ export default function NodeListProvider({ children }: { children: ReactNode }) 
         loading,
         deleteSelectedNodes,
         updateMindMapId,
-        isOwner,
         content,
         updateContent,
       }}

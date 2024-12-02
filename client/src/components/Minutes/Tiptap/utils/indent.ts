@@ -1,162 +1,78 @@
-import { Command, Extension, KeyboardShortcutCommand } from "@tiptap/core";
-import { Node } from "prosemirror-model";
-import { TextSelection, AllSelection, Transaction } from "prosemirror-state";
-
-type IndentOptions = {
-  types: string[];
-  indentLevels: number[];
-  defaultIndentLevel: number;
-};
+import { CommandProps, Extension, Extensions, isList, KeyboardShortcutCommand } from "@tiptap/core";
+import { TextSelection, Transaction } from "prosemirror-state";
 
 declare module "@tiptap/core" {
-  interface Commands {
+  interface Commands<ReturnType> {
     indent: {
-      indent: () => Command;
-      outdent: () => Command;
+      indent: () => ReturnType;
+      outdent: () => ReturnType;
     };
   }
 }
 
-export function clamp(val: number, min: number, max: number): number {
-  if (val < min) {
-    return min;
-  }
-  if (val > max) {
-    return max;
-  }
-  return val;
-}
-
-export enum IndentProps {
-  min = 0,
-  max = 210,
-
-  more = 30,
-  less = -30,
-}
-
-export function isBulletListNode(node: Node): boolean {
-  return node.type.name === "bulletList";
-}
-
-export function isOrderedListNode(node: Node): boolean {
-  return node.type.name === "orderedList";
-}
-
-export function isTodoListNode(node: Node): boolean {
-  return node.type.name === "listItem";
-}
-
-export function isListNode(node: Node): boolean {
-  return isBulletListNode(node) || isOrderedListNode(node) || isTodoListNode(node);
-}
-
-function setNodeIndentMarkup(tr: Transaction, pos: number, delta: number): Transaction {
-  if (!tr.doc) return tr;
-
-  const node = tr.doc.nodeAt(pos);
-  if (!node) return tr;
-
-  const minIndent = IndentProps.min;
-  const maxIndent = IndentProps.max;
-
-  const indent = clamp((node.attrs.indent || 0) + delta, minIndent, maxIndent);
-
-  if (indent === node.attrs.indent) return tr;
-
-  const nodeAttrs = {
-    ...node.attrs,
-    indent,
-  };
-
-  return tr.setNodeMarkup(pos, node.type, nodeAttrs, node.marks);
-}
-
-function updateIndentLevel(tr: Transaction, delta: number): Transaction {
-  const { doc, selection } = tr;
-
-  if (!doc || !selection) return tr;
-
-  if (!(selection instanceof TextSelection || selection instanceof AllSelection)) {
-    return tr;
-  }
-
-  const { from, to } = selection;
-
-  doc.nodesBetween(from, to, (node, pos) => {
-    const nodeType = node.type;
-
-    if (nodeType.name === "paragraph" || nodeType.name === "heading") {
-      tr = setNodeIndentMarkup(tr, pos, delta);
-      return false;
-    }
-    if (isListNode(node)) {
-      return false;
-    }
-    return true;
-  });
-
-  return tr;
-}
-
-export const Indent = Extension.create<IndentOptions>({
+type IndentOptions = {
+  names: Array<string>;
+  indentRange: number;
+  minIndentLevel: number;
+  maxIndentLevel: number;
+  defaultIndentLevel: number;
+  HTMLAttributes: Record<string, any>;
+};
+export const Indent = Extension.create<IndentOptions, never>({
   name: "indent",
 
-  addOptions: () => ({
-    types: ["heading", "paragraph"],
-    indentLevels: [0, 30, 60, 90, 120, 150, 180, 210],
-    defaultIndentLevel: 0,
-  }),
+  addOptions() {
+    return {
+      names: ["heading", "paragraph"],
+      indentRange: 24,
+      minIndentLevel: 0,
+      maxIndentLevel: 24 * 10,
+      defaultIndentLevel: 0,
+      HTMLAttributes: {},
+    };
+  },
 
   addGlobalAttributes() {
     return [
       {
-        types: this.options.types,
+        types: this.options.names,
         attributes: {
           indent: {
             default: this.options.defaultIndentLevel,
-            renderHTML: (attributes) => {
-              return {
-                style: `margin-left: ${attributes.indent}px !important`,
-              };
-            },
-            parseHTML: (element) => {
-              return parseInt(element.style.marginLeft) || this.options.defaultIndentLevel;
-            },
+            renderHTML: (attributes) => ({
+              style: `margin-left: ${attributes.indent}px!important;`,
+            }),
+            parseHTML: (element) => parseInt(element.style.marginLeft, 10) || this.options.defaultIndentLevel,
           },
         },
       },
     ];
   },
 
-  addCommands() {
+  addCommands(this) {
     return {
       indent:
         () =>
-        ({ tr, state, dispatch }) => {
+        ({ tr, state, dispatch, editor }: CommandProps) => {
           const { selection } = state;
           tr = tr.setSelection(selection);
-          tr = updateIndentLevel(tr, IndentProps.more);
-
-          if (tr.docChanged) {
-            dispatch && dispatch(tr);
+          tr = updateIndentLevel(tr, this.options, editor.extensionManager.extensions, "indent");
+          if (tr.docChanged && dispatch) {
+            dispatch(tr);
             return true;
           }
-
           return false;
         },
       outdent:
         () =>
-        ({ tr, state, dispatch }) => {
+        ({ tr, state, dispatch, editor }: CommandProps) => {
           const { selection } = state;
           tr = tr.setSelection(selection);
-          tr = updateIndentLevel(tr, IndentProps.less);
-
-          if (tr.docChanged) {
-            dispatch && dispatch(tr);
+          tr = updateIndentLevel(tr, this.options, editor.extensionManager.extensions, "outdent");
+          if (tr.docChanged && dispatch) {
+            dispatch(tr);
             return true;
           }
-
           return false;
         },
     };
@@ -164,8 +80,95 @@ export const Indent = Extension.create<IndentOptions>({
 
   addKeyboardShortcuts() {
     return {
-      Tab: () => this.editor.commands.indent(),
-      "Shift-Tab": () => this.editor.commands.outdent(),
-    } as unknown as { [key: string]: KeyboardShortcutCommand };
+      Tab: getIndent(),
+      "Shift-Tab": getOutdent(false),
+      Backspace: getOutdent(true),
+      "Mod-]": getIndent(),
+      "Mod-[": getOutdent(false),
+    };
+  },
+  onUpdate() {
+    const { editor } = this;
+    if (editor.isActive("listItem")) {
+      const node = editor.state.selection.$head.node();
+      if (node.attrs.indent) {
+        editor.commands.updateAttributes(node.type.name, { indent: 0 });
+      }
+    }
   },
 });
+
+export const clamp = (val: number, min: number, max: number): number => {
+  if (val < min) {
+    return min;
+  }
+  if (val > max) {
+    return max;
+  }
+  return val;
+};
+
+function setNodeIndentMarkup(tr: Transaction, pos: number, delta: number, min: number, max: number): Transaction {
+  if (!tr.doc) return tr;
+  const node = tr.doc.nodeAt(pos);
+  if (!node) return tr;
+  const indent = clamp((node.attrs.indent || 0) + delta, min, max);
+  if (indent === node.attrs.indent) return tr;
+  const nodeAttrs = {
+    ...node.attrs,
+    indent,
+  };
+  return tr.setNodeMarkup(pos, node.type, nodeAttrs, node.marks);
+}
+
+type IndentType = "indent" | "outdent";
+const updateIndentLevel = (
+  tr: Transaction,
+  options: IndentOptions,
+  extensions: Extensions,
+  type: IndentType,
+): Transaction => {
+  const { doc, selection } = tr;
+  if (!doc || !selection) return tr;
+  if (!(selection instanceof TextSelection)) {
+    return tr;
+  }
+  const { from, to } = selection;
+  doc.nodesBetween(from, to, (node, pos) => {
+    if (options.names.includes(node.type.name)) {
+      tr = setNodeIndentMarkup(
+        tr,
+        pos,
+        options.indentRange * (type === "indent" ? 1 : -1),
+        options.minIndentLevel,
+        options.maxIndentLevel,
+      );
+      return false;
+    }
+    return !isList(node.type.name, extensions);
+  });
+  return tr;
+};
+
+export const getIndent: () => KeyboardShortcutCommand =
+  () =>
+  ({ editor }) => {
+    if (editor.can().sinkListItem("listItem")) {
+      return editor.chain().focus().sinkListItem("listItem").run();
+    }
+    return editor.chain().focus().indent().run();
+  };
+export const getOutdent: (outdentOnlyAtHead: boolean) => KeyboardShortcutCommand =
+  (outdentOnlyAtHead) =>
+  ({ editor }) => {
+    if (outdentOnlyAtHead && editor.state.selection.$head.parentOffset > 0) {
+      return false;
+    }
+    if (
+      (!outdentOnlyAtHead || editor.state.selection.$head.parentOffset > 0) &&
+      editor.can().liftListItem("listItem")
+    ) {
+      return editor.chain().focus().liftListItem("listItem").run();
+    }
+    return editor.chain().focus().outdent().run();
+  };

@@ -1,1 +1,2 @@
-export const TEXT_UPLOAD_LIMIT = 2000;
+export const MAX_TEXT_UPLOAD_LIMIT = 2000;
+export const MIN_TEXT_UPLOAD_LIMIT = 500;

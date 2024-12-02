@@ -13,7 +13,9 @@ import { join } from 'path';
 import { MindmapModule } from './modules/mindmap/mindmap.module';
 import { NodeModule } from './modules/node/node.module';
 import { DashboardModule } from './modules/dashboard/dashboard.module';
-import { PubsubModule } from './modules/pubsub/pubsub.module';
+import { AiModule } from './modules/ai/ai.module';
+import { SubscriberModule } from './modules/subscriber/subscriber.module';
+import { PublisherModule } from '@app/publisher';
 
 @Module({
   imports: [
@@ -47,10 +49,13 @@ import { PubsubModule } from './modules/pubsub/pubsub.module';
     MindmapModule,
     NodeModule,
     DashboardModule,
-    PubsubModule,
+    SubscriberModule,
+    PublisherModule,
+    AiModule,
   ],
   controllers: [],
   providers: [],
+  exports: [],
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {

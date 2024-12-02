@@ -37,8 +37,8 @@ export function useAdjustedStage(data: NodeData, containerWidth: number, contain
 
   //그림 영역에 따른 canvas 크기 조정
   function adjustStageToFit(bounds: { minX: number; minY: number; maxX: number; maxY: number }) {
-    const width = bounds.maxX - bounds.minX + 200;
-    const height = bounds.maxY - bounds.minY + 200;
+    const width = bounds.maxX - bounds.minX + 700;
+    const height = bounds.maxY - bounds.minY + 700;
 
     const scaleX = containerWidth / width;
     const scaleY = containerHeight / height;
@@ -53,5 +53,5 @@ export function useAdjustedStage(data: NodeData, containerWidth: number, contain
     };
   }
 
-  return adjustedDimensions;
+  return { adjustedDimensions, adjustStageToFit, calculateBounds };
 }

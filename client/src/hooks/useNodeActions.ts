@@ -1,15 +1,16 @@
 import { addNode } from "@/konva_mindmap/events/addNode";
 import { deleteNodes } from "@/konva_mindmap/events/deleteNode";
 import { useNodeListContext } from "@/store/NodeListProvider";
-import { useSocketStore } from "@/store/useSocketStore";
+import { useConnectionStore } from "@/store/useConnectionStore";
 import { ChangeEvent, KeyboardEvent, useEffect, useState } from "react";
 
 export default function useNodeActions(nodeId: number, content: string) {
   const [hover, setHover] = useState<boolean>(false);
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [keyword, setKeyword] = useState(content);
-  const { data, updateNode, saveHistory, overrideNodeData } = useNodeListContext();
-  const handleSocketEvent = useSocketStore((state) => state.handleSocketEvent);
+  const { data, saveHistory, overrideNodeData } = useNodeListContext();
+  const handleSocketEvent = useConnectionStore((state) => state.handleSocketEvent);
+  const currentJobStatus = useConnectionStore((state) => state.currentJobStatus);
 
   useEffect(() => {
     setKeyword(content);
@@ -22,11 +23,14 @@ export default function useNodeActions(nodeId: number, content: string) {
       handleSocketEvent({
         actionType: "updateNode",
         payload: { ...data, [nodeId]: { ...data[nodeId], keyword: keyword, newNode: false } },
-        callback: () => {
+        callback: (response) => {
           saveHistory(JSON.stringify(data));
-          addNode(keyword, nodeId, updateNode);
+          overrideNodeData(response);
         },
       });
+      if (currentJobStatus === "error") setKeyword(originalContent);
+    } else {
+      setKeyword(originalContent);
     }
     setIsEditing(false);
   }

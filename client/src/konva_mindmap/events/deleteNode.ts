@@ -1,12 +1,15 @@
-import { useSocketStore } from "@/store/useSocketStore";
 import { NodeData } from "@/types/Node";
 import { findRootNodeKey } from "../utils/findRootNodeKey";
+import { useConnectionStore } from "@/store/useConnectionStore";
 
 export function deleteNodes(data: string, selectedNodeIds: number | number[], overrideNodeData) {
   const newNodeData: NodeData = JSON.parse(data);
   const rootKey = findRootNodeKey(newNodeData);
 
-  if ((Array.isArray(selectedNodeIds) && selectedNodeIds.includes(rootKey)) || selectedNodeIds === rootKey) return;
+  if (Array.isArray(selectedNodeIds) && selectedNodeIds.includes(rootKey)) {
+    return deleteNodes(data, [...newNodeData[rootKey].children], overrideNodeData);
+  }
+  if (!Array.isArray(selectedNodeIds) && selectedNodeIds === rootKey) return;
 
   const nodeIds = Array.isArray(selectedNodeIds) ? selectedNodeIds : [selectedNodeIds];
   if (nodeIds.some((id) => !id || !newNodeData[id])) return;
@@ -31,7 +34,7 @@ export function deleteNodes(data: string, selectedNodeIds: number | number[], ov
 
   nodeIds.forEach((nodeId) => deleteNodeAndChildren(nodeId));
 
-  const handleSocketEvent = useSocketStore.getState().handleSocketEvent;
+  const handleSocketEvent = useConnectionStore.getState().handleSocketEvent;
   handleSocketEvent({
     actionType: "updateNode",
     payload: newNodeData,

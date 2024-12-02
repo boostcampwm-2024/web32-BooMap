@@ -1,7 +1,7 @@
 import { Button } from "@headlessui/react";
 import { useNodeListContext } from "@/store/NodeListProvider";
 import { StageDimension } from "@/konva_mindmap/types/dimension";
-import { showNewNode } from "@/konva_mindmap/events/addNode";
+import { addNode } from "@/konva_mindmap/events/addNode";
 import { deleteNodes } from "@/konva_mindmap/events/deleteNode";
 import { useRef } from "react";
 import { FaRegHandPaper } from "react-icons/fa";
@@ -19,7 +19,7 @@ type ToolMenuProps = {
   setDragmode: React.Dispatch<React.SetStateAction<boolean>>;
 };
 export default function ToolMenu({ dimensions, zoomIn, zoomOut, dragmode, setDragmode }: ToolMenuProps) {
-  const { data, selectNode, selectedNode, saveHistory, overrideNodeData } = useNodeListContext();
+  const { data, selectNode, selectedNode, saveHistory, overrideNodeData, deleteSelectedNodes } = useNodeListContext();
   const intervalRef = useRef(null);
 
   const startZoom = (zoomFn) => {
@@ -34,12 +34,17 @@ export default function ToolMenu({ dimensions, zoomIn, zoomOut, dragmode, setDra
 
   function handleAddButton() {
     saveHistory(JSON.stringify(data));
-    showNewNode(data, selectedNode, overrideNodeData);
+    addNode(data, selectedNode, overrideNodeData, (newNodeId) => {
+      selectNode({
+        nodeId: newNodeId,
+        parentNodeId: selectedNode.nodeId,
+      });
+    });
   }
   function handleDeleteButton() {
     saveHistory(JSON.stringify(data));
     deleteNodes(JSON.stringify(data), selectedNode.nodeId, overrideNodeData);
-    selectNode({ nodeId: 0, parentNodeId: 0, addTo: "canvas" });
+    selectNode({ nodeId: 0, parentNodeId: 0 });
   }
 
   return (
@@ -67,6 +72,7 @@ export default function ToolMenu({ dimensions, zoomIn, zoomOut, dragmode, setDra
             onMouseDown={() => startZoom(zoomIn)}
             onClick={zoomIn}
             onMouseUp={stopZoom}
+            onMouseLeave={stopZoom}
           >
             <TiZoomInOutline className="h-6 w-6 fill-grayscale-400 group-hover:fill-gray-100" />
           </Button>

@@ -4,6 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { In, TreeRepository } from 'typeorm';
 import { NodeDto } from './dto/node.dto';
 import { UpdateNodeDto } from './dto/update.node.dto';
+import { TextAiResponse } from '../ai/ai.service';
 
 @Injectable()
 export class NodeService {
@@ -77,5 +78,70 @@ export class NodeService {
       return;
     }
     await this.nodeRepository.update(updateData.id, updateData);
+  }
+
+  async aiCreateNode(aiResponse: TextAiResponse, mindmapId: number, depth = 1) {
+    const createdNodes: Node[] = [];
+
+    const processNode = async (
+      response: TextAiResponse,
+      currentDepth: number,
+      parentNodeId?: number,
+    ): Promise<void> => {
+      let node: Node;
+
+      if (currentDepth === 1) {
+        node = await this.nodeRepository.findOne({
+          where: { mindmap: { id: mindmapId }, depth: 1 },
+        });
+
+        if (node) {
+          node.keyword = response.keyword;
+          node = await this.nodeRepository.save(node);
+        }
+      }
+
+      if (!node) {
+        node = await this.nodeRepository.save({
+          keyword: response.keyword,
+          depth: currentDepth,
+          parent: parentNodeId ? { id: parentNodeId } : null,
+          mindmap: { id: mindmapId },
+        });
+      }
+
+      createdNodes.push(node);
+
+      for (const child of response.children) {
+        await processNode(child, currentDepth + 1, node.id);
+      }
+    };
+
+    await processNode(aiResponse, depth);
+
+    const nodeData = {};
+
+    createdNodes.forEach((node) => {
+      const id = node.id;
+      nodeData[id] = {
+        id,
+        keyword: node.keyword,
+        depth: node.depth,
+        location: { x: node.locationX, y: node.locationY },
+        children: [],
+      };
+    });
+
+    createdNodes.forEach((node) => {
+      const id = node.id;
+      if (node.parent && node.parent.id !== undefined) {
+        const parentId = node.parent.id;
+        if (nodeData[parentId]) {
+          nodeData[parentId].children.push(id);
+        }
+      }
+    });
+
+    return nodeData;
   }
 }

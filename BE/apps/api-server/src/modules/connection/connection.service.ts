@@ -20,15 +20,14 @@ export class ConnectionService {
   }
 
   async createConnection(userId: number) {
-    const { connectionId, mindmapId } = await this.mindmapService.create(userId);
-    await this.GeneralRedis.hset(connectionId, { type: 'user', mindmapId: mindmapId });
-    return connectionId;
+    const mindmapId = await this.mindmapService.create(userId);
+    return await this.setConnection(mindmapId, userId);
   }
 
   async createGuestConnection() {
     const connectionId = uuidv4();
     await this.GeneralRedis.hset(connectionId, { type: 'guest' });
-    return connectionId;
+    return { connectionId, role: 'owner' };
   }
 
   async setConnection(mindmapId: number, userId: number) {

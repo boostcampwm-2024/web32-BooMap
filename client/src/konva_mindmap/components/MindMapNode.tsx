@@ -1,10 +1,8 @@
-import NewNode from "@/konva_mindmap/components/NewNode";
 import EditableText from "@/konva_mindmap/components/EditableText";
 import { NodeProps } from "@/types/Node";
 import { Circle, Group } from "react-konva";
 import { useNodeListContext } from "@/store/NodeListProvider";
 import { useRef, useState } from "react";
-import { useSocketStore } from "@/store/useSocketStore";
 import { checkFollowing, resetSavedOffsets, saveOffsets } from "@/konva_mindmap/utils/following";
 import { colors } from "@/constants/color";
 import Konva from "konva";
@@ -20,16 +18,22 @@ import {
 } from "@/konva_mindmap/utils/nodeAttrs";
 import NodeTool from "@/konva_mindmap/components/NodeTool";
 import { deleteNodes } from "@/konva_mindmap/events/deleteNode";
-import { showNewNode } from "@/konva_mindmap/events/addNode";
+import { useConnectionStore } from "@/store/useConnectionStore";
+import { addNode } from "@/konva_mindmap/events/addNode";
+import useWindowEventListener from "@/hooks/useWindowEventListener";
 
 export default function MindMapNode({ data, parentNode, node, depth, parentRef, dragmode }: NodeProps) {
-  if (node.newNode)
-    return <NewNode data={data} parentNode={parentNode} node={node} depth={depth} dragmode={dragmode} />;
   const nodeRef = useRef<Konva.Group>(null);
   const { saveHistory, updateNode, selectNode, selectedNode, selectedGroup, overrideNodeData, groupRelease } =
     useNodeListContext();
-  const handleSocketEvent = useSocketStore.getState().handleSocketEvent;
+  const handleSocketEvent = useConnectionStore.getState().handleSocketEvent;
   const [isEditing, setIsEditing] = useState(false);
+
+  useWindowEventListener("keydown", (e) => {
+    if (e.code === "Enter" && selectedNode.nodeId === node.id) {
+      setIsEditing(!isEditing);
+    }
+  });
 
   function handleDoubleClick() {
     setIsEditing(true);
@@ -62,13 +66,13 @@ export default function MindMapNode({ data, parentNode, node, depth, parentRef, 
   function handleClick(e: Konva.KonvaEventObject<MouseEvent>) {
     e.evt.preventDefault();
     if (selectedNode.nodeId === node.id) {
-      selectNode({ nodeId: 0, parentNodeId: 0, addTo: "canvas" });
+      selectNode({ nodeId: 0, parentNodeId: 0 });
       return;
     }
-    selectNode({ nodeId: node.id, parentNodeId: parentNode ? parentNode.id : null, addTo: "canvas" });
+    selectNode({ nodeId: node.id, parentNodeId: parentNode ? parentNode.id : null });
   }
 
-  const NodeStroke = selectedGroup.includes(node.id.toString()) ? "red" : "";
+  const NodeStroke = selectedGroup.includes(node.id.toString()) ? "#cb575f" : "";
 
   const handleDragMove = (e: Konva.KonvaEventObject<DragEvent>) => {
     e.evt.preventDefault();
@@ -110,12 +114,11 @@ export default function MindMapNode({ data, parentNode, node, depth, parentRef, 
       >
         <Circle
           stroke={NodeStroke}
-          fill={selectedNode?.nodeId === node.id ? "orange" : colors[depth - 1]}
+          fill={selectedNode?.nodeId === node.id ? "#EE92BA" : colors[depth - 1]}
           width={NODE_WIDTH_AND_HEIGHT}
           height={NODE_WIDTH_AND_HEIGHT}
-          strokeWidth={3}
+          strokeWidth={5}
           radius={NODE_RADIUS(depth)}
-          shadowBlur={5}
         />
         <EditableText
           id={node.id}
@@ -134,9 +137,7 @@ export default function MindMapNode({ data, parentNode, node, depth, parentRef, 
             selectNode({});
             setIsEditing(true);
           }}
-          handleAdd={() =>
-            showNewNode(data, { nodeId: node.id, parentNodeId: node.id ?? null, addTo: "canvas" }, overrideNodeData)
-          }
+          handleAdd={() => addNode(data, { nodeId: node.id, parentNodeId: node.id ?? null }, overrideNodeData)}
           handleDelete={() => deleteNodes(JSON.stringify(data), node.id, overrideNodeData)}
         />
       </Group>

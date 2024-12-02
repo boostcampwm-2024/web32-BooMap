@@ -1,6 +1,6 @@
 import { Input } from "@headlessui/react";
 import { useNodeListContext } from "@/store/NodeListProvider";
-import { showNewNode } from "@/konva_mindmap/events/addNode";
+import { addNode } from "@/konva_mindmap/events/addNode";
 import { useEffect, useRef } from "react";
 import { Node } from "@/types/Node";
 import { NODE_DEPTH_LIMIT } from "@/constants/node";
@@ -10,6 +10,7 @@ import { FaPencilAlt } from "react-icons/fa";
 import { FaPlus } from "react-icons/fa";
 import { FaRegTrashAlt } from "react-icons/fa";
 import useNodeActions from "@/hooks/useNodeActions";
+import { findParentNodeKey, getParentNodeKeys } from "@/konva_mindmap/utils/findParentNodeKey";
 
 type NodeItemProps = {
   node: Node;
@@ -35,8 +36,8 @@ export default function NodeItem({ node, parentNodeId, open, handleAccordion, op
   } = useNodeActions(node.id, node.keyword);
   const { data, saveHistory, selectedNode, overrideNodeData, selectNode } = useNodeListContext();
   const inputRef = useRef<HTMLInputElement | null>(null);
-  const isSelected =
-    selectedNode.parentNodeId === node.id || findParentNodeId(selectedNode.parentNodeId, data) === node.id;
+  const parentNodes = getParentNodeKeys(selectedNode.nodeId, data);
+  const isSelected = parentNodes.includes(node.id);
 
   useEffect(() => {
     node.newNode ? setIsEditing(true) : setIsEditing(false);
@@ -46,20 +47,12 @@ export default function NodeItem({ node, parentNodeId, open, handleAccordion, op
     if (isSelected) openAccordion();
   }, [isSelected]);
 
-  function findParentNodeId(nodeId, nodeData) {
-    for (const id in nodeData) {
-      const node = nodeData[parseInt(id)];
-      if (node.children.includes(nodeId)) {
-        return node.id;
-      }
-    }
-    return null;
-  }
-
   function handleAddButton() {
     saveHistory(JSON.stringify(data));
-    selectNode({ nodeId: node.id, parentNodeId: parentNodeId, addTo: "list" });
-    showNewNode(data, { nodeId: node.id, parentNodeId: parentNodeId, addTo: "list" }, overrideNodeData);
+    selectNode({ nodeId: node.id, parentNodeId: parentNodeId });
+    addNode(data, { nodeId: node.id, parentNodeId: parentNodeId }, overrideNodeData, (newNodeId) => {
+      selectNode({ nodeId: newNodeId, parentNodeId: node.id });
+    });
     openAccordion();
   }
 
@@ -73,21 +66,22 @@ export default function NodeItem({ node, parentNodeId, open, handleAccordion, op
       onMouseLeave={handleMouseLeave}
     >
       <div className="flex min-w-0 flex-1 items-center gap-3">
-        {!isEditing &&
-          (node.depth < NODE_DEPTH_LIMIT ? (
-            <button
-              className={`flex h-5 w-5 items-center justify-center transition-all ${open ? "" : "rotate-[-90deg]"}`}
-              onClick={handleAccordion}
-            >
-              <FaChevronDown className="h-4 w-4" />
-            </button>
-          ) : (
-            <TbPointFilled className="h-3 w-3" />
-          ))}
+        {node.depth < NODE_DEPTH_LIMIT ? (
+          <button
+            className={`flex h-5 w-5 items-center justify-center p-1 transition-all ${open ? "" : "rotate-[-90deg]"}`}
+            onClick={handleAccordion}
+          >
+            <FaChevronDown className="h-4 w-4" />
+          </button>
+        ) : (
+          <div className="flex h-5 w-5 items-center justify-center">
+            <TbPointFilled />
+          </div>
+        )}
 
         {isEditing ? (
           <Input
-            autoFocus={selectedNode.addTo === "list"}
+            autoFocus={true}
             ref={inputRef}
             className="flex-grow bg-transparent text-grayscale-200"
             value={keyword}

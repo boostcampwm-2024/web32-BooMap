@@ -1,6 +1,11 @@
 import { Location } from "@/konva_mindmap/types/location";
 
-export function calculateVector(rootNodeLocation: Location, parentNodeLocation: Location, angleDegrees, magnitude = 1) {
+export function calculateVector(
+  rootNodeLocation: Location,
+  parentNodeLocation: Location,
+  angleDegrees: number,
+  magnitude = 1,
+) {
   const dx = parentNodeLocation.x - rootNodeLocation.x;
   const dy = parentNodeLocation.y - rootNodeLocation.y;
 

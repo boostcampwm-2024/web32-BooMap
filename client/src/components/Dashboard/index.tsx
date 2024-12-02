@@ -1,12 +1,12 @@
+import { useConnectionStore } from "@/store/useConnectionStore";
 import GuestDashBoard from "./GuestDashBoard";
 import UserDashBoard from "./UserDashBoard";
-import { useAuthStore } from "@/store/useAuthStore";
 
 export default function DashBoard() {
-  const loggedIn = useAuthStore((state) => state.isAuthenticated);
+  const loggedIn = useConnectionStore((state) => state.token);
   return (
     <>
-      <section className="relative w-full">{loggedIn ? <UserDashBoard /> : <GuestDashBoard />}</section>
+      <section className="relative w-full">{!!loggedIn ? <UserDashBoard /> : <GuestDashBoard />}</section>
     </>
   );
 }

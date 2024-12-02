@@ -1,19 +1,17 @@
 import { getUser } from "@/api/auth";
-import { useAuthStore } from "@/store/useAuthStore";
-import { getToken } from "@/utils/localstorage";
+import { useConnectionStore } from "@/store/useConnectionStore";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 export default function useAuth() {
-  const accessToken = getToken();
-  const auth = useAuthStore();
+  const isAuthenticated = useConnectionStore((state) => state.token);
   const navigate = useNavigate();
 
   const { isLoading, isError } = useQuery({
     queryKey: ["user"],
     queryFn: getUser,
-    enabled: !!(accessToken || auth.isAuthenticated),
+    enabled: !!isAuthenticated,
   });
 
   useEffect(() => {
@@ -21,5 +19,5 @@ export default function useAuth() {
       navigate("/error");
     }
   }, [isError]);
-  return { isLoading, accessToken };
+  return { isLoading };
 }

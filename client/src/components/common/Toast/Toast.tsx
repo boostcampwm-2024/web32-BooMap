@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import closeIcon from "@/assets/close.png";
 
 export default function Toast({ message, status, onClose }) {
   const [progress, setProgress] = useState(0);
@@ -25,8 +24,8 @@ export default function Toast({ message, status, onClose }) {
       <div className="absolute bottom-0 left-0 h-1 w-full bg-gray-300">
         <div className={`h-full ${bgColor} transition-all duration-75`} style={{ width: `${progress}%` }}></div>
       </div>
-      <button onClick={onClose} className="absolute right-2 top-2">
-        <img className="h-4 w-4" src={closeIcon} alt="모달 창 닫기 버튼" />
+      <button onClick={onClose} className="absolute right-2 top-2 flex h-6 w-6 items-center justify-center">
+        <p className="font-black text-grayscale-300">✕</p>
       </button>
     </div>
   );

@@ -1,24 +1,25 @@
-import { ArgumentsHost, Catch, Logger, BadRequestException } from '@nestjs/common';
-import { BaseWsExceptionFilter, WsException } from '@nestjs/websockets';
+import { ArgumentsHost, Catch, Logger } from '@nestjs/common';
+import { BaseWsExceptionFilter } from '@nestjs/websockets';
 
 @Catch()
 export class WsExceptionFilter extends BaseWsExceptionFilter {
   private readonly logger = new Logger('WsExceptionFilter');
 
-  constructor() {
-    super();
-  }
-
-  catch(exception: WsException | BadRequestException, host: ArgumentsHost): void {
+  catch(exception: any, host: ArgumentsHost): void {
     const client = host.switchToWs().getClient();
+    const error = exception.getError?.() || exception.message || exception;
 
     const errorResponse = {
       status: 'error',
-      message: exception instanceof BadRequestException ? (exception.getResponse() as object) : exception.getError(),
+      message: typeof error === 'object' ? JSON.stringify(error) : error,
       timestamp: new Date().toISOString(),
     };
 
-    this.logger.error(`WebSocket Error: ${JSON.stringify(errorResponse)} - ${exception.stack}`);
+    this.logger.error(`WebSocket Error: ${JSON.stringify(errorResponse)}`);
+    this.logger.error(`Stack: ${exception.stack}`);
+
     client.emit('error', errorResponse);
+
+    return;
   }
 }

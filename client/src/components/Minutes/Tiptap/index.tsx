@@ -6,24 +6,25 @@ import Highlight from "@tiptap/extension-highlight";
 import Typography from "@tiptap/extension-typography";
 import StarterKit from "@tiptap/starter-kit";
 import MenuBar from "./MenuBar";
-import { Indent } from "./utils/indent";
+import { getIndent, getOutdent, Indent } from "./utils/indent";
 import CustomCodeBlockLowlight from "./utils/codeBlockIndent";
 import Placeholder from "@tiptap/extension-placeholder";
 import { useNodeListContext } from "@/store/NodeListProvider";
-import { useSocketStore } from "@/store/useSocketStore";
 import { throttle } from "@/konva_mindmap/utils/throttle";
 import { useEffect } from "react";
+import { useConnectionStore } from "@/store/useConnectionStore";
 
 export default function Tiptap() {
   const { content, updateContent } = useNodeListContext();
-  const handleSocketEvent = useSocketStore((state) => state.handleSocketEvent);
-  const role = useSocketStore((state) => state.role);
+  const handleSocketEvent = useConnectionStore((state) => state.handleSocketEvent);
+  const role = useConnectionStore((state) => state.currentRole);
 
   const editor = useEditor({
     extensions: [
       StarterKit.configure({
         codeBlock: false,
       }),
+      Indent,
       Placeholder.configure({
         emptyEditorClass: "is-editor-empty",
         placeholder: "회의록을 입력해주세요...",
@@ -33,15 +34,13 @@ export default function Tiptap() {
       }),
       Highlight,
       Typography,
-      Indent,
       CustomCodeBlockLowlight,
     ],
     content: content,
     onUpdate({ editor }) {
-      if (!role || role === "editor") return;
+      if (role === "editor") return;
       handleChangeContent(editor);
     },
-    editable: role === "owner",
   });
 
   function handleChangeContent(editor) {
@@ -59,6 +58,10 @@ export default function Tiptap() {
   }
 
   useEffect(() => {
+    editor.setOptions({ editable: role === "owner" });
+  }, [role]);
+
+  useEffect(() => {
     if (editor && content) {
       editor.commands.setContent(content);
     }
@@ -67,7 +70,7 @@ export default function Tiptap() {
   return (
     <>
       <div
-        className="h-full cursor-text overflow-hidden rounded-[20px] border border-solid border-grayscale-500 p-3"
+        className="no-scrollbar h-full cursor-text overflow-auto rounded-[20px] border border-solid border-grayscale-500 p-3"
         onClick={() => {
           if (editor) {
             const endPoint = editor.state.selection.to;
@@ -76,7 +79,21 @@ export default function Tiptap() {
         }}
       >
         <MenuBar editor={editor} />
-        <EditorContent editor={editor} onClick={(e) => e.stopPropagation()} onKeyDown={(e) => e.stopPropagation()} />
+        <EditorContent
+          editor={editor}
+          onClick={(e) => e.stopPropagation()}
+          onKeyDown={(e) => {
+            e.stopPropagation();
+            if (e.key === "Tab") {
+              e.preventDefault();
+              if (e.shiftKey) {
+                getOutdent(false)({ editor });
+              } else {
+                getIndent()({ editor });
+              }
+            }
+          }}
+        />
       </div>
     </>
   );

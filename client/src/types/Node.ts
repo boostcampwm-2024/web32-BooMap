@@ -7,7 +7,7 @@ export type Node = {
   keyword: string;
   depth: number;
   location: Location;
-  children: number[] | [];
+  children: number[];
   newNode?: boolean;
 };
 
@@ -16,7 +16,6 @@ export type NodeData = Record<number, Node>;
 export type SelectedNode = {
   nodeId?: number;
   parentNodeId?: number;
-  addTo?: "canvas" | "list";
 };
 
 export type NodeProps = {

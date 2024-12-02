@@ -23,7 +23,7 @@ export default function Sidebar({ isSidebarOpen, toggleSidebar }: SidebarProps) 
           className="flex w-full cursor-pointer items-center justify-center gap-4 text-2xl font-black"
           onClick={() => navigate("/")}
         >
-          <img src={logo} alt="로고" className="w-12" />
+          <img src={logo} alt="로고" className="w-10" />
           BOOMAP
         </div>
         <Overview />

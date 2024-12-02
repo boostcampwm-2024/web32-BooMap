@@ -3,13 +3,11 @@ import { Button } from "@headlessui/react";
 import { createPortal } from "react-dom";
 import warnIcon from "@/assets/warning.png";
 import { useNavigate } from "react-router-dom";
-import { useSocketStore } from "@/store/useSocketStore";
-import { useAuthStore } from "@/store/useAuthStore";
+import { useConnectionStore } from "@/store/useConnectionStore";
 
 export default function GuestNewMindMapModal({ open, closeModal, openLogin }) {
   const navigate = useNavigate();
-  const handleConnection = useSocketStore((state) => state.handleConnection);
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const createConnection = useConnectionStore((state) => state.createConnection);
 
   return (
     <>
@@ -25,7 +23,7 @@ export default function GuestNewMindMapModal({ open, closeModal, openLogin }) {
             </Button>
             <Button
               className="w-full rounded-md bg-grayscale-400 p-2 transition hover:brightness-90"
-              onClick={() => handleConnection(navigate, "listview", isAuthenticated)}
+              onClick={() => createConnection(navigate, "listview")}
             >
               그냥 할게요
             </Button>

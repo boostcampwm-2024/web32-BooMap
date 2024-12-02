@@ -1,5 +1,5 @@
 import useDimension from "@/konva_mindmap/hooks/useDimension";
-import useWindowKeyEventListener from "@/hooks/useWindowKeyEventListener";
+import useWindowEventListener from "@/hooks/useWindowEventListener";
 import ToolMenu from "@/components/MindMapCanvas/ToolMenu";
 import initializeNodePosition from "@/konva_mindmap/utils/initializeNodePosition";
 import { Layer, Stage } from "react-konva";
@@ -13,8 +13,11 @@ import SelectionRect from "@/konva_mindmap/components/selectionRect";
 import DrawMindMap from "@/konva_mindmap/components/DrawMindMap";
 import ShowShortCut from "./ShowShortCut";
 import { findRootNodeKey } from "@/konva_mindmap/utils/findRootNodeKey";
-import { useSocketStore } from "@/store/useSocketStore";
-import { showNewNode } from "@/konva_mindmap/events/addNode";
+import Konva from "konva";
+import { addNode } from "@/konva_mindmap/events/addNode";
+import { useConnectionStore } from "@/store/useConnectionStore";
+import { moveToNextNode, moveToPreviousNode } from "@/konva_mindmap/utils/moveToNode";
+
 
 export default function MindMapCanvas({ showMinutes, handleShowMinutes }) {
   const {
@@ -25,16 +28,17 @@ export default function MindMapCanvas({ showMinutes, handleShowMinutes }) {
     overrideNodeData,
     saveHistory,
     loading,
-    selectedGroup,
     deleteSelectedNodes,
     selectedNode,
+    selectNode,
+    groupRelease,
   } = useNodeListContext();
   const [isDragMode, setDragMode] = useState(false);
-  const { dimensions, targetRef, handleWheel, zoomIn, zoomOut, centerMoveMap } = useDimension(data);
+  const { dimensions, targetRef, handleWheel, zoomIn, zoomOut, reArrange } = useDimension(data);
   const registerLayer = useCollisionDetection(data, updateNode);
-  const stageRef = useRef();
+  const stageRef = useRef<Konva.Stage>();
   const { registerStageRef } = useStageStore();
-  const handleSocketEvent = useSocketStore.getState().handleSocketEvent;
+  const handleSocketEvent = useConnectionStore((state) => state.handleSocketEvent);
 
   const rootKey = findRootNodeKey(data);
 
@@ -55,7 +59,7 @@ export default function MindMapCanvas({ showMinutes, handleShowMinutes }) {
     });
   }
 
-  useWindowKeyEventListener("keydown", (e) => {
+  useWindowEventListener("keydown", (e) => {
     e.preventDefault();
     if (e.metaKey || e.ctrlKey) {
       if (e.shiftKey && e.code) redo();
@@ -78,14 +82,29 @@ export default function MindMapCanvas({ showMinutes, handleShowMinutes }) {
         deleteSelectedNodes();
         break;
       case "Equal":
-        showNewNode(data, selectedNode, overrideNodeData);
+        addNode(data, selectedNode, overrideNodeData, (newNodeId) => {
+          selectNode({
+            nodeId: newNodeId,
+            parentNodeId: selectedNode.nodeId,
+          });
+        });
+        break;
+      case "Escape":
+        groupRelease();
+        selectNode({});
+      case "Tab":
+        if (e.shiftKey) {
+          moveToPreviousNode(data, selectedNode, selectNode);
+        } else {
+          moveToNextNode(data, selectedNode, selectNode);
+        }
         break;
       default:
         break;
     }
   });
 
-  useWindowKeyEventListener("keyup", (e) => {
+  useWindowEventListener("keyup", (e) => {
     if (e.code === "Space") {
       setDragMode(false);
     }
@@ -121,19 +140,12 @@ export default function MindMapCanvas({ showMinutes, handleShowMinutes }) {
         setDragmode={setDragMode}
       />
       <ShowShortCut />
-      <ToolMenu
-        dimensions={dimensions}
-        zoomIn={zoomIn}
-        zoomOut={zoomOut}
-        dragmode={isDragMode}
-        setDragmode={setDragMode}
-      />
       {!Object.keys(data).length && !loading ? (
         <NoNodeInform />
       ) : (
         <CanvasButtons
           handleReArrange={handleReArrange}
-          handleCenterMove={centerMoveMap}
+          handleCenterMove={reArrange}
           showMinutes={showMinutes}
           handleShowMinutes={handleShowMinutes}
         />
