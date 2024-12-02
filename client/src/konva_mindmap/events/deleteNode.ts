@@ -7,9 +7,13 @@ export function deleteNodes(data: string, selectedNodeIds: number | number[], ov
   const rootKey = findRootNodeKey(newNodeData);
 
   if (Array.isArray(selectedNodeIds) && selectedNodeIds.includes(rootKey)) {
+    useConnectionStore.getState().propagateError("최상위 노드는 삭제되지 않습니다.", "error");
     return deleteNodes(data, [...newNodeData[rootKey].children], overrideNodeData);
   }
-  if (!Array.isArray(selectedNodeIds) && selectedNodeIds === rootKey) return;
+  if (!Array.isArray(selectedNodeIds) && selectedNodeIds === rootKey) {
+    useConnectionStore.getState().propagateError("최상위 노드는 삭제되지 않습니다.", "error");
+    return;
+  }
 
   const nodeIds = Array.isArray(selectedNodeIds) ? selectedNodeIds : [selectedNodeIds];
   if (nodeIds.some((id) => !id || !newNodeData[id])) return;
