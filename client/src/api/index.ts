@@ -1,4 +1,4 @@
-import { tokenRefresh } from "@/api/auth";
+import { signOut, tokenRefresh } from "@/api/auth";
 import { logOnDev } from "@/utils/logging";
 import axios, { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from "axios";
 import { useConnectionStore } from "@/store/useConnectionStore";
@@ -52,13 +52,13 @@ instance.interceptors.response.use(
       if (error.response.status === 401) {
         if (!originalRequest._retry) {
           originalRequest._retry = true;
-
           const newAccessToken = await tokenRefresh();
           useConnectionStore.getState().tokenRefresh(newAccessToken.accessToken);
           originalRequest.headers["Authorization"] = `Bearer ${newAccessToken.accessToken}`;
 
           return instance(originalRequest);
         }
+        await signOut();
         useConnectionStore.getState().logout();
         return Promise.reject(error);
       }

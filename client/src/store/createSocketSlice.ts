@@ -18,7 +18,7 @@ export type SocketSlice = {
 
 type HandleSocketEventProps = {
   actionType: actionType;
-  payload: HandleSocketEventPayloads;
+  payload?: HandleSocketEventPayloads;
   callback?: (response?: any) => void;
 };
 
