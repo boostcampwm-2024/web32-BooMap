@@ -48,7 +48,7 @@ export default function MindMapInfoItem({ data, index }: MindMapInfoItemProps) {
         <div className="grid w-60 grid-cols-2 gap-1 px-5 text-xs">
           {keywordData.map((keyword, i) => (
             <span
-              key={i}
+              key={`keyword-${i}`}
               className="overflow-hidden text-ellipsis whitespace-nowrap rounded-2xl bg-bm-purple px-4 py-1 text-center"
             >
               {keyword}

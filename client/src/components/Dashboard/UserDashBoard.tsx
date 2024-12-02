@@ -40,7 +40,7 @@ export default function UserDashBoard() {
       </header>
       <div className="no-scrollbar h-[calc(100%-40px)] overflow-y-scroll border-b-[1px] border-t-[1px] border-grayscale-500">
         {filteredData.map((info, i) => (
-          <MindMapInfoItem key={i} data={info} index={i} />
+          <MindMapInfoItem key={`dashboard-${i}`} data={info} index={i} />
         ))}
       </div>
       <div className="absolute bottom-8 right-8">
