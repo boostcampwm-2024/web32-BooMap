@@ -21,9 +21,5 @@ instanceForAi.interceptors.request.use((config: InternalAxiosRequestConfig) => {
 });
 
 export function AudioAiConvert(formData: FormData) {
-  return instanceForAi.post(`/ai/audio`, formData, {
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
-  });
+  return instanceForAi.post(`/ai/audio`, formData);
 }
