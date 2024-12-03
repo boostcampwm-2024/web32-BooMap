@@ -23,6 +23,7 @@ export default function VoiceFileUpload() {
   const { aiCount, updateLoadingStatus } = useNodeListContext();
   const handleSocketEvent = useConnectionStore((state) => state.handleSocketEvent);
   const propagateError = useConnectionStore((state) => state.propagateError);
+  const isAuthenticated = useConnectionStore((state) => state.token);
   const [key, setKey] = useState(0);
 
   function fileValidation(file) {
@@ -39,7 +40,6 @@ export default function VoiceFileUpload() {
 
   async function sendAudioFile() {
     closeModal();
-    if (!fileValidation(file)) return;
     updateErrorMsg("");
     handleSocketEvent({ actionType: "audioAiRequest" });
     try {
@@ -57,6 +57,7 @@ export default function VoiceFileUpload() {
 
   function openConfirmModal() {
     if (availabilityInform) return;
+    if (!fileValidation(file)) return;
     openModal();
   }
 
@@ -64,7 +65,11 @@ export default function VoiceFileUpload() {
     <>
       <div className="flex h-full flex-col text-grayscale-100">
         <UploadBox key={key} file={file} setFile={setFile} />
-        <p className="mb-5 mt-1 text-grayscale-400">AI 변환 남은 횟수 : {aiCount}번</p>
+        {isAuthenticated ? (
+          <p className="mb-5 mt-1 text-grayscale-400">AI 변환 남은 횟수 : {aiCount}번</p>
+        ) : (
+          <p className="mb-5 mt-1 text-grayscale-400">비회원은 AI 변환 기능을 사용할 수 없어요</p>
+        )}
         <div className="mb-5 flex w-full flex-col gap-1">
           <Button
             className="rounded-xl bg-bm-blue p-3 transition hover:brightness-90"

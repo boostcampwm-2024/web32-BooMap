@@ -8,6 +8,7 @@ export default function useUpload() {
   const { aiCount } = useNodeListContext();
   const [availabilityInform, setAvailabilityInform] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
+  const isAuthenticated = useConnectionStore((state) => state.token);
 
   const ownerAvailability = role === "owner";
 
@@ -24,6 +25,10 @@ export default function useUpload() {
   }
 
   function checkAvailability() {
+    if (!isAuthenticated) {
+      setAvailabilityInform("비회원은 AI 변환 기능을 사용할 수 없어요");
+      return;
+    }
     if (!ownerAvailability) {
       setAvailabilityInform("마인드맵 소유자만 AI 변환을 할 수 있어요");
       return;

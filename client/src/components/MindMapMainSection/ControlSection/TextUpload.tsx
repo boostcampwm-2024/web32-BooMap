@@ -14,6 +14,7 @@ export default function TextUpload() {
     useUpload();
   const handleSocketEvent = useConnectionStore((state) => state.handleSocketEvent);
   const { open, openModal, closeModal } = useModal();
+  const isAuthenticated = useConnectionStore((state) => state.token);
 
   function textUploadValidation() {
     if (content.length < MIN_TEXT_UPLOAD_LIMIT) {
@@ -24,12 +25,12 @@ export default function TextUpload() {
   }
   function openConfirmModal() {
     if (availabilityInform) return;
+    if (!textUploadValidation()) return;
     openModal();
   }
 
   function handleAiProcessButton() {
     closeModal();
-    if (!textUploadValidation()) return;
     updateErrorMsg("");
     handleSocketEvent({ actionType: "aiRequest", payload: { aiContent: content } });
   }
@@ -49,7 +50,7 @@ export default function TextUpload() {
             maxLength={MAX_TEXT_UPLOAD_LIMIT}
           />
           <div className="flex justify-between text-grayscale-400">
-            <p>AI 변환 남은 횟수 : {aiCount}번</p>
+            {isAuthenticated ? <p>AI 변환 남은 횟수 : {aiCount}번</p> : <p>비회원은 AI 변환 기능을 사용할 수 없어요</p>}
             <p className="text-right text-grayscale-400">
               {content.length}/{MAX_TEXT_UPLOAD_LIMIT}
             </p>
