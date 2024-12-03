@@ -106,10 +106,10 @@ export class MapService {
       if (Number(aiCount) === 0) {
         throw new AiRequestException('ai 요청 횟수 초과');
       }
-      this.publisherService.publish(
-        'api-socket',
-        JSON.stringify({ event: 'textAiApi', data: { connectionId: client.data.connectionId, aiContent, mindmapId } }),
-      );
+      this.publisherService.publish('api-socket', {
+        event: 'textAiApi',
+        data: { connectionId: client.data.connectionId, aiContent, mindmapId },
+      });
       await this.redis.hset(client.data.connectionId, 'aiCount', Number(aiCount) - 1);
     } catch (error) {
       if (error instanceof UnauthorizedException) throw error;
@@ -170,10 +170,10 @@ export class MapService {
         curruntData['aiCount'] = currentAiCount;
       }
       if (client.data.user && ownerId !== client.data.user.id) {
-        this.publisherService.publish(
-          'api-socket',
-          JSON.stringify({ event: 'join', data: { connectionId, userId: client.data.user.id, mindmapId } }),
-        );
+        this.publisherService.publish('api-socket', {
+          event: 'join',
+          data: { connectionId, userId: client.data.user.id, mindmapId },
+        });
       }
 
       return curruntData;
@@ -192,7 +192,7 @@ export class MapService {
         return;
       }
 
-      this.publisherService.publish('api-socket', JSON.stringify({ event: 'save', data: { connectionId } }));
+      this.publisherService.publish('api-socket', { event: 'save', data: { connectionId } });
     } catch (error) {
       this.logger.error(error);
       throw new DatabaseException('마인드맵 저장 실패');
