@@ -13,7 +13,7 @@ export const CONNECTED_LINE_FROM = (depth: number) => NODE_DEFAULT_SIZE - depth 
 export const CONNECTED_LINE_TO = (depth: number) => NODE_DEFAULT_SIZE - depth * 7 + 5;
 
 //TEXT
-export const TEXT_FONT_SIZE = 20;
+export const TEXT_FONT_SIZE = 16;
 
 export const TOOL_OFFSET_X = NODE_DEFAULT_SIZE - 30;
 export const TOOL_OFFSET_Y = (radius: number) => NODE_DEFAULT_SIZE + radius - 20;
