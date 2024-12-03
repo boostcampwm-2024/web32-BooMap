@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable, PipeTransform } from '@nestjs/common';
-import { ALLOW_AUDIO_FILE_FORMAT } from 'apps/api-server/common/constant';
+import { ALLOW_AUDIO_FILE_FORMAT } from 'apps/api-server/src/common/constant';
 import { extname } from 'path';
 
 @Injectable()

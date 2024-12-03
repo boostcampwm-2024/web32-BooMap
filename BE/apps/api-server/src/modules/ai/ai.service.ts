@@ -10,7 +10,7 @@ import OpenAI from 'openai';
 import { OpenAiRequestDto } from './dto/openai.request.dto';
 import { ClovaSpeechRequestDto } from './dto/clova.speech.request.dtd';
 import { plainToInstance } from 'class-transformer';
-import { OPENAI_PROMPT } from 'apps/api-server/common/constant';
+import { OPENAI_PROMPT } from 'apps/api-server/src/common/constant';
 
 export interface TextAiResponse {
   keyword: string;

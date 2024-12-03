@@ -4,14 +4,11 @@ import {
   MessageBody,
   OnGatewayConnection,
   OnGatewayDisconnect,
-  OnGatewayInit,
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
   WsException,
 } from '@nestjs/websockets';
-import { RedisService } from '@liaoliaots/nestjs-redis';
-import { Redis } from 'ioredis';
 import { MapService } from './map.service';
 import { UseFilters, Injectable, Logger } from '@nestjs/common';
 import { Socket, Server } from 'socket.io';
@@ -22,22 +19,14 @@ import { WsExceptionFilter } from '../../exceptionfilter/ws.exceptionFilter';
 @Injectable()
 @WebSocketGateway({ transports: ['websocket'] })
 @UseFilters(new WsExceptionFilter())
-export class MapGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
+export class MapGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer() server: Server;
-  private readonly redis: Redis;
   private readonly logger = new Logger(MapGateway.name);
 
   constructor(
     private readonly mapService: MapService,
-    private readonly redisService: RedisService,
     private readonly jwtService: JwtService,
-  ) {
-    this.redis = this.redisService.getOrThrow('general');
-  }
-
-  afterInit() {
-    this.logger.log('소켓 서버 초기화 완료');
-  }
+  ) {}
 
   async handleConnection(@ConnectedSocket() client: Socket) {
     const refreshToken = client.handshake.headers.cookie?.split('=')[1];
