@@ -110,11 +110,19 @@ export class MapService {
         event: 'textAiApi',
         data: { connectionId: client.data.connectionId, aiContent, mindmapId },
       });
-      await this.redis.hset(client.data.connectionId, 'aiCount', Number(aiCount) - 1);
     } catch (error) {
       if (error instanceof UnauthorizedException) {
         throw error;
       } else throw new DatabaseException('aiCount 저장 실패');
+    }
+  }
+
+  async updateAiCount(connectionId: string) {
+    try {
+      const currentAiCount = await this.redis.hget(connectionId, 'aiCount');
+      await this.redis.hset(connectionId, 'aiCount', Number(currentAiCount) - 1);
+    } catch {
+      throw new DatabaseException('aiCount 업데이트 실패');
     }
   }
 
