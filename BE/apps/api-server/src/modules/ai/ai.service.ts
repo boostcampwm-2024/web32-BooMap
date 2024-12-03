@@ -11,6 +11,8 @@ import { OpenAiRequestDto } from './dto/openai.request.dto';
 import { ClovaSpeechRequestDto } from './dto/clova.speech.request.dtd';
 import { plainToInstance } from 'class-transformer';
 import { OPENAI_PROMPT } from 'apps/api-server/src/common/constant';
+import { RedisService } from '@liaoliaots/nestjs-redis';
+import Redis from 'ioredis';
 
 export interface TextAiResponse {
   keyword: string;
@@ -20,15 +22,27 @@ export interface TextAiResponse {
 @Injectable()
 export class AiService {
   private readonly logger = new Logger(AiService.name);
+  private readonly redis: Redis | null;
   constructor(
     private readonly configService: ConfigService,
     private readonly httpService: HttpService,
     private readonly nodeService: NodeService,
     private readonly publisherService: PublisherService,
-  ) {}
+    private readonly redisService: RedisService,
+  ) {
+    this.redis = redisService.getOrThrow('general');
+  }
 
   async requestOpenAi(aiDto: AiDto) {
     try {
+      const aiCount = await this.redis.hget(aiDto.connectionId, 'aiCount');
+      if (Number(aiCount) <= 0) {
+        this.publisherService.publish('api-socket', {
+          event: 'textAiSocket',
+          data: { error: 'AI 사용 횟수가 모두 소진되었습니다.', connectionId: aiDto.connectionId },
+        });
+        return;
+      }
       const apiKey = this.configService.get('OPENAI_API_KEY');
       const openai = new OpenAI(apiKey);
 

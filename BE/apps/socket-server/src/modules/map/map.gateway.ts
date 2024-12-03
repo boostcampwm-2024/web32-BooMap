@@ -135,14 +135,13 @@ export class MapGateway implements OnGatewayConnection, OnGatewayDisconnect {
     this.server.to(client.data.connectionId).emit('aiPending', { status: true });
   }
 
-  textAiResponse(data) {
+  async textAiResponse(data) {
     const room = this.server.sockets.adapter.rooms.get(data.connectionId);
     if (data.error) {
       this.textAiError(data);
       this.server.to(data.connectionId).emit('error', { error: data.error });
     } else {
       this.logger.log(`AI 응답 내용 : ${JSON.stringify(data.nodeData)}`);
-
       if (room && room.size > 0) {
         // 첫 번째 클라이언트 ID 가져오기
         const socketId = room.values().next().value;
@@ -150,6 +149,7 @@ export class MapGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
         if (clientSocket) {
           clientSocket.emit('aiResponse', data.nodeData);
+          await this.mapService.updateAiCount(data.connectionId);
         } else {
           this.logger.error(`Client socket not found for ID: ${socketId}`);
         }
