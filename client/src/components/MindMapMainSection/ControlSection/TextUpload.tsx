@@ -2,7 +2,6 @@ import ArrowBox from "@/components/common/ArrowBox";
 import { MAX_TEXT_UPLOAD_LIMIT, MIN_TEXT_UPLOAD_LIMIT } from "@/constants/uploadLimit";
 import useUpload from "@/hooks/useUpload";
 import { Button, Textarea } from "@headlessui/react";
-import clovaX from "@/assets/clovaX.png";
 import { useNodeListContext } from "@/store/NodeListProvider";
 import UploadAvailabilityArrowBox from "@/components/MindMapMainSection/ControlSection/UploadAvailabilityArrowBox";
 import { useConnectionStore } from "@/store/useConnectionStore";
@@ -36,7 +35,7 @@ export default function TextUpload() {
         <p>요약할 텍스트</p>
         <Textarea
           className="h-full w-full resize-none rounded-xl bg-grayscale-600 p-4"
-          placeholder="Text를 넣어주세요. (500자 이상 2000자 이하)"
+          placeholder="Text를 넣어주세요. (500자 이상 15000자 이하)"
           onKeyDown={(e) => e.stopPropagation()}
           onChange={(e) => updateContent(e.target.value)}
           maxLength={MAX_TEXT_UPLOAD_LIMIT}
@@ -59,9 +58,6 @@ export default function TextUpload() {
           <UploadAvailabilityArrowBox content={availabilityInform} />
         </Button>
         {errorMsg && <p className="text-red-500">{errorMsg}</p>}
-      </div>
-      <div className="flex w-48 justify-end">
-        <img src={clovaX} alt="clovaX" />
       </div>
     </div>
   );
