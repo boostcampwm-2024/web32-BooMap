@@ -38,7 +38,7 @@ export default function VoiceFileUpload() {
   }
 
   async function sendAudioFile() {
-    if (availabilityInform) return;
+    closeModal();
     if (!fileValidation(file)) return;
     updateErrorMsg("");
     handleSocketEvent({ actionType: "audioAiRequest" });
@@ -55,6 +55,11 @@ export default function VoiceFileUpload() {
     }
   }
 
+  function openConfirmModal() {
+    if (availabilityInform) return;
+    openModal();
+  }
+
   return (
     <>
       <div className="flex h-full flex-col text-grayscale-100">
@@ -65,12 +70,15 @@ export default function VoiceFileUpload() {
             className="rounded-xl bg-bm-blue p-3 transition hover:brightness-90"
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
-            onClick={sendAudioFile}
+            onClick={openConfirmModal}
           >
             만들기
             <UploadAvailabilityArrowBox content={availabilityInform} />
           </Button>
           {errorMsg && <p className="text-red-500">{errorMsg}</p>}
+        </div>
+        <div className="flex w-48 justify-end">
+          <img src={clovaX} alt="clovaX" />
         </div>
         {createPortal(
           <ConfirmUploadModal open={open} closeModal={closeModal} onConfirm={sendAudioFile} />,
