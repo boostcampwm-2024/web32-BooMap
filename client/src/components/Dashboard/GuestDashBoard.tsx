@@ -1,7 +1,7 @@
 import dashboardIcon from "@/assets/dashbordIcon.png";
 import plusIcon from "@/assets/plus.png";
-import GuestNewMindMapModal from "@/components/Dashboard/GuestNewMindMapModal";
-import LoginModal from "@/components/LoginModal";
+import GuestNewMindMapModal from "@/components/Modal/GuestNewMindMapModal";
+import LoginModal from "@/components/Modal/LoginModal";
 import useModal from "@/hooks/useModal";
 import { Button } from "@headlessui/react";
 

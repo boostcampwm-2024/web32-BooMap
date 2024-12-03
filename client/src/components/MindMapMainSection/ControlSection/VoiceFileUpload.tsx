@@ -11,9 +11,13 @@ import { useParams } from "react-router-dom";
 import { getMindMapByConnectionId } from "@/api/mindmap.api";
 import { audioFormData } from "@/utils/formData";
 import { FILE_UPLOAD_LIMIT } from "@/constants/uploadLimit";
+import { createPortal } from "react-dom";
+import useModal from "@/hooks/useModal";
+import ConfirmUploadModal from "@/components/Modal/ConfirmUploadModal";
 
 export default function VoiceFileUpload() {
   const [file, setFile] = useState<File | null>(null);
+  const { open, openModal, closeModal } = useModal();
   const { mindMapId: connectionId } = useParams<{ mindMapId: string }>();
   const { availabilityInform, handleMouseEnter, handleMouseLeave, errorMsg, updateErrorMsg } = useUpload();
   const { aiCount, updateLoadingStatus } = useNodeListContext();
@@ -66,10 +70,12 @@ export default function VoiceFileUpload() {
           <UploadAvailabilityArrowBox content={availabilityInform} />
         </Button>
         {errorMsg && <p className="text-red-500">{errorMsg}</p>}
+
       </div>
-      <div className="flex w-48 justify-end">
-        <img src={clovaX} alt="clovaX" />
-      </div>
-    </div>
+      {createPortal(
+        <ConfirmUploadModal open={open} closeModal={closeModal} onConfirm={sendAudioFile} />,
+        document.body,
+      )}
+    </>
   );
 }

@@ -1,4 +1,4 @@
-import DeleteConfirmModal from "@/components/MindMapCanvas/DeleteConfirmModal";
+import ConfirmResetModal from "@/components/Modal/ConfirmResetModal";
 import useModal from "@/hooks/useModal";
 import { findRootNodeKey } from "@/konva_mindmap/utils/findRootNodeKey";
 import { useNodeListContext } from "@/store/NodeListProvider";
@@ -51,7 +51,7 @@ export default function CanvasButtons({ handleReArrange, handleCenterMove, showM
       >
         캔버스 비우기
       </Button>
-      {createPortal(<DeleteConfirmModal open={open} closeModal={closeModal} onConfirm={resetAllNode} />, document.body)}
+      {createPortal(<ConfirmResetModal open={open} closeModal={closeModal} onConfirm={resetAllNode} />, document.body)}
     </div>
   );
 }
