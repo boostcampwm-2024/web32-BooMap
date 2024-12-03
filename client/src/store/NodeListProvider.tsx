@@ -115,6 +115,7 @@ export default function NodeListProvider({ children }: { children: ReactNode }) 
 
   function overrideNodeData(newData) {
     setData(newData);
+    saveHistory(JSON.stringify(newData));
   }
 
   function undoData() {

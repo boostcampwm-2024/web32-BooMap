@@ -1,4 +1,3 @@
-import { addNode } from "@/konva_mindmap/events/addNode";
 import { deleteNodes } from "@/konva_mindmap/events/deleteNode";
 import { useNodeListContext } from "@/store/NodeListProvider";
 import { useConnectionStore } from "@/store/useConnectionStore";
@@ -8,7 +7,7 @@ export default function useNodeActions(nodeId: number, content: string) {
   const [hover, setHover] = useState<boolean>(false);
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [keyword, setKeyword] = useState(content);
-  const { data, saveHistory, overrideNodeData } = useNodeListContext();
+  const { data, overrideNodeData } = useNodeListContext();
   const handleSocketEvent = useConnectionStore((state) => state.handleSocketEvent);
   const currentJobStatus = useConnectionStore((state) => state.currentJobStatus);
 
@@ -24,7 +23,6 @@ export default function useNodeActions(nodeId: number, content: string) {
         actionType: "updateNode",
         payload: { ...data, [nodeId]: { ...data[nodeId], keyword: keyword, newNode: false } },
         callback: (response) => {
-          saveHistory(JSON.stringify(data));
           overrideNodeData(response);
         },
       });
@@ -62,7 +60,6 @@ export default function useNodeActions(nodeId: number, content: string) {
 
   function handleDelete() {
     const stringifiedData = JSON.stringify(data);
-    saveHistory(stringifiedData);
     deleteNodes(stringifiedData, nodeId, overrideNodeData);
   }
 

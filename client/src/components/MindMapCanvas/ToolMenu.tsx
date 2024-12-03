@@ -33,7 +33,6 @@ export default function ToolMenu({ dimensions, zoomIn, zoomOut, dragmode, setDra
   };
 
   function handleAddButton() {
-    saveHistory(JSON.stringify(data));
     addNode(data, selectedNode, overrideNodeData, (newNodeId) => {
       selectNode({
         nodeId: newNodeId,
@@ -42,7 +41,6 @@ export default function ToolMenu({ dimensions, zoomIn, zoomOut, dragmode, setDra
     });
   }
   function handleDeleteButton() {
-    saveHistory(JSON.stringify(data));
     deleteNodes(JSON.stringify(data), selectedNode.nodeId, overrideNodeData);
     selectNode({ nodeId: 0, parentNodeId: 0 });
   }
