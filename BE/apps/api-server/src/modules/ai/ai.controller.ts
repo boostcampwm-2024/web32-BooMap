@@ -3,7 +3,7 @@ import { AiService } from './ai.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { AuthGuard } from '@nestjs/passport';
 import { User } from '../../decorators';
-import { MAX_FILE_SIZE } from 'apps/api-server/common/constant';
+import { MAX_FILE_SIZE } from 'apps/api-server/src/common/constant';
 import { AudioFileValidationPipe } from '../../pipes';
 import { AudioUploadDto } from './dto/audio.upload.dto';
 import { AiDto } from './dto/ai.dto';

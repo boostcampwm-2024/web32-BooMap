@@ -34,7 +34,7 @@ export class ConnectionService {
     if (!mindmap) {
       throw new NotFoundException('마인드맵을 찾을 수 없습니다.');
     }
-    await this.setConnection(mindmap.id, userId);
+    return await this.setConnection(mindmap.id, userId);
   }
 
   async setConnection(mindmapId: number, userId: number) {
