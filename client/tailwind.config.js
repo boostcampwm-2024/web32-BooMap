@@ -5,7 +5,7 @@ export default {
     extend: {
       colors: {
         bm: {
-          blue: "#2F2FE9",
+          blue: "#2563EB",
           purple: "#98A4EE",
         },
         grayscale: {
