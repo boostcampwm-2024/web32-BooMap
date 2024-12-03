@@ -4,12 +4,13 @@ import "./index.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import App from "./App";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import NotFound from "@/components/common/Error";
+import Error from "@/components/common/Error";
 import AuthorizeCallback from "@/pages/auth";
 import Layout from "@/pages/layout";
 import MindMap from "@/pages/Mindmap";
 import { ErrorBoundary } from "react-error-boundary";
 import { useConnectionStore } from "@/store/useConnectionStore";
+import NotFound from "./components/common/NotFound";
 
 const router = createBrowserRouter([
   {
@@ -57,7 +58,7 @@ queryClient.getQueryCache().subscribe((event) => {
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
-      <ErrorBoundary fallback={<NotFound />}>
+      <ErrorBoundary fallback={<Error />}>
         <RouterProvider router={router} />
       </ErrorBoundary>
     </QueryClientProvider>

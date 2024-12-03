@@ -6,9 +6,13 @@ export function createMindmap() {
 }
 
 export function getMindMap(mindMapId: string): Promise<MindMap> {
-  return instance.get(`/connection/${mindMapId}`);
+  return instance.get(`/connection/m/${mindMapId}`);
 }
 
 export function deleteMindMap(mindMapId: string) {
   return instance.delete(`/mindmap/${mindMapId}`);
+}
+
+export function getMindMapByConnectionId(connectionId: string): Promise<MindMap> {
+  return instance.get(`/connection/c/${connectionId}`);
 }
