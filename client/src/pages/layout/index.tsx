@@ -4,9 +4,10 @@ import { useSideBar } from "@/store/useSideBar";
 import { ErrorBoundary } from "react-error-boundary";
 import { Outlet } from "react-router-dom";
 import { useConnectionStore } from "@/store/useConnectionStore";
-import OfflineModal from "@/components/OfflineModal";
+import OfflineModal from "@/components/Modal/OfflineModal";
 import useWindowEventListener from "@/hooks/useWindowEventListener";
 import { useState } from "react";
+import NotFound from "@/components/common/NotFound";
 
 export default function Layout() {
   const sidebar = useSideBar();
@@ -18,6 +19,7 @@ export default function Layout() {
   });
 
   if (connectionStatus === "error") return <Error />;
+  if (connectionStatus === "notFound") return <NotFound />;
 
   return (
     <ErrorBoundary fallback={<Error />}>

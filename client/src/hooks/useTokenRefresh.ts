@@ -1,4 +1,4 @@
-import { tokenRefresh } from "@/api/auth";
+import { tokenRefresh } from "@/api/auth.api";
 import { useMutation } from "@tanstack/react-query";
 
 export const useTokenRefresh = () => {

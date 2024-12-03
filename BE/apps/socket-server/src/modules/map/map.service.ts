@@ -99,21 +99,30 @@ export class MapService {
     try {
       const type = await this.redis.hget(client.data.connectionId, 'type');
       if (type === 'guest') {
-        return;
+        throw new UnauthorizedException();
       }
       const aiCount = await this.redis.hget(client.data.connectionId, 'aiCount');
       const mindmapId = await this.redis.hget(client.data.connectionId, 'mindmapId');
       if (Number(aiCount) === 0) {
         throw new AiRequestException('ai 요청 횟수 초과');
       }
-      this.publisherService.publish(
-        'api-socket',
-        JSON.stringify({ event: 'textAiApi', data: { connectionId: client.data.connectionId, aiContent, mindmapId } }),
-      );
-      await this.redis.hset(client.data.connectionId, 'aiCount', Number(aiCount) - 1);
+      this.publisherService.publish('api-socket', {
+        event: 'textAiApi',
+        data: { connectionId: client.data.connectionId, aiContent, mindmapId },
+      });
     } catch (error) {
-      if (error instanceof UnauthorizedException) throw error;
-      else throw new DatabaseException('aiCount 저장 실패');
+      if (error instanceof UnauthorizedException) {
+        throw error;
+      } else throw new DatabaseException('aiCount 저장 실패');
+    }
+  }
+
+  async updateAiCount(connectionId: string) {
+    try {
+      const currentAiCount = await this.redis.hget(connectionId, 'aiCount');
+      await this.redis.hset(connectionId, 'aiCount', Number(currentAiCount) - 1);
+    } catch {
+      throw new DatabaseException('aiCount 업데이트 실패');
     }
   }
 
@@ -170,10 +179,10 @@ export class MapService {
         curruntData['aiCount'] = currentAiCount;
       }
       if (client.data.user && ownerId !== client.data.user.id) {
-        this.publisherService.publish(
-          'api-socket',
-          JSON.stringify({ event: 'join', data: { connectionId, userId: client.data.user.id, mindmapId } }),
-        );
+        this.publisherService.publish('api-socket', {
+          event: 'join',
+          data: { connectionId, userId: client.data.user.id, mindmapId },
+        });
       }
 
       return curruntData;
@@ -192,7 +201,7 @@ export class MapService {
         return;
       }
 
-      this.publisherService.publish('api-socket', JSON.stringify({ event: 'save', data: { connectionId } }));
+      this.publisherService.publish('api-socket', { event: 'save', data: { connectionId } });
     } catch (error) {
       this.logger.error(error);
       throw new DatabaseException('마인드맵 저장 실패');

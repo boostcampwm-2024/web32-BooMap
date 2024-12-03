@@ -54,9 +54,9 @@ export default function ShowShortCut() {
         {isClicked || isVisible ? (
           <div className="flex flex-col gap-3">
             {shortcuts.map(({ keys, description }, index) => (
-              <p key={index}>
+              <p key={`shortCuts-${index}`}>
                 {keys.map((key, i) => (
-                  <React.Fragment key={i}>
+                  <React.Fragment key={`shortCut-${i}`}>
                     <Btn>{key}</Btn>
                     {i < keys.length - 1 && " + "}
                   </React.Fragment>

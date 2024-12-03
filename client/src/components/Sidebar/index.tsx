@@ -17,7 +17,7 @@ export default function Sidebar({ isSidebarOpen, toggleSidebar }: SidebarProps) 
   return (
     <>
       <aside
-        className={`absolute left-0 top-0 h-full min-w-64 transform bg-grayscale-800 p-4 ${transitionClasses} ${animateOptions}`}
+        className={`absolute left-0 top-0 h-full min-h-[720px] min-w-64 transform bg-grayscale-800 p-4 ${transitionClasses} ${animateOptions}`}
       >
         <div
           className="flex w-full cursor-pointer items-center justify-center gap-4 text-2xl font-black"

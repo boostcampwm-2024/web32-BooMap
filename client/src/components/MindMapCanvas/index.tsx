@@ -5,19 +5,16 @@ import initializeNodePosition from "@/konva_mindmap/utils/initializeNodePosition
 import { Layer, Stage } from "react-konva";
 import { useNodeListContext } from "@/store/NodeListProvider";
 import { useCollisionDetection } from "@/konva_mindmap/hooks/useCollisionDetection";
-import { useEffect, useRef, useState } from "react";
-import { useStageStore } from "@/store/useStageStore";
+import { useState } from "react";
 import NoNodeInform from "@/components/MindMapCanvas/NoNodeInform";
 import CanvasButtons from "@/components/MindMapCanvas/CanvasButtons";
 import SelectionRect from "@/konva_mindmap/components/selectionRect";
 import DrawMindMap from "@/konva_mindmap/components/DrawMindMap";
 import ShowShortCut from "./ShowShortCut";
 import { findRootNodeKey } from "@/konva_mindmap/utils/findRootNodeKey";
-import Konva from "konva";
 import { addNode } from "@/konva_mindmap/events/addNode";
 import { useConnectionStore } from "@/store/useConnectionStore";
 import { moveToNextNode, moveToPreviousNode } from "@/konva_mindmap/utils/moveToNode";
-
 
 export default function MindMapCanvas({ showMinutes, handleShowMinutes }) {
   const {
@@ -26,25 +23,19 @@ export default function MindMapCanvas({ showMinutes, handleShowMinutes }) {
     redoData: redo,
     updateNode,
     overrideNodeData,
-    saveHistory,
-    loading,
+    loadingStatus,
     deleteSelectedNodes,
     selectedNode,
     selectNode,
     groupRelease,
+    stage,
   } = useNodeListContext();
   const [isDragMode, setDragMode] = useState(false);
   const { dimensions, targetRef, handleWheel, zoomIn, zoomOut, reArrange } = useDimension(data);
   const registerLayer = useCollisionDetection(data, updateNode);
-  const stageRef = useRef<Konva.Stage>();
-  const { registerStageRef } = useStageStore();
   const handleSocketEvent = useConnectionStore((state) => state.handleSocketEvent);
 
   const rootKey = findRootNodeKey(data);
-
-  useEffect(() => {
-    registerStageRef(stageRef);
-  }, [stageRef]);
 
   function handleReArrange() {
     handleSocketEvent({
@@ -52,7 +43,6 @@ export default function MindMapCanvas({ showMinutes, handleShowMinutes }) {
       payload: initializeNodePosition(data),
       callback: (response) => {
         if (response) {
-          saveHistory(JSON.stringify(data));
           overrideNodeData(response);
         }
       },
@@ -62,7 +52,7 @@ export default function MindMapCanvas({ showMinutes, handleShowMinutes }) {
   useWindowEventListener("keydown", (e) => {
     e.preventDefault();
     if (e.metaKey || e.ctrlKey) {
-      if (e.shiftKey && e.code) redo();
+      if (e.shiftKey && e.code === "KeyZ") redo();
       switch (e.code) {
         case "KeyZ":
           undo();
@@ -114,7 +104,7 @@ export default function MindMapCanvas({ showMinutes, handleShowMinutes }) {
     <div ref={targetRef} className="relative h-full min-h-0 w-full min-w-0 rounded-[20px] bg-white">
       <Stage
         style={{ overflow: "hidden" }}
-        ref={stageRef}
+        ref={stage}
         width={dimensions.width}
         height={dimensions.height}
         scaleX={dimensions.scale}
@@ -127,9 +117,9 @@ export default function MindMapCanvas({ showMinutes, handleShowMinutes }) {
       >
         <Layer ref={registerLayer}>
           {Object.keys(data).length >= 1 && (
-            <DrawMindMap data={data} root={data[rootKey]} depth={1} dragmode={isDragMode} />
+            <DrawMindMap data={data} root={data[rootKey]} depth={1} dragmode={isDragMode} scale={dimensions.scale} />
           )}
-          <SelectionRect stage={stageRef} dragmode={isDragMode} />
+          <SelectionRect stage={stage} dragmode={isDragMode} />
         </Layer>
       </Stage>
       <ToolMenu
@@ -140,7 +130,7 @@ export default function MindMapCanvas({ showMinutes, handleShowMinutes }) {
         setDragmode={setDragMode}
       />
       <ShowShortCut />
-      {!Object.keys(data).length && !loading ? (
+      {!Object.keys(data).length && !loadingStatus.socketLoading ? (
         <NoNodeInform />
       ) : (
         <CanvasButtons

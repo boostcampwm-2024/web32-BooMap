@@ -22,7 +22,7 @@ import { useConnectionStore } from "@/store/useConnectionStore";
 import { addNode } from "@/konva_mindmap/events/addNode";
 import useWindowEventListener from "@/hooks/useWindowEventListener";
 
-export default function MindMapNode({ data, parentNode, node, depth, parentRef, dragmode }: NodeProps) {
+export default function MindMapNode({ data, parentNode, node, depth, dragmode, scale }: NodeProps) {
   const nodeRef = useRef<Konva.Group>(null);
   const { saveHistory, updateNode, selectNode, selectedNode, selectedGroup, overrideNodeData, groupRelease } =
     useNodeListContext();
@@ -129,6 +129,7 @@ export default function MindMapNode({ data, parentNode, node, depth, parentRef, 
           width={TEXT_WIDTH(depth)}
           isEditing={isEditing}
           setIsEditing={setIsEditing}
+          scale={scale}
         />
         <NodeTool
           offset={{ x: TOOL_OFFSET_X + 9, y: TOOL_OFFSET_Y(NODE_RADIUS(depth)) }}

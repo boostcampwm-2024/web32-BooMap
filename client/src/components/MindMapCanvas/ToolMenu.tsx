@@ -19,7 +19,7 @@ type ToolMenuProps = {
   setDragmode: React.Dispatch<React.SetStateAction<boolean>>;
 };
 export default function ToolMenu({ dimensions, zoomIn, zoomOut, dragmode, setDragmode }: ToolMenuProps) {
-  const { data, selectNode, selectedNode, saveHistory, overrideNodeData, deleteSelectedNodes } = useNodeListContext();
+  const { data, selectNode, selectedNode, saveHistory, overrideNodeData } = useNodeListContext();
   const intervalRef = useRef(null);
 
   const startZoom = (zoomFn) => {
@@ -33,7 +33,6 @@ export default function ToolMenu({ dimensions, zoomIn, zoomOut, dragmode, setDra
   };
 
   function handleAddButton() {
-    saveHistory(JSON.stringify(data));
     addNode(data, selectedNode, overrideNodeData, (newNodeId) => {
       selectNode({
         nodeId: newNodeId,
@@ -42,7 +41,6 @@ export default function ToolMenu({ dimensions, zoomIn, zoomOut, dragmode, setDra
     });
   }
   function handleDeleteButton() {
-    saveHistory(JSON.stringify(data));
     deleteNodes(JSON.stringify(data), selectedNode.nodeId, overrideNodeData);
     selectNode({ nodeId: 0, parentNodeId: 0 });
   }

@@ -10,8 +10,8 @@ export class PublisherService {
     this.redis = redisService.getOrThrow('publisher');
   }
 
-  async publish(channel: string, message: string) {
+  async publish(channel: string, message: any) {
     this.logger.log(`Publishing to ${channel}: ${message}`);
-    await this.redis.publish(channel, message);
+    await this.redis.publish(channel, JSON.stringify(message));
   }
 }

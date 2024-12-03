@@ -2,9 +2,9 @@ import profile from "@/assets/profile.png";
 import useModal from "@/hooks/useModal";
 import { Button } from "@headlessui/react";
 import extractDate from "@/utils/extractDate";
-import DeleteMindMapModal from "../DeleteMindMapModal";
+import DeleteMindMapModal from "../Modal/DeleteMindMapModal";
 import { createPortal } from "react-dom";
-import { FaRegTrashAlt } from "react-icons/fa";
+import { FaRegTrashAlt, FaUserCircle } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useDeleteMindMap } from "@/api/fetchHooks/useDeleteMindMap";
 import { DashBoard } from "@/konva_mindmap/types/dashboard";
@@ -48,7 +48,7 @@ export default function MindMapInfoItem({ data, index }: MindMapInfoItemProps) {
         <div className="grid w-60 grid-cols-2 gap-1 px-5 text-xs">
           {keywordData.map((keyword, i) => (
             <span
-              key={i}
+              key={`keyword-${i}`}
               className="overflow-hidden text-ellipsis whitespace-nowrap rounded-2xl bg-bm-purple px-4 py-1 text-center"
             >
               {keyword}
@@ -56,7 +56,7 @@ export default function MindMapInfoItem({ data, index }: MindMapInfoItemProps) {
           ))}
         </div>
         <div className="flex min-w-24 items-center justify-center gap-2">
-          <img className="h-6 w-6" src={profile} alt="소유자 이미지" />
+          <FaUserCircle className="h-6 w-6" />
           <div>{data.ownerName}</div>
         </div>
         <div className="flex min-w-40 justify-between">

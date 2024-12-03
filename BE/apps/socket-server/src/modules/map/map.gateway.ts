@@ -4,14 +4,11 @@ import {
   MessageBody,
   OnGatewayConnection,
   OnGatewayDisconnect,
-  OnGatewayInit,
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
   WsException,
 } from '@nestjs/websockets';
-import { RedisService } from '@liaoliaots/nestjs-redis';
-import { Redis } from 'ioredis';
 import { MapService } from './map.service';
 import { UseFilters, Injectable, Logger } from '@nestjs/common';
 import { Socket, Server } from 'socket.io';
@@ -22,22 +19,14 @@ import { WsExceptionFilter } from '../../exceptionfilter/ws.exceptionFilter';
 @Injectable()
 @WebSocketGateway({ transports: ['websocket'] })
 @UseFilters(new WsExceptionFilter())
-export class MapGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
+export class MapGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer() server: Server;
-  private readonly redis: Redis;
   private readonly logger = new Logger(MapGateway.name);
 
   constructor(
     private readonly mapService: MapService,
-    private readonly redisService: RedisService,
     private readonly jwtService: JwtService,
-  ) {
-    this.redis = this.redisService.getOrThrow('general');
-  }
-
-  afterInit() {
-    this.logger.log('소켓 서버 초기화 완료');
-  }
+  ) {}
 
   async handleConnection(@ConnectedSocket() client: Socket) {
     const refreshToken = client.handshake.headers.cookie?.split('=')[1];
@@ -131,24 +120,36 @@ export class MapGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
     this.logging(client, 'AI 요청');
     this.logger.log(`AI 요청 내용 : ${JSON.stringify(aiRequestDto)}`);
     this.server.to(client.data.connectionId).emit('aiPending', { status: true });
-    await this.mapService.textAiRequest(client, aiRequestDto.aiContent);
+    try {
+      await this.mapService.textAiRequest(client, aiRequestDto.aiContent);
+    } catch (error) {
+      this.logger.error(`AI 요청 에러 : ${error}`);
+      this.server.to(client.data.connectionId).emit('error', { error });
+      this.server.to(client.data.connectionId).emit('aiPending', { status: false });
+    }
   }
 
-  textAiResponse(data) {
+  @SubscribeMessage('audioAiRequest')
+  async handleAudioAiRequest(@ConnectedSocket() client: Socket) {
+    this.logging(client, '오디오 AI 요청');
+    this.server.to(client.data.connectionId).emit('aiPending', { status: true });
+  }
+
+  async textAiResponse(data) {
     const room = this.server.sockets.adapter.rooms.get(data.connectionId);
     if (data.error) {
-      this.logger.error(`AI 요청 에러 : ${data.error}`);
+      this.textAiError(data);
       this.server.to(data.connectionId).emit('error', { error: data.error });
     } else {
       this.logger.log(`AI 응답 내용 : ${JSON.stringify(data.nodeData)}`);
-
       if (room && room.size > 0) {
         // 첫 번째 클라이언트 ID 가져오기
         const socketId = room.values().next().value;
-        this.logger.log('소켓 ID : ' + socketId);
         const clientSocket = this.server.sockets.sockets.get(socketId);
+
         if (clientSocket) {
           clientSocket.emit('aiResponse', data.nodeData);
+          await this.mapService.updateAiCount(data.connectionId);
         } else {
           this.logger.error(`Client socket not found for ID: ${socketId}`);
         }
@@ -156,6 +157,12 @@ export class MapGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
         this.logger.error(`Room not found or empty for connectionId: ${data.connectionId}`);
       }
     }
+    this.server.to(data.connectionId).emit('aiPending', { status: false });
+  }
+
+  textAiError(data) {
+    this.logger.error(`AI 요청 에러 : ${data.error}`);
+    this.server.to(data.connectionId).emit('error', { error: data.error });
     this.server.to(data.connectionId).emit('aiPending', { status: false });
   }
 

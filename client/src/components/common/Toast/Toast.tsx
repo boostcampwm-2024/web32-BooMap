@@ -1,6 +1,12 @@
 import { useEffect, useState } from "react";
 
-export default function Toast({ message, status, onClose }) {
+type ToastProps = {
+  message: string;
+  status: "success" | "fail" | "error";
+  onClose: () => void;
+};
+
+export default function Toast({ message, status, onClose }: ToastProps) {
   const [progress, setProgress] = useState(0);
   const duration = 3000;
 
@@ -15,8 +21,18 @@ export default function Toast({ message, status, onClose }) {
       clearInterval(progressInterval);
     };
   }, []);
-  const textColor = status === "success" ? "text-blue-500" : "text-red-400";
-  const bgColor = status === "success" ? "bg-blue-500" : "bg-red-400";
+
+  const textColor = {
+    success: "text-blue-500",
+    fail: "text-red-400",
+    error: "text-yellow-500", // error 추가
+  }[status];
+
+  const bgColor = {
+    success: "bg-blue-500",
+    fail: "bg-red-400",
+    error: "bg-yellow-500", // error 추가
+  }[status];
 
   return (
     <div className={`${textColor} relative mb-2 w-64 bg-grayscale-600 px-4 py-3 text-sm`}>

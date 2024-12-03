@@ -22,7 +22,7 @@ export default function NodeList({ data, parentNodeId, root }: NodeListProps) {
       />
       {open &&
         root.children.map((childId) => {
-          return <NodeList key={childId} data={data} parentNodeId={root.id} root={data[childId]} />;
+          return <NodeList key={`nodeList-${childId}`} data={data} parentNodeId={root.id} root={data[childId]} />;
         })}
     </div>
   );

@@ -1,35 +1,40 @@
 import { Socket, io } from "socket.io-client";
 import { StateCreator } from "zustand";
 import { actionType, HandleSocketEventPayloads } from "@/types/NodePayload";
-import { createMindmap, getMindMap } from "@/api/mindmap.api";
+import { createMindmap, getMindMap, getMindMapByConnectionId } from "@/api/mindmap.api";
 import { ConnectionStore } from "@/types/store";
+
+type NodeError = {
+  message: string;
+  status: string;
+};
 
 export type SocketSlice = {
   socket: Socket | null;
-  connectSocket: (id: string, token: string) => void;
+  connectSocket: (id: string) => void;
   disconnectSocket: () => void;
   handleSocketEvent: (props: HandleSocketEventProps) => void;
   handleConnection: () => Promise<string>;
   getConnection: (mindMapId: number, connectionId: string) => void;
-  wsError: string[];
+  nodeError: NodeError[];
   currentJobStatus: string;
   connectionStatus: string;
 };
 
 type HandleSocketEventProps = {
   actionType: actionType;
-  payload: HandleSocketEventPayloads;
+  payload?: HandleSocketEventPayloads;
   callback?: (response?: any) => void;
 };
 
 export const createSocketSlice: StateCreator<ConnectionStore, [], [], SocketSlice> = (set, get) => ({
   socket: null,
   role: null,
-  wsError: [],
+  nodeError: [],
   currentJobStatus: "",
   connectionStatus: "",
 
-  connectSocket: (connectionId, token) => {
+  connectSocket: (connectionId) => {
     if (get().socket) return;
 
     const options: any = {
@@ -39,23 +44,34 @@ export const createSocketSlice: StateCreator<ConnectionStore, [], [], SocketSlic
       transports: ["websocket"],
     };
 
+    const token = get().token;
     if (token) options.auth = { token };
 
     get().checkRole(connectionId);
 
     const socket = io(import.meta.env.VITE_APP_SOCKET_SERVER_BASE_URL, options);
+    sessionStorage.setItem("latest", connectionId);
+
+    socket.on("notFoundError", async () => {
+      try {
+        const response = await getMindMapByConnectionId(connectionId);
+        if (response) {
+          get().disconnectSocket();
+          get().connectSocket(connectionId);
+        }
+      } catch (error) {
+        if (error.status === 404) set({ connectionStatus: "notFound" });
+        if (error.status === 403) set({ connectionStatus: "forbidden" });
+      }
+    });
 
     socket.on("error", () => {
-      set({ wsError: [...get().wsError, "작업 중 에러가 발생했어요"] });
+      set({ nodeError: [...get().nodeError, { message: "작업 중 에러가 발생했어요", status: "fail" }] });
       set({ currentJobStatus: "error" });
     });
 
     socket.on("connect_error", () => {
       set({ connectionStatus: "error" });
-    });
-
-    socket.on("reconnect", () => {
-      set({ connectionStatus: "connected" });
     });
 
     set({ socket: socket, connectionStatus: "connected" });
@@ -87,7 +103,7 @@ export const createSocketSlice: StateCreator<ConnectionStore, [], [], SocketSlic
       if (socket) socket.disconnect();
       const response = await createMindmap();
       const connectionId = response.data.connectionId;
-      get().connectSocket(connectionId, get().token);
+      get().connectSocket(connectionId);
       return connectionId;
     } catch (error) {
       console.error(error);
@@ -99,7 +115,7 @@ export const createSocketSlice: StateCreator<ConnectionStore, [], [], SocketSlic
       const socket = get().socket;
       if (socket) socket.disconnect();
       const response = await getMindMap(mindMapId.toString());
-      get().connectSocket(connectionId, get().token);
+      get().connectSocket(connectionId);
     } catch (error) {
       throw error;
     }

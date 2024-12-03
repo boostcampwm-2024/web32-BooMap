@@ -13,12 +13,8 @@ async function bootstrap() {
   app.setGlobalPrefix('api');
   app.useGlobalPipes(
     new ValidationPipe({
-      transform: true, //dto를 수정 가능하게(dto 기본값 들어가도록)
-      transformOptions: {
-        enableImplicitConversion: true, //Class-Validator Type에 맞게 자동형변환
-      },
+      transform: true,
       whitelist: true,
-      forbidNonWhitelisted: true,
     }),
   );
 

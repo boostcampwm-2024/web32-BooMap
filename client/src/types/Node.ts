@@ -23,6 +23,6 @@ export type NodeProps = {
   parentNode?: Node;
   node: Node;
   depth: number;
-  parentRef?: RefObject<Konva.Group>;
   dragmode: boolean;
+  scale: number;
 };

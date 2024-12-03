@@ -34,7 +34,7 @@ export default function NodeItem({ node, parentNodeId, open, handleAccordion, op
     handleKeyDown,
     handleDelete,
   } = useNodeActions(node.id, node.keyword);
-  const { data, saveHistory, selectedNode, overrideNodeData, selectNode } = useNodeListContext();
+  const { data, selectedNode, overrideNodeData, selectNode } = useNodeListContext();
   const inputRef = useRef<HTMLInputElement | null>(null);
   const parentNodes = getParentNodeKeys(selectedNode.nodeId, data);
   const isSelected = parentNodes.includes(node.id);
@@ -48,7 +48,6 @@ export default function NodeItem({ node, parentNodeId, open, handleAccordion, op
   }, [isSelected]);
 
   function handleAddButton() {
-    saveHistory(JSON.stringify(data));
     selectNode({ nodeId: node.id, parentNodeId: parentNodeId });
     addNode(data, { nodeId: node.id, parentNodeId: parentNodeId }, overrideNodeData, (newNodeId) => {
       selectNode({ nodeId: newNodeId, parentNodeId: node.id });

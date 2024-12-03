@@ -1,12 +1,12 @@
 import MindMapInfoItem from "./MindMapInfoItem";
-import searchIcon from "@/assets/search.png";
 import { Button, Input } from "@headlessui/react";
 import { useEffect, useState } from "react";
-import { FaPlus } from "react-icons/fa";
+import { FaPlus, FaSearch } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import useDashBoard from "@/api/fetchHooks/useDashBoard";
 import NoMindMap from "@/components/Dashboard/NoMindMap";
 import { useConnectionStore } from "@/store/useConnectionStore";
+import { IoSearch } from "react-icons/io5";
 
 export default function UserDashBoard() {
   const { data } = useDashBoard();
@@ -40,7 +40,7 @@ export default function UserDashBoard() {
       </header>
       <div className="no-scrollbar h-[calc(100%-40px)] overflow-y-scroll border-b-[1px] border-t-[1px] border-grayscale-500">
         {filteredData.map((info, i) => (
-          <MindMapInfoItem key={i} data={info} index={i} />
+          <MindMapInfoItem key={`dashboard-${i}`} data={info} index={i} />
         ))}
       </div>
       <div className="absolute bottom-8 right-8">
@@ -60,9 +60,7 @@ export default function UserDashBoard() {
           }}
           placeholder="키워드나 제목을 입력하세요"
         />
-        <Button>
-          <img className="h-6 w-6" src={searchIcon} alt="검색하기 버튼" />
-        </Button>
+        <IoSearch size={24} />
       </div>
     </div>
   );

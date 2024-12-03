@@ -7,6 +7,7 @@ import { MindmapService } from '../mindmap/mindmap.service';
 import { plainToInstance } from 'class-transformer';
 import { Role } from '@app/entity/enum/role.enum';
 import { AiService } from '../ai/ai.service';
+import { AiDto } from '../ai/dto/ai.dto';
 
 export interface RedisMessage {
   event: string;
@@ -84,7 +85,7 @@ export class SubscriberService implements OnModuleInit {
     const updateData = plainToInstance(UpdateMindmapDto, {
       title: mindmapData.title,
       content: content ?? '', // null 안전 처리
-      aiCount: mindmapData.aiCount,
+      aiCount: Number(mindmapData.aiCount),
     });
 
     try {
@@ -111,7 +112,11 @@ export class SubscriberService implements OnModuleInit {
   }
 
   private async handleTextAiEvent(data: RedisMessage['data']) {
-    await this.aiService.requestClovaX(data);
+    const mindmapId = Number(data.mindmapId);
+    const connectionId = data.connectionId;
+    const aiContent = data.aiContent;
+    const ClovaPromptDto = plainToInstance(AiDto, { mindmapId, connectionId, aiContent });
+    await this.aiService.requestOpenAi(ClovaPromptDto);
     this.logger.log('AI 데이터 처리 완료');
   }
 }

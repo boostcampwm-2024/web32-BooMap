@@ -26,6 +26,7 @@ export default function useHistoryState<T>(data: string) {
     (setData) => {
       if (!history[0] || pointer <= 0) return;
       const parsedData = JSON.parse(history[pointer - 1]);
+      if (Object.keys(parsedData).length === 0) return;
       handleSocketEvent({
         actionType: "updateNode",
         payload: parsedData,

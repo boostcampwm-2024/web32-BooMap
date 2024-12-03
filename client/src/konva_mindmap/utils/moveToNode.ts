@@ -2,6 +2,7 @@ import { NodeData, SelectedNode } from "@/types/Node";
 import { findLastLeafNode } from "./findLastLeafNode";
 import { findParentNodeKey } from "./findParentNodeKey";
 import { findRootNodeKey } from "./findRootNodeKey";
+import { useConnectionStore } from "@/store/useConnectionStore";
 
 export function moveToNextNode(
   data: NodeData,
@@ -12,7 +13,7 @@ export function moveToNextNode(
   const currentNode = data[nodeId];
 
   if (!currentNode) {
-    console.error("현재 노드를 찾을 수 없습니다.");
+    useConnectionStore.getState().propagateError("노드를 선택해주세요", "error");
     return;
   }
 
@@ -62,7 +63,7 @@ export function moveToPreviousNode(
   const parentNode = data[parentNodeId];
 
   if (!currentNode) {
-    console.error("현재 노드를 찾을 수 없습니다.");
+    useConnectionStore.getState().propagateError("노드를 선택해주세요", "error");
     return;
   }
 
