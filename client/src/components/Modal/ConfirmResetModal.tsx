@@ -6,7 +6,7 @@ type DeleteConfirmModalProps = {
   closeModal: () => void;
   onConfirm: () => void;
 };
-export default function DeleteConfirmModal({ open, closeModal, onConfirm }: DeleteConfirmModalProps) {
+export default function ConfirmResetModal({ open, closeModal, onConfirm }: DeleteConfirmModalProps) {
   return (
     <Modal open={open} closeModal={closeModal}>
       <p className="mb-4 text-lg font-bold text-black">모든 노드를 초기화할까요?</p>

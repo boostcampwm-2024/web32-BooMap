@@ -3,7 +3,7 @@ import useSection from "@/hooks/useSection";
 import { useNavigate } from "react-router-dom";
 import useModal from "@/hooks/useModal";
 import { createPortal } from "react-dom";
-import LatestMindMapModal from "@/components/Sidebar/LatestMindMapModal";
+import LatestMindMapModal from "@/components/Modal/LatestMindMapModal";
 import { useState } from "react";
 import { RxDashboard } from "react-icons/rx";
 import { FaListUl } from "react-icons/fa";

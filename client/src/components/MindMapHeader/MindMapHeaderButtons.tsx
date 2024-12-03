@@ -1,7 +1,7 @@
 import { downloadURI } from "@/konva_mindmap/utils/download";
 import { Button } from "@headlessui/react";
 import useModal from "@/hooks/useModal";
-import ShareModal from "../ShareModal";
+import ShareModal from "../Modal/ShareModal";
 import { LuShare, LuShare2 } from "react-icons/lu";
 import { createPortal } from "react-dom";
 import { useNodeListContext } from "@/store/NodeListProvider";
