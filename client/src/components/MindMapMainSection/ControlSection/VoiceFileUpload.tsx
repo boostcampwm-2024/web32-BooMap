@@ -7,9 +7,11 @@ import UploadAvailabilityArrowBox from "@/components/MindMapMainSection/ControlS
 import { useNodeListContext } from "@/store/NodeListProvider";
 import { useConnectionStore } from "@/store/useConnectionStore";
 import { AudioAiConvert } from "@/api/ai";
+import { useParams } from "react-router-dom";
 
 export default function VoiceFileUpload() {
   const [file, setFile] = useState<File | null>(null);
+  const { mindMapId: connectionId } = useParams<{ mindMapId: string }>();
   const { availabilityInform, handleMouseEnter, handleMouseLeave } = useUpload();
   const { aiCount } = useNodeListContext();
   const handleSocketEvent = useConnectionStore((state) => state.handleSocketEvent);
@@ -23,9 +25,10 @@ export default function VoiceFileUpload() {
     handleSocketEvent({ actionType: "audioAiRequest" });
     const formData = new FormData();
     formData.append("aiAudio", file);
+    formData.append("mindmapId", "1");
+    formData.append("connectionId", connectionId);
     try {
-      const response = await AudioAiConvert(formData, "22");
-      console.log("업로드 성공:", response);
+      await AudioAiConvert(formData);
     } catch (error) {
       console.error("업로드 에러:", error);
     }
