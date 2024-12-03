@@ -1,5 +1,4 @@
 import { signOut } from "@/api/auth";
-import profileIcon from "@/assets/profile.png";
 import { useConnectionStore } from "@/store/useConnectionStore";
 import { Button } from "@headlessui/react";
 import { useEffect, useRef } from "react";
