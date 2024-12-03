@@ -6,7 +6,7 @@ import useUpload from "@/hooks/useUpload";
 import UploadAvailabilityArrowBox from "@/components/MindMapMainSection/ControlSection/UploadAvailabilityArrowBox";
 import { useNodeListContext } from "@/store/NodeListProvider";
 import { useConnectionStore } from "@/store/useConnectionStore";
-import { AudioAiConvert } from "@/api/ai";
+import { AudioAiConvert } from "@/api/ai.api";
 import { useParams } from "react-router-dom";
 import { getMindMapByConnectionId } from "@/api/mindmap.api";
 import { audioFormData } from "@/utils/formData";
