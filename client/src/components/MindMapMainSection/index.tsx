@@ -1,7 +1,6 @@
 import MindMapHeader from "@/components/MindMapHeader";
 import MindMapView from "@/components/MindMapMainSection/MindMapView";
 import useSection from "@/hooks/useSection";
-import { useNodeListContext } from "@/store/NodeListProvider";
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import ToastContainer from "../common/Toast/ToastContainer";
@@ -19,7 +18,6 @@ export default function MindMapMainSection() {
   const { mindMapId } = useParams<{ mindMapId: string }>();
   const connectSocket = useConnectionStore((state) => state.connectSocket);
   const disconnectSocket = useConnectionStore((state) => state.disconnectSocket);
-  const token = useConnectionStore((state) => state.token);
   const { toasts, setToasts } = useToast();
 
   useEffect(() => {
