@@ -1,4 +1,4 @@
-import { signOut, tokenRefresh } from "@/api/auth";
+import { signOut, tokenRefresh } from "@/api/auth.api";
 import { logOnDev } from "@/utils/logging";
 import axios, { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from "axios";
 import { useConnectionStore } from "@/store/useConnectionStore";
