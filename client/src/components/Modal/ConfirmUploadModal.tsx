@@ -1,15 +1,14 @@
-import Modal from "@/components/common/Modal";
 import { Button } from "@headlessui/react";
+import Modal from "../common/Modal";
 
-type DeleteConfirmModalProps = {
-  open: boolean;
-  closeModal: () => void;
-  onConfirm: () => void;
-};
-export default function DeleteConfirmModal({ open, closeModal, onConfirm }: DeleteConfirmModalProps) {
+export default function ConfirmUploadModal({ open, closeModal, onConfirm }) {
   return (
     <Modal open={open} closeModal={closeModal}>
-      <p className="mb-4 text-lg font-bold text-black">모든 노드를 초기화할까요?</p>
+      <p className="mb-4 text-lg font-bold text-black">
+        AI 기능을 사용하면
+        <br />
+        마인드맵이 초기화됩니다
+      </p>
       <div className="flex justify-center gap-2">
         <Button
           onClick={closeModal}

@@ -1,8 +1,8 @@
-import LoginModal from "@/components/LoginModal";
+import LoginModal from "@/components/Modal/LoginModal";
 import { Button } from "@headlessui/react";
 import { createPortal } from "react-dom";
 import useModal from "@/hooks/useModal";
-import ProfileModal from "@/components/MindMapHeader/ProfileModal";
+import ProfileModal from "@/components/Modal/ProfileModal";
 import { FaUserCircle } from "react-icons/fa";
 import { useConnectionStore } from "@/store/useConnectionStore";
 

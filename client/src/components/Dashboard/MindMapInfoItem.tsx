@@ -2,7 +2,7 @@ import profile from "@/assets/profile.png";
 import useModal from "@/hooks/useModal";
 import { Button } from "@headlessui/react";
 import extractDate from "@/utils/extractDate";
-import DeleteMindMapModal from "../DeleteMindMapModal";
+import DeleteMindMapModal from "../Modal/DeleteMindMapModal";
 import { createPortal } from "react-dom";
 import { FaRegTrashAlt, FaUserCircle } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
