@@ -30,7 +30,6 @@ export type NodeListContextType = {
   deleteSelectedNodes: () => void;
   content: string;
   updateContent: (updatedContent: string) => void;
-  updateMindMapId: (mindMapId: string) => void;
 } & Partial<AiCountHook> &
   Partial<MindMapLoadingHook>;
 
@@ -55,7 +54,6 @@ export default function NodeListProvider({ children }: { children: ReactNode }) 
   const stage = useRef<Konva.Stage>();
   const socket = useConnectionStore((state) => state.socket);
   const handleSocketEvent = useConnectionStore((state) => state.handleSocketEvent);
-  const [mindMapId, setMindMapId] = useState("");
 
   useEffect(() => {
     socket?.on("joinRoom", (initialData) => {
@@ -145,10 +143,6 @@ export default function NodeListProvider({ children }: { children: ReactNode }) 
     if (selectedNode.nodeId) deleteNodes(JSON.stringify(data), selectedNode.nodeId, overrideNodeData);
   }
 
-  function updateMindMapId(mindMapId: string) {
-    setMindMapId(mindMapId);
-  }
-
   return (
     <NodeListContext.Provider
       value={{
@@ -172,7 +166,6 @@ export default function NodeListProvider({ children }: { children: ReactNode }) 
         aiCount,
         initializeAiCount,
         loadingStatus,
-        updateMindMapId,
         stage,
       }}
     >
