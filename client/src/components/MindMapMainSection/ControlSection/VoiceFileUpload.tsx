@@ -16,16 +16,17 @@ export default function VoiceFileUpload() {
   const [file, setFile] = useState<File | null>(null);
   const { mindMapId: connectionId } = useParams<{ mindMapId: string }>();
   const { availabilityInform, handleMouseEnter, handleMouseLeave, errorMsg, updateErrorMsg } = useUpload();
-  const { aiCount } = useNodeListContext();
+  const { aiCount, updateLoadingStatus } = useNodeListContext();
   const handleSocketEvent = useConnectionStore((state) => state.handleSocketEvent);
+  const propagateError = useConnectionStore((state) => state.propagateError);
 
   function fileValidation(file) {
     if (!file) {
       updateErrorMsg("파일을 선택해주세요.");
       return false;
     }
-    if (file.size < FILE_UPLOAD_LIMIT) {
-      updateErrorMsg("파일 크기는 50MB를 넘을 수 없습니다.");
+    if (file.size > FILE_UPLOAD_LIMIT) {
+      updateErrorMsg("파일 크기는 100MB를 넘을 수 없습니다.");
       return false;
     }
     return true;
@@ -38,10 +39,14 @@ export default function VoiceFileUpload() {
 
     try {
       const mindMapId = await getMindMapByConnectionId(connectionId);
+      console.log(mindMapId);
       const formData = audioFormData(file, mindMapId, connectionId);
       await AudioAiConvert(formData);
     } catch (error) {
-      console.error("업로드 에러:", error);
+      propagateError("ai 생성에 실패했습니다.", "error");
+    } finally {
+      updateLoadingStatus({ type: "aiPending", status: false });
+      setFile(null);
     }
   }
 
