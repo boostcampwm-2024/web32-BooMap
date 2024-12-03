@@ -5,7 +5,6 @@ import { InternalAxiosRequestConfig } from "axios";
 
 export const instanceForAi = axios.create({
   baseURL: import.meta.env.VITE_APP_API_SERVER_BASE_URL,
-  timeout: 3000,
   withCredentials: true,
   headers: {
     "Content-Type": "multipart/form-data",
