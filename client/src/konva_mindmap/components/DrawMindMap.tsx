@@ -11,9 +11,10 @@ type MindMapProps = {
   parentNode?: any;
   update?: (id: number, node: Node) => void;
   dragmode: boolean;
+  scale: number;
 };
 
-export default function DrawMindMap({ data, root, depth = 0, parentNode, dragmode }: MindMapProps) {
+export default function DrawMindMap({ data, root, depth = 0, parentNode, dragmode, scale }: MindMapProps) {
   return (
     <>
       {parentNode && (
@@ -24,10 +25,17 @@ export default function DrawMindMap({ data, root, depth = 0, parentNode, dragmod
           toRadius={CONNECTED_LINE_TO(depth)}
         />
       )}
-      <MindMapNode data={data} depth={depth} parentNode={parentNode} node={root} dragmode={dragmode} />
+      <MindMapNode data={data} depth={depth} parentNode={parentNode} node={root} dragmode={dragmode} scale={scale} />
       {root.children?.map((childNode, index) => (
         <React.Fragment key={`mindMapNode-${index}`}>
-          <DrawMindMap data={data} root={data[childNode]} depth={depth + 1} parentNode={root} dragmode={dragmode} />
+          <DrawMindMap
+            data={data}
+            root={data[childNode]}
+            depth={depth + 1}
+            parentNode={root}
+            dragmode={dragmode}
+            scale={scale}
+          />
         </React.Fragment>
       ))}
     </>

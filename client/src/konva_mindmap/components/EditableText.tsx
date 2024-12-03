@@ -14,6 +14,7 @@ interface EditableTextProps {
   offsetX: number;
   offsetY: number;
   width: number;
+  scale: number;
 }
 
 export default function EditableText({
@@ -24,6 +25,7 @@ export default function EditableText({
   offsetX,
   offsetY,
   width,
+  scale,
 }: EditableTextProps) {
   const originalContent = text;
   const [keyword, setKeyword] = useState(originalContent);
@@ -65,6 +67,10 @@ export default function EditableText({
     saveContent();
   }
 
+  const fontSize = scale >= 1 ? TEXT_FONT_SIZE : TEXT_FONT_SIZE / scale;
+  offsetX = scale >= 1 ? offsetX : offsetX / scale;
+  width = scale >= 1 ? width : width / scale;
+
   return (
     <>
       {isEditing ? (
@@ -77,10 +83,11 @@ export default function EditableText({
           offsetX={offsetX}
           offsetY={offsetY}
           width={width}
+          scale={scale}
         />
       ) : (
         <Text
-          fontSize={TEXT_FONT_SIZE}
+          fontSize={fontSize}
           text={keyword}
           fill="black"
           wrap="word"
