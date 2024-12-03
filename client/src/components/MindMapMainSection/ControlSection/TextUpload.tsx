@@ -1,15 +1,35 @@
 import ArrowBox from "@/components/common/ArrowBox";
-import { MAX_TEXT_UPLOAD_LIMIT } from "@/constants/textUploadLimit";
+import { MAX_TEXT_UPLOAD_LIMIT, MIN_TEXT_UPLOAD_LIMIT } from "@/constants/uploadLimit";
 import useUpload from "@/hooks/useUpload";
 import { Button, Textarea } from "@headlessui/react";
 import clovaX from "@/assets/clovaX.png";
 import { useNodeListContext } from "@/store/NodeListProvider";
 import UploadAvailabilityArrowBox from "@/components/MindMapMainSection/ControlSection/UploadAvailabilityArrowBox";
+import { useConnectionStore } from "@/store/useConnectionStore";
 
 export default function TextUpload() {
-  const { content, updateContent, handleAiProcessButton, availabilityInform, handleMouseEnter, handleMouseLeave } =
+  const { content, updateContent, availabilityInform, handleMouseEnter, handleMouseLeave, errorMsg, updateErrorMsg } =
     useUpload();
+  const role = useConnectionStore((state) => state.currentRole);
+  const ownerAvailability = role === "owner";
+  const handleSocketEvent = useConnectionStore((state) => state.handleSocketEvent);
+
+  function textUploadValidation() {
+    if (content.length < MIN_TEXT_UPLOAD_LIMIT) {
+      updateErrorMsg("텍스트는 500자를 넘어야 합니다.");
+      return false;
+    }
+    return true;
+  }
+
+  function handleAiProcessButton() {
+    if (!textUploadValidation() || !ownerAvailability) return;
+    updateErrorMsg("");
+    handleSocketEvent({ actionType: "aiRequest", payload: { aiContent: content } });
+  }
+
   const { aiCount } = useNodeListContext();
+
   return (
     <div className="flex h-full flex-col gap-6 text-grayscale-100">
       <div className="flex h-full flex-col gap-4">
@@ -28,15 +48,18 @@ export default function TextUpload() {
           </p>
         </div>
       </div>
-      <Button
-        className="relative rounded-xl bg-bm-blue p-3 transition hover:brightness-90"
-        onClick={handleAiProcessButton}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-      >
-        만들기
-        <UploadAvailabilityArrowBox content={availabilityInform} />
-      </Button>
+      <div className="flex flex-col">
+        <Button
+          className="relative rounded-xl bg-bm-blue p-3 transition hover:brightness-90"
+          onClick={handleAiProcessButton}
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+        >
+          만들기
+          <UploadAvailabilityArrowBox content={availabilityInform} />
+        </Button>
+        {errorMsg && <p className="text-red-500">{errorMsg}</p>}
+      </div>
       <div className="flex w-48 justify-end">
         <img src={clovaX} alt="clovaX" />
       </div>

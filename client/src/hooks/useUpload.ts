@@ -1,4 +1,3 @@
-import { MIN_TEXT_UPLOAD_LIMIT } from "@/constants/textUploadLimit";
 import { useNodeListContext } from "@/store/NodeListProvider";
 import { useConnectionStore } from "@/store/useConnectionStore";
 import { useState } from "react";
@@ -6,16 +5,11 @@ import { useState } from "react";
 export default function useUpload() {
   const [content, setContent] = useState("");
   const role = useConnectionStore((state) => state.currentRole);
-  const handleSocketEvent = useConnectionStore((state) => state.handleSocketEvent);
   const { aiCount } = useNodeListContext();
   const [availabilityInform, setAvailabilityInform] = useState("");
+  const [errorMsg, setErrorMsg] = useState("");
 
   const ownerAvailability = role === "owner";
-
-  function handleAiProcessButton() {
-    if (content.length <= MIN_TEXT_UPLOAD_LIMIT || !ownerAvailability) return;
-    handleSocketEvent({ actionType: "aiRequest", payload: { aiContent: content } });
-  }
 
   function updateContent(content: string) {
     setContent(content);
@@ -40,12 +34,17 @@ export default function useUpload() {
     }
   }
 
+  function updateErrorMsg(message: string) {
+    setErrorMsg(message);
+  }
+
   return {
     content,
     updateContent,
-    handleAiProcessButton,
     handleMouseEnter,
     handleMouseLeave,
     availabilityInform,
+    errorMsg,
+    updateErrorMsg,
   };
 }

@@ -12,33 +12,45 @@ import { ErrorBoundary } from "react-error-boundary";
 import { useConnectionStore } from "@/store/useConnectionStore";
 import NotFound from "./components/common/NotFound";
 
-const router = createBrowserRouter([
-  {
-    element: <Layout />,
-    children: [
-      {
-        path: "/",
-        element: <App />,
-      },
-      {
-        path: "/mindmap",
-        element: <MindMap />,
-      },
-      {
-        path: "/mindmap/:mindMapId",
-        element: <MindMap />,
-      },
-    ],
+const options = {
+  future: {
+    v7_relativeSplatPath: true,
+    v7_fetcherPersist: true,
+    v7_normalizeFormMethod: true,
+    v7_partialHydration: true,
+    v7_skipActionErrorRevalidation: true,
   },
-  {
-    path: "/auth",
-    element: <AuthorizeCallback />,
-  },
-  {
-    path: "*",
-    element: <NotFound />,
-  },
-]);
+};
+const router = createBrowserRouter(
+  [
+    {
+      element: <Layout />,
+      children: [
+        {
+          path: "/",
+          element: <App />,
+        },
+        {
+          path: "/mindmap",
+          element: <MindMap />,
+        },
+        {
+          path: "/mindmap/:mindMapId",
+          element: <MindMap />,
+        },
+      ],
+    },
+    {
+      path: "/auth",
+      element: <AuthorizeCallback />,
+    },
+    {
+      path: "*",
+      element: <NotFound />,
+    },
+  ],
+  options,
+);
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -59,7 +71,7 @@ createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
       <ErrorBoundary fallback={<Error />}>
-        <RouterProvider router={router} />
+        <RouterProvider router={router} future={{ v7_startTransition: true }} />
       </ErrorBoundary>
     </QueryClientProvider>
   </StrictMode>,

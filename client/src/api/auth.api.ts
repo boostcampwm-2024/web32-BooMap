@@ -1,8 +1,18 @@
 import { instance } from "@/api";
 import { TokenRefresh, User } from "@/types/auth";
+import axios from "axios";
+
+export const instanceForRefresh = axios.create({
+  baseURL: import.meta.env.VITE_APP_API_SERVER_BASE_URL,
+  timeout: 3000,
+  withCredentials: true,
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
 
 export const tokenRefresh = async (): Promise<TokenRefresh> => {
-  const { data } = await instance.post("/auth/refresh", {}, { withCredentials: true });
+  const { data } = await instanceForRefresh.post("/auth/refresh", {}, { withCredentials: true });
   return data;
 };
 

@@ -1,17 +1,19 @@
 import { downloadURI } from "@/konva_mindmap/utils/download";
-import { useStageStore } from "@/store/useStageStore";
 import { Button } from "@headlessui/react";
 import useModal from "@/hooks/useModal";
 import ShareModal from "../ShareModal";
 import { LuShare, LuShare2 } from "react-icons/lu";
 import { createPortal } from "react-dom";
+import { useNodeListContext } from "@/store/NodeListProvider";
 
 export default function MindMapHeaderButtons() {
-  const stage = useStageStore((state) => state.stage);
   const { open, openModal, closeModal } = useModal();
+  const { title, stage } = useNodeListContext();
 
   function handleExport() {
-    downloadURI(stage.current.getStage().toDataURL({ mimeType: "image/png", quality: 1 }), "demo");
+    const nodes = stage.current.children[0].children.length;
+    if (nodes > 1)
+      downloadURI(stage.current.getStage().toDataURL({ mimeType: "image/png", quality: 1, pixelRatio: 3 }), title);
   }
 
   return (

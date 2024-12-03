@@ -1,36 +1,33 @@
-import Spinner from "@/components/common/Spinner";
 import MindMapHeaderButtons from "@/components/MindMapHeader/MindMapHeaderButtons";
 import Profile from "@/components/MindMapHeader/Profile";
-import useAuth from "@/hooks/useAuth";
 import { useNodeListContext } from "@/store/NodeListProvider";
 import { useConnectionStore } from "@/store/useConnectionStore";
 import { Input } from "@headlessui/react";
 import { useState } from "react";
-import { createPortal } from "react-dom";
 import { FaPencilAlt } from "react-icons/fa";
 
 export default function MindMapHeader() {
   const { title, updateTitle } = useNodeListContext();
+  const originalContent = title;
   const [editMode, setEditMode] = useState(false);
   const handleSocketEvent = useConnectionStore((state) => state.handleSocketEvent);
-  const [editTitle, setEditTitle] = useState(title);
   const role = useConnectionStore((state) => state.currentRole);
+  const currentJobStatus = useConnectionStore((state) => state.currentJobStatus);
 
   function handleInputBlur() {
-    if (!editTitle.length) {
-      setEditTitle(title);
+    if (!title.length) {
       setEditMode(false);
       return;
     }
 
     handleSocketEvent({
       actionType: "updateTitle",
-      payload: { title: editTitle },
+      payload: { title: title },
       callback: (response) => {
         updateTitle(response.title);
-        setEditTitle(response.title);
       },
     });
+    if (currentJobStatus === "error") updateTitle(originalContent);
     setEditMode(false);
   }
 
@@ -52,8 +49,8 @@ export default function MindMapHeader() {
       {editMode ? (
         <Input
           className="flex w-80 items-center bg-transparent text-center"
-          value={editTitle}
-          onChange={(e) => setEditTitle(e.target.value)}
+          value={title}
+          onChange={(e) => updateTitle(e.target.value)}
           onBlur={handleInputBlur}
           onKeyDown={handleInputKeyDown}
           maxLength={32}

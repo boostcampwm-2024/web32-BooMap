@@ -2,7 +2,7 @@ import useGroupSelect from "@/hooks/useGroupSelect";
 import useHistoryState from "@/hooks/useHistoryState";
 import { Node, NodeData, SelectedNode } from "@/types/Node";
 import Konva from "konva";
-import { createContext, ReactNode, useContext, useEffect, useState } from "react";
+import { createContext, ReactNode, RefObject, useContext, useEffect, useRef, useState } from "react";
 import { deleteNodes } from "@/konva_mindmap/events/deleteNode";
 import useMindMapTitle from "@/hooks/useMindMapTitle";
 import useContent from "@/hooks/useContent";
@@ -12,6 +12,7 @@ import useAiCount, { AiCountHook } from "@/hooks/useAiCount";
 import useLoading, { MindMapLoadingHook } from "@/hooks/useLoading";
 
 export type NodeListContextType = {
+  stage: RefObject<Konva.Stage>;
   data: NodeData | null;
   selectedNode: SelectedNode | null;
   history: string[];
@@ -29,7 +30,6 @@ export type NodeListContextType = {
   deleteSelectedNodes: () => void;
   content: string;
   updateContent: (updatedContent: string) => void;
-  updateMindMapId: (mindMapId: string) => void;
 } & Partial<AiCountHook> &
   Partial<MindMapLoadingHook>;
 
@@ -51,9 +51,9 @@ export default function NodeListProvider({ children }: { children: ReactNode }) 
   const { content, updateContent, initializeContent } = useContent();
   const { loadingStatus, updateLoadingStatus } = useLoading();
   const { selectedGroup, groupRelease, groupSelect } = useGroupSelect();
+  const stage = useRef<Konva.Stage>();
   const socket = useConnectionStore((state) => state.socket);
   const handleSocketEvent = useConnectionStore((state) => state.handleSocketEvent);
-  const [mindMapId, setMindMapId] = useState("");
 
   useEffect(() => {
     socket?.on("joinRoom", (initialData) => {
@@ -143,10 +143,6 @@ export default function NodeListProvider({ children }: { children: ReactNode }) 
     if (selectedNode.nodeId) deleteNodes(JSON.stringify(data), selectedNode.nodeId, overrideNodeData);
   }
 
-  function updateMindMapId(mindMapId: string) {
-    setMindMapId(mindMapId);
-  }
-
   return (
     <NodeListContext.Provider
       value={{
@@ -170,7 +166,7 @@ export default function NodeListProvider({ children }: { children: ReactNode }) 
         aiCount,
         initializeAiCount,
         loadingStatus,
-        updateMindMapId,
+        stage,
       }}
     >
       {children}
