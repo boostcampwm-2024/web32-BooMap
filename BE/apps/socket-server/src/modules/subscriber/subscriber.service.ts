@@ -49,12 +49,10 @@ export class SubscriberService implements OnModuleInit {
         const { event, data } = JSON.parse(message) as RedisMessage;
         if (event === 'textAiSocket') {
           this.textAiFinished(data);
-        } else if (event === 'audioAi') {
-          this.aiAudioFinish(data);
         }
       }
     } catch (error) {
-      this.logger.error('Redis handleMessage error:', error);
+      this.logger.error('Redis handlㄴeMessage error:', error);
     }
   }
 
@@ -64,9 +62,5 @@ export class SubscriberService implements OnModuleInit {
       return;
     }
     this.mapGateway.textAiResponse(data);
-  }
-
-  aiAudioFinish(data) {
-    console.log('aiAudioFinish' + data);
   }
 }
