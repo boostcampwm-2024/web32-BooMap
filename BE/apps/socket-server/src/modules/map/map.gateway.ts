@@ -120,7 +120,13 @@ export class MapGateway implements OnGatewayConnection, OnGatewayDisconnect {
     this.logging(client, 'AI 요청');
     this.logger.log(`AI 요청 내용 : ${JSON.stringify(aiRequestDto)}`);
     this.server.to(client.data.connectionId).emit('aiPending', { status: true });
-    await this.mapService.textAiRequest(client, aiRequestDto.aiContent);
+    try {
+      await this.mapService.textAiRequest(client, aiRequestDto.aiContent);
+    } catch (error) {
+      this.logger.error(`AI 요청 에러 : ${error}`);
+      this.server.to(client.data.connectionId).emit('error', { error });
+      this.server.to(client.data.connectionId).emit('aiPending', { status: false });
+    }
   }
 
   @SubscribeMessage('audioAiRequest')
@@ -132,7 +138,7 @@ export class MapGateway implements OnGatewayConnection, OnGatewayDisconnect {
   textAiResponse(data) {
     const room = this.server.sockets.adapter.rooms.get(data.connectionId);
     if (data.error) {
-      this.logger.error(`AI 요청 에러 : ${data.error}`);
+      this.textAiError(data);
       this.server.to(data.connectionId).emit('error', { error: data.error });
     } else {
       this.logger.log(`AI 응답 내용 : ${JSON.stringify(data.nodeData)}`);
