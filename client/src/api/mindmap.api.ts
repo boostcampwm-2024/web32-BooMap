@@ -6,7 +6,7 @@ export function createMindmap() {
 }
 
 export function getMindMap(mindMapId: string): Promise<MindMap> {
-  return instance.get(`/connection/m/${mindMapId}`);
+  return instance.get(`/connection/?type=mindmap&id=${mindMapId}`);
 }
 
 export function deleteMindMap(mindMapId: string) {
@@ -14,6 +14,6 @@ export function deleteMindMap(mindMapId: string) {
 }
 
 export async function getMindMapByConnectionId(connectionId: string): Promise<string> {
-  const { data } = await instance.get(`/connection/c/${connectionId}`);
+  const { data } = await instance.get(`/connection/?type=connection&id=${connectionId}`);
   return data.mindmapId;
 }
