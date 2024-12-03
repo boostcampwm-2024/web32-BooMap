@@ -52,7 +52,7 @@ export class SubscriberService implements OnModuleInit {
         }
       }
     } catch (error) {
-      this.logger.error('Redis handlㄴeMessage error:', error);
+      this.logger.error('Redis handleMessage error:', error);
     }
   }
 
