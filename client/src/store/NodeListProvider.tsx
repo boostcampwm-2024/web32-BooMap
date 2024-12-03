@@ -167,6 +167,7 @@ export default function NodeListProvider({ children }: { children: ReactNode }) 
         initializeAiCount,
         loadingStatus,
         stage,
+        updateLoadingStatus,
       }}
     >
       {children}
