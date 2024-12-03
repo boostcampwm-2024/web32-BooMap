@@ -13,6 +13,7 @@ export function deleteMindMap(mindMapId: string) {
   return instance.delete(`/mindmap/${mindMapId}`);
 }
 
-export function getMindMapByConnectionId(connectionId: string): Promise<MindMap> {
-  return instance.get(`/connection/c/${connectionId}`);
+export async function getMindMapByConnectionId(connectionId: string): Promise<string> {
+  const { data } = await instance.get(`/connection/c/${connectionId}`);
+  return data.mindmapId;
 }
