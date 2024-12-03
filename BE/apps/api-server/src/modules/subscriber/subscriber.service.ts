@@ -85,7 +85,7 @@ export class SubscriberService implements OnModuleInit {
     const updateData = plainToInstance(UpdateMindmapDto, {
       title: mindmapData.title,
       content: content ?? '', // null 안전 처리
-      aiCount: mindmapData.aiCount,
+      aiCount: Number(mindmapData.aiCount),
     });
 
     try {

@@ -99,7 +99,7 @@ export class MapService {
     try {
       const type = await this.redis.hget(client.data.connectionId, 'type');
       if (type === 'guest') {
-        return;
+        throw new UnauthorizedException();
       }
       const aiCount = await this.redis.hget(client.data.connectionId, 'aiCount');
       const mindmapId = await this.redis.hget(client.data.connectionId, 'mindmapId');
@@ -112,8 +112,9 @@ export class MapService {
       });
       await this.redis.hset(client.data.connectionId, 'aiCount', Number(aiCount) - 1);
     } catch (error) {
-      if (error instanceof UnauthorizedException) throw error;
-      else throw new DatabaseException('aiCount 저장 실패');
+      if (error instanceof UnauthorizedException) {
+        throw error;
+      } else throw new DatabaseException('aiCount 저장 실패');
     }
   }
 

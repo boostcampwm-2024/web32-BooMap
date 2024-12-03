@@ -21,7 +21,7 @@ export class AiController {
     @User() user: { id: number; email: string },
     @Body() audioUploadDto: AudioUploadDto,
   ) {
-    this.logger.log(`User ${user.id} uploaded audio file ${audioFile.originalname}`);
+    this.logger.log(`User ${user.id} uploaded audio file`);
     await this.aiService.requestClovaSpeech(audioFile, audioUploadDto);
     return;
   }
