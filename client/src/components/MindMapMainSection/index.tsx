@@ -6,7 +6,6 @@ import { useParams } from "react-router-dom";
 import ToastContainer from "../common/Toast/ToastContainer";
 import { useConnectionStore } from "@/store/useConnectionStore";
 import useToast from "@/hooks/useToast";
-import { useNodeListContext } from "@/store/NodeListProvider";
 
 const modeView = {
   voiceupload: "음성 파일 업로드",
@@ -20,12 +19,10 @@ export default function MindMapMainSection() {
   const connectSocket = useConnectionStore((state) => state.connectSocket);
   const disconnectSocket = useConnectionStore((state) => state.disconnectSocket);
   const { toasts, setToasts } = useToast();
-  const { updateMindMapId } = useNodeListContext();
 
   useEffect(() => {
     if (mindMapId) {
       connectSocket(mindMapId);
-      updateMindMapId(mindMapId);
     }
     return () => {
       disconnectSocket();
