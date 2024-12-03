@@ -1,7 +1,7 @@
 import { Socket, io } from "socket.io-client";
 import { StateCreator } from "zustand";
 import { actionType, HandleSocketEventPayloads } from "@/types/NodePayload";
-import { createMindmap, getMindMap } from "@/api/mindmap.api";
+import { createMindmap, getMindMap, getMindMapByConnectionId } from "@/api/mindmap.api";
 import { ConnectionStore } from "@/types/store";
 
 type NodeError = {
@@ -54,12 +54,14 @@ export const createSocketSlice: StateCreator<ConnectionStore, [], [], SocketSlic
 
     socket.on("notFoundError", async () => {
       try {
-        // TODO: connectionId를 기준으로 mindMapId를 가져오는 API 호출하기
-        // 여기서 403이면 forbidden 페이지, 404면 notFound 페이지로 이동
-        const response = await getMindMap(connectionId);
-        get().connectSocket(connectionId);
+        const response = await getMindMapByConnectionId(connectionId);
+        if (response) {
+          get().disconnectSocket();
+          get().connectSocket(connectionId);
+        }
       } catch (error) {
-        set({ connectionStatus: "notFound" });
+        if (error.status === 404) set({ connectionStatus: "notFound" });
+        if (error.status === 403) set({ connectionStatus: "forbidden" });
       }
     });
 
