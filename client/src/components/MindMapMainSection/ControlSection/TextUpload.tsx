@@ -9,8 +9,6 @@ import { useConnectionStore } from "@/store/useConnectionStore";
 export default function TextUpload() {
   const { content, updateContent, availabilityInform, handleMouseEnter, handleMouseLeave, errorMsg, updateErrorMsg } =
     useUpload();
-  const role = useConnectionStore((state) => state.currentRole);
-  const ownerAvailability = role === "owner";
   const handleSocketEvent = useConnectionStore((state) => state.handleSocketEvent);
 
   function textUploadValidation() {
@@ -22,7 +20,8 @@ export default function TextUpload() {
   }
 
   function handleAiProcessButton() {
-    if (!textUploadValidation() || !ownerAvailability) return;
+    if (availabilityInform) return;
+    if (!textUploadValidation()) return;
     updateErrorMsg("");
     handleSocketEvent({ actionType: "aiRequest", payload: { aiContent: content } });
   }
