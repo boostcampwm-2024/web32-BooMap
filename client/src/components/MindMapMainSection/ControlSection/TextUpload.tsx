@@ -22,9 +22,13 @@ export default function TextUpload() {
     }
     return true;
   }
+  function openConfirmModal() {
+    if (availabilityInform) return;
+    openModal();
+  }
 
   function handleAiProcessButton() {
-    if (availabilityInform) return;
+    closeModal();
     if (!textUploadValidation()) return;
     updateErrorMsg("");
     handleSocketEvent({ actionType: "aiRequest", payload: { aiContent: content } });
@@ -54,7 +58,7 @@ export default function TextUpload() {
         <div className="flex flex-col">
           <Button
             className="relative rounded-xl bg-bm-blue p-3 transition hover:brightness-90"
-            onClick={openModal}
+            onClick={openConfirmModal}
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
           >

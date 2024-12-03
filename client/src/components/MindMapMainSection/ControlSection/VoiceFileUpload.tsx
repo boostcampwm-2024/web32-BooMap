@@ -38,7 +38,7 @@ export default function VoiceFileUpload() {
   }
 
   async function sendAudioFile() {
-    if (availabilityInform) return;
+    closeModal();
     if (!fileValidation(file)) return;
     updateErrorMsg("");
     handleSocketEvent({ actionType: "audioAiRequest" });
@@ -55,27 +55,36 @@ export default function VoiceFileUpload() {
     }
   }
 
-  return (
-    <div className="flex h-full flex-col text-grayscale-100">
-      <UploadBox key={key} file={file} setFile={setFile} />
-      <p className="mb-5 mt-1 text-grayscale-400">AI 변환 남은 횟수 : {aiCount}번</p>
-      <div className="mb-5 flex w-full flex-col gap-1">
-        <Button
-          className="rounded-xl bg-bm-blue p-3 transition hover:brightness-90"
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
-          onClick={sendAudioFile}
-        >
-          만들기
-          <UploadAvailabilityArrowBox content={availabilityInform} />
-        </Button>
-        {errorMsg && <p className="text-red-500">{errorMsg}</p>}
+  function openConfirmModal() {
+    if (availabilityInform) return;
+    openModal();
+  }
 
+  return (
+    <>
+      <div className="flex h-full flex-col text-grayscale-100">
+        <UploadBox key={key} file={file} setFile={setFile} />
+        <p className="mb-5 mt-1 text-grayscale-400">AI 변환 남은 횟수 : {aiCount}번</p>
+        <div className="mb-5 flex w-full flex-col gap-1">
+          <Button
+            className="rounded-xl bg-bm-blue p-3 transition hover:brightness-90"
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+            onClick={openConfirmModal}
+          >
+            만들기
+            <UploadAvailabilityArrowBox content={availabilityInform} />
+          </Button>
+          {errorMsg && <p className="text-red-500">{errorMsg}</p>}
+        </div>
+        <div className="flex w-48 justify-end">
+          <img src={clovaX} alt="clovaX" />
+        </div>
+        {createPortal(
+          <ConfirmUploadModal open={open} closeModal={closeModal} onConfirm={sendAudioFile} />,
+          document.body,
+        )}
       </div>
-      {createPortal(
-        <ConfirmUploadModal open={open} closeModal={closeModal} onConfirm={sendAudioFile} />,
-        document.body,
-      )}
     </>
   );
 }
