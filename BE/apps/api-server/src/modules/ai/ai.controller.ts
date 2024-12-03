@@ -1,24 +1,35 @@
-import { Controller, Logger, Post, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Logger, Post, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { AiService } from './ai.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { AuthGuard } from '@nestjs/passport';
 import { User } from '../../decorators';
-import { ALLOW_AUDIO_FILE_FORMAT, MAX_FILE_SIZE } from 'apps/api-server/common/constant';
-import { FileValidationPipe } from '../../pipes';
+import { MAX_FILE_SIZE } from 'apps/api-server/common/constant';
+import { AudioFileValidationPipe } from '../../pipes';
+import { AudioUploadDto } from './dto/audio.upload.dto';
+import { AiDto } from './dto/ai.dto';
 
 @Controller('ai')
 export class AiController {
   private readonly logger = new Logger(AiController.name);
   constructor(private readonly aiService: AiService) {}
 
-  @Post('audio/:mindmapId')
+  @Post('audio')
   @UseGuards(AuthGuard('jwt'))
   @UseInterceptors(FileInterceptor('aiAudio', { limits: { fileSize: MAX_FILE_SIZE } }))
   async uploadAudioFile(
-    @User() user,
-    @UploadedFile(new FileValidationPipe(ALLOW_AUDIO_FILE_FORMAT)) audioFile: Express.Multer.File,
+    @UploadedFile(new AudioFileValidationPipe()) audioFile: Express.Multer.File,
+    @User() user: { id: number; email: string },
+    @Body() audioUploadDto: AudioUploadDto,
   ) {
-    console.log(user);
-    console.log(audioFile);
+    this.logger.log(`User ${user.id} uploaded audio file ${audioFile.originalname}`);
+    await this.aiService.requestClovaSpeech(audioFile, audioUploadDto);
+    return;
+  }
+
+  @Post('openai')
+  @UseGuards(AuthGuard('jwt'))
+  async requestOpenAi(@Body() aiDto: AiDto) {
+    await this.aiService.requestOpenAi(aiDto);
+    return;
   }
 }
