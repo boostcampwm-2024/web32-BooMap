@@ -59,6 +59,7 @@
 - ⚠️ [노드들의 충돌 감지 및 회피](https://luxurious-share-af6.notion.site/13a7725fa9ac80e8b96af725dbf70ba0?pvs=4)
 - 🚀 [충돌 방지의 렌더링 성능 최적화](https://luxurious-share-af6.notion.site/13d7725fa9ac800798f5f44af7c4939f?pvs=4)
 - 💾 [노드들의 이미지 다운로드하기](https://luxurious-share-af6.notion.site/1427725fa9ac8043a27ceffd0d387cdb?pvs=4)
+- 📍 [노드들이 겹치지 않게 펼치기](https://luxurious-share-af6.notion.site/782eba067f814852a11208f249996cdf?pvs=4)
 
 ---
 
@@ -76,12 +77,19 @@
 - 🖥️ [소켓을 연결했더니 캔버스가 마비된 건에 대하여..](https://luxurious-share-af6.notion.site/223e0029efef4945ae4073b3340324ad?pvs=4)
 - 😱 [노드의 텍스트을 삭제했는데 화면의 텍스트가 살아있는 것에 대하여…](https://luxurious-share-af6.notion.site/e0451420b8c946e3b2cb9c8086197d7a?pvs=4)
 
+
+---
+
+#### 마크다운 회의록 구현하기
+- 📝 [tiptap 에디터 도입하기](https://luxurious-share-af6.notion.site/tiptap-4f653362bcd34016a377fe4794b76455?pvs=4)
+
 ---
 
 #### 기타 고민과 도전들
 
 - 🔄 [canvas에서 Ctrl + z로 뒤로가기를 해보자](https://luxurious-share-af6.notion.site/canvas-Ctrl-z-1cf4b1e309814aea859ea9b27e3ec82b?pvs=4)
 - ⚙️ [이벤트 리스너 조절하기](https://luxurious-share-af6.notion.site/14a7725fa9ac8065b906fc9af6b94d1c?pvs=4)
+
 
 ---
 
@@ -93,8 +101,8 @@
 
 <br>
 
-### 💻 서버 아키텍처
-<img width="697" src="https://i.imgur.com/JbkxCKa.png">
+### 서버 아키텍처
+<img width="697" alt="image" src="https://i.imgur.com/JbkxCKa.png">
 
 
 
