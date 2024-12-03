@@ -2,7 +2,7 @@ import useGroupSelect from "@/hooks/useGroupSelect";
 import useHistoryState from "@/hooks/useHistoryState";
 import { Node, NodeData, SelectedNode } from "@/types/Node";
 import Konva from "konva";
-import { createContext, ReactNode, useContext, useEffect, useState } from "react";
+import { createContext, ReactNode, RefObject, useContext, useEffect, useRef, useState } from "react";
 import { deleteNodes } from "@/konva_mindmap/events/deleteNode";
 import useMindMapTitle from "@/hooks/useMindMapTitle";
 import useContent from "@/hooks/useContent";
@@ -12,6 +12,7 @@ import useAiCount, { AiCountHook } from "@/hooks/useAiCount";
 import useLoading, { MindMapLoadingHook } from "@/hooks/useLoading";
 
 export type NodeListContextType = {
+  stage: RefObject<Konva.Stage>;
   data: NodeData | null;
   selectedNode: SelectedNode | null;
   history: string[];
@@ -51,6 +52,7 @@ export default function NodeListProvider({ children }: { children: ReactNode }) 
   const { content, updateContent, initializeContent } = useContent();
   const { loadingStatus, updateLoadingStatus } = useLoading();
   const { selectedGroup, groupRelease, groupSelect } = useGroupSelect();
+  const stage = useRef<Konva.Stage>();
   const socket = useConnectionStore((state) => state.socket);
   const handleSocketEvent = useConnectionStore((state) => state.handleSocketEvent);
   const [mindMapId, setMindMapId] = useState("");
@@ -171,6 +173,7 @@ export default function NodeListProvider({ children }: { children: ReactNode }) 
         initializeAiCount,
         loadingStatus,
         updateMindMapId,
+        stage,
       }}
     >
       {children}
