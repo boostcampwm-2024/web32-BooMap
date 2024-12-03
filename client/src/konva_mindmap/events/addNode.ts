@@ -47,7 +47,7 @@ export function addNode(
   }
 
   if (selectedNode.nodeId === 0) {
-    useConnectionStore.getState().propagateError("노드가 선택되지 않았습니다.", "error");
+    useConnectionStore.getState().propagateError("노드가 선택되지 않았습니다", "error");
     return;
   }
 
@@ -55,11 +55,11 @@ export function addNode(
   const isCheckAllNodeCount = checkAllNodeCount(data);
 
   if (!isCheckNodeCount) {
-    useConnectionStore.getState().propagateError("한 노드당 최대 15개 생성 가능해요.", "error");
+    useConnectionStore.getState().propagateError("한 노드당 최대 15개 생성 가능해요", "error");
     return;
   }
   if (!isCheckAllNodeCount) {
-    useConnectionStore.getState().propagateError("노드는 최대 150개까지 생성 가능해요.", "error");
+    useConnectionStore.getState().propagateError("노드는 최대 150개까지 생성 가능해요", "error");
     return;
   }
 
