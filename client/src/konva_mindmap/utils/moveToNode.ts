@@ -13,7 +13,7 @@ export function moveToNextNode(
   const currentNode = data[nodeId];
 
   if (!currentNode) {
-    useConnectionStore.getState().propagateError("노드를 선택해주세요.", "error");
+    useConnectionStore.getState().propagateError("노드를 선택해주세요", "error");
     return;
   }
 
@@ -63,7 +63,7 @@ export function moveToPreviousNode(
   const parentNode = data[parentNodeId];
 
   if (!currentNode) {
-    useConnectionStore.getState().propagateError("노드를 선택해주세요.", "error");
+    useConnectionStore.getState().propagateError("노드를 선택해주세요", "error");
     return;
   }
 
