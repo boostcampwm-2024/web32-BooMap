@@ -51,12 +51,15 @@ instance.interceptors.response.use(
 
       if (error.response.status === 401) {
         if (!originalRequest._retry) {
-          originalRequest._retry = true;
-          const newAccessToken = await tokenRefresh();
-          useConnectionStore.getState().tokenRefresh(newAccessToken.accessToken);
-          originalRequest.headers["Authorization"] = `Bearer ${newAccessToken.accessToken}`;
-
-          return instance(originalRequest);
+          try {
+            originalRequest._retry = true;
+            const newAccessToken = await tokenRefresh();
+            useConnectionStore.getState().tokenRefresh(newAccessToken.accessToken);
+            originalRequest.headers["Authorization"] = `Bearer ${newAccessToken.accessToken}`;
+            return instance(originalRequest);
+          } catch (error) {
+            return Promise.reject(error);
+          }
         }
         await signOut();
         useConnectionStore.getState().logout();
