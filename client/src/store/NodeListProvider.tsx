@@ -60,7 +60,7 @@ export default function NodeListProvider({ children }: { children: ReactNode }) 
       updateLoadingStatus({ type: "socketLoading", status: true });
       setTimeout(() => {
         setData({ ...initialData.nodeData });
-        overrideHistory(JSON.stringify(initialData));
+        overrideHistory(JSON.stringify(initialData.nodeData));
         initializeTitle(initialData);
         initializeContent(initialData);
         initializeAiCount(initialData);
@@ -115,6 +115,7 @@ export default function NodeListProvider({ children }: { children: ReactNode }) 
 
   function overrideNodeData(newData) {
     setData(newData);
+    saveHistory(JSON.stringify(newData));
   }
 
   function undoData() {

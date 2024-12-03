@@ -23,7 +23,6 @@ export default function MindMapCanvas({ showMinutes, handleShowMinutes }) {
     redoData: redo,
     updateNode,
     overrideNodeData,
-    saveHistory,
     loadingStatus,
     deleteSelectedNodes,
     selectedNode,
@@ -44,7 +43,6 @@ export default function MindMapCanvas({ showMinutes, handleShowMinutes }) {
       payload: initializeNodePosition(data),
       callback: (response) => {
         if (response) {
-          saveHistory(JSON.stringify(data));
           overrideNodeData(response);
         }
       },
@@ -54,7 +52,7 @@ export default function MindMapCanvas({ showMinutes, handleShowMinutes }) {
   useWindowEventListener("keydown", (e) => {
     e.preventDefault();
     if (e.metaKey || e.ctrlKey) {
-      if (e.shiftKey && e.code) redo();
+      if (e.shiftKey && e.code === "KeyZ") redo();
       switch (e.code) {
         case "KeyZ":
           undo();
