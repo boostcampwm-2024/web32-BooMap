@@ -23,7 +23,7 @@ export default function EditableTextInput({
   focus,
   scale,
 }: EditableTextInputProps) {
-  const fontSize = 16 / scale;
+  const fontSize = scale >= 1 ? 16 : 16 / scale;
 
   return (
     <Html groupProps={{ offset: { x: offsetX, y: offsetY } }}>
