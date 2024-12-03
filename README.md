@@ -14,7 +14,7 @@
 
 **AI 기반 마인드맵 자동화 서비스**
 
-> 💡 _회의만 하면 마인드맵이 자동으로 만들어진다고? 히트다 히트!_
+> ✨ 당신의 아이디어를 연결하는 가장 스마트한 방법, BooMap! ✨
 >
 > - 회의록 기반으로 **마인드맵을 자동 생성**해요.
 > - 시각화된 캔버스에서 **수정과 삭제**가 가능해요.
@@ -51,6 +51,39 @@
 <br>
 
 ---
+### 🧐 두뇌풀가동팀의 두뇌풀가동
+#### 마인드맵 그려내기
+
+- 🛠️ [노드들을 끌고오게 하기](https://luxurious-share-af6.notion.site/1417725fa9ac8060944ec3769d9056a8?pvs=4)
+- 🎯 [드래그 시 노드를 따라가는 선 구현하기](https://luxurious-share-af6.notion.site/1377725fa9ac80b1af7fe19ee08a1110?pvs=4)
+- ⚠️ [노드들의 충돌 감지 및 회피](https://luxurious-share-af6.notion.site/13a7725fa9ac80e8b96af725dbf70ba0?pvs=4)
+- 🚀 [충돌 방지의 렌더링 성능 최적화](https://luxurious-share-af6.notion.site/13d7725fa9ac800798f5f44af7c4939f?pvs=4)
+- 💾 [노드들의 이미지 다운로드하기](https://luxurious-share-af6.notion.site/1427725fa9ac8043a27ceffd0d387cdb?pvs=4)
+
+---
+
+#### 회원과 비회원 전용 서비스 만들기
+
+- 🔑 [회원과 비회원의 소유권 관리하기](https://luxurious-share-af6.notion.site/14e7725fa9ac80eba893d0986a81e605?pvs=4)
+- 📡 [로그인 후 대시보드 API를 불러오도록 타이밍 조절하기](https://luxurious-share-af6.notion.site/14e7725fa9ac8070aff8cd82157ca616?pvs=4)
+
+---
+
+#### 동시편집 소켓 문제 해결하기
+- 🕒 [io 객체 생성 타이밍과 HTTP 요청](https://luxurious-share-af6.notion.site/io-HTTP-d4557100f7c24787b1e87f1c6318e66c?pvs=4)
+- 🤖 [aiResponse 이벤트 핸들러 중복 등록 문제](https://luxurious-share-af6.notion.site/aiResponse-1507725fa9ac80c4afebe1c7ec044638?pvs=4)
+- 🛠️ [소켓 에러 해결하기 총본집](https://luxurious-share-af6.notion.site/cb17937f9c05446e827aecd5fabb5df0?pvs=4)
+- 🖥️ [소켓을 연결했더니 캔버스가 마비된 건에 대하여..](https://luxurious-share-af6.notion.site/223e0029efef4945ae4073b3340324ad?pvs=4)
+- 😱 [노드의 텍스트을 삭제했는데 화면의 텍스트가 살아있는 것에 대하여…](https://luxurious-share-af6.notion.site/e0451420b8c946e3b2cb9c8086197d7a?pvs=4)
+
+---
+
+#### 기타 고민과 도전들
+
+- 🔄 [canvas에서 Ctrl + z로 뒤로가기를 해보자](https://luxurious-share-af6.notion.site/canvas-Ctrl-z-1cf4b1e309814aea859ea9b27e3ec82b?pvs=4)
+- ⚙️ [이벤트 리스너 조절하기](https://luxurious-share-af6.notion.site/14a7725fa9ac8065b906fc9af6b94d1c?pvs=4)
+
+---
 
 ### 🛠️ 기술스택
 
@@ -60,13 +93,17 @@
 
 <br>
 
+### 💻 서버 아키텍처
+<img width="697" src="https://i.imgur.com/JbkxCKa.png">
+
+
+
 ---
 
 ### 🔗 Links
 
-- [TEAM NOTION](https://luxurious-share-af6.notion.site/BOOMAP-1287725fa9ac80dd87d9c5fbad711b3d?pvs=4)
-- [Wiki](https://github.com/boostcampwm-2024/web32-BooMap/wiki)
+[![BOOMAP](https://img.shields.io/badge/BOOMAP-0A84FF?style=for-the-badge&logo=googlegemini&logoColor=white)](https://boomap.site)  </br>
+[![TEAM NOTION](https://img.shields.io/badge/TEAM%20NOTION-0078D7?style=for-the-badge&logo=notion&logoColor=white)](https://luxurious-share-af6.notion.site/BOOMAP-1287725fa9ac80dd87d9c5fbad711b3d?pvs=4) </br>
+[![Wiki](https://img.shields.io/badge/Wiki-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/boostcampwm-2024/web32-BooMap/wiki) </br>
 
----
 
-> 당신의 아이디어를 연결하는 가장 스마트한 방법, BooMap! ✨
