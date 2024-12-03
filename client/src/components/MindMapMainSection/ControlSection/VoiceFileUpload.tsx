@@ -19,6 +19,7 @@ export default function VoiceFileUpload() {
   const { aiCount, updateLoadingStatus } = useNodeListContext();
   const handleSocketEvent = useConnectionStore((state) => state.handleSocketEvent);
   const propagateError = useConnectionStore((state) => state.propagateError);
+  const [key, setKey] = useState(0);
 
   function fileValidation(file) {
     if (!file) {
@@ -33,13 +34,12 @@ export default function VoiceFileUpload() {
   }
 
   async function sendAudioFile() {
+    if (availabilityInform) return;
     if (!fileValidation(file)) return;
     updateErrorMsg("");
     handleSocketEvent({ actionType: "audioAiRequest" });
-
     try {
       const mindMapId = await getMindMapByConnectionId(connectionId);
-      console.log(mindMapId);
       const formData = audioFormData(file, mindMapId, connectionId);
       await AudioAiConvert(formData);
     } catch (error) {
@@ -47,12 +47,13 @@ export default function VoiceFileUpload() {
     } finally {
       updateLoadingStatus({ type: "aiPending", status: false });
       setFile(null);
+      setKey((prev) => prev + 1);
     }
   }
 
   return (
     <div className="flex h-full flex-col text-grayscale-100">
-      <UploadBox file={file} setFile={setFile} />
+      <UploadBox key={key} file={file} setFile={setFile} />
       <p className="mb-5 mt-1 text-grayscale-400">AI 변환 남은 횟수 : {aiCount}번</p>
       <div className="mb-5 flex w-full flex-col gap-1">
         <Button
