@@ -24,7 +24,7 @@ import useWindowEventListener from "@/hooks/useWindowEventListener";
 
 export default function MindMapNode({ data, parentNode, node, depth, dragmode, scale }: NodeProps) {
   const nodeRef = useRef<Konva.Group>(null);
-  const { saveHistory, updateNode, selectNode, selectedNode, selectedGroup, overrideNodeData, groupRelease } =
+  const { saveHistory, updateNode, selectNode, selectedNode, selectedGroup, setData, overrideNodeData, groupRelease } =
     useNodeListContext();
   const handleSocketEvent = useConnectionStore.getState().handleSocketEvent;
   const [isEditing, setIsEditing] = useState(false);
@@ -82,7 +82,7 @@ export default function MindMapNode({ data, parentNode, node, depth, dragmode, s
 
     if (selectedGroup.length) {
       const groupMove = getMovedNodesLocation(data, selectedGroup, node, dx, dy, currentPos);
-      overrideNodeData(groupMove);
+      setData(groupMove);
       return;
     }
 
