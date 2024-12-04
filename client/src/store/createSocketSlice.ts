@@ -106,7 +106,7 @@ export const createSocketSlice: StateCreator<ConnectionStore, [], [], SocketSlic
       get().connectSocket(connectionId);
       return connectionId;
     } catch (error) {
-      console.error(error);
+      throw error;
     }
   },
 

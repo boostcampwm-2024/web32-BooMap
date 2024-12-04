@@ -97,6 +97,7 @@ export default function NodeListProvider({ children }: { children: ReactNode }) 
         payload: initializedNodes,
         callback: (response) => {
           overrideNodeData(response);
+          overrideHistory(JSON.stringify(response));
         },
       });
     });
