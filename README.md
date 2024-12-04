@@ -1,12 +1,11 @@
 # 🗺 **BooMap**
 
 <img width="1722" alt="스크린샷 2024-12-02 오전 2 11 50" src="https://github.com/user-attachments/assets/43132cc1-bad7-482b-885f-b8d5e3a01103">
-
-![10](https://github.com/user-attachments/assets/ec375304-8a44-41d4-97c4-8f6a8688d576)
-![11](https://github.com/user-attachments/assets/cee80201-0d26-40e5-9e1f-0ab1fc5edae3)
-![12](https://github.com/user-attachments/assets/0402b25c-aa95-4296-9a0c-e431626e8312)
-![13](https://github.com/user-attachments/assets/f60e5d7a-7ab1-4449-90a7-df186ba66d2e)
-![14](https://github.com/user-attachments/assets/a318b955-ad4b-457f-b1c4-03ce4c6ccb2f)
+<img src="https://github.com/user-attachments/assets/616dddc9-ef55-4674-ae37-40829e168ea1">
+<img src="https://github.com/user-attachments/assets/cee80201-0d26-40e5-9e1f-0ab1fc5edae3">
+<img src="https://i.imgur.com/CXmg6H0.gif" >
+<img src="https://github.com/user-attachments/assets/f60e5d7a-7ab1-4449-90a7-df186ba66d2e">
+<img src="https://github.com/user-attachments/assets/a318b955-ad4b-457f-b1c4-03ce4c6ccb2f">
 
 ---
 
