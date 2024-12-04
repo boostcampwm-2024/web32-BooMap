@@ -3,16 +3,24 @@ import Profile from "@/components/MindMapHeader/Profile";
 import { useNodeListContext } from "@/store/NodeListProvider";
 import { useConnectionStore } from "@/store/useConnectionStore";
 import { Input } from "@headlessui/react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FaPencilAlt } from "react-icons/fa";
 
 export default function MindMapHeader() {
   const { title, updateTitle } = useNodeListContext();
   const originalContent = title;
+  const inputRef = useRef<HTMLInputElement | null>(null);
   const [editMode, setEditMode] = useState(false);
   const handleSocketEvent = useConnectionStore((state) => state.handleSocketEvent);
   const role = useConnectionStore((state) => state.currentRole);
   const currentJobStatus = useConnectionStore((state) => state.currentJobStatus);
+
+  useEffect(() => {
+    if (editMode && inputRef.current) {
+      inputRef.current.focus();
+      inputRef.current.select();
+    }
+  }, [editMode]);
 
   function handleInputBlur() {
     if (!title.length) {
@@ -48,6 +56,7 @@ export default function MindMapHeader() {
       <MindMapHeaderButtons />
       {editMode ? (
         <Input
+          ref={inputRef}
           className="flex w-80 items-center bg-transparent text-center"
           value={title}
           onChange={(e) => updateTitle(e.target.value)}

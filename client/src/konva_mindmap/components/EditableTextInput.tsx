@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import { Html } from "react-konva-utils";
 
 interface EditableTextInputProps {
@@ -23,11 +24,19 @@ export default function EditableTextInput({
   focus,
   scale,
 }: EditableTextInputProps) {
+  const inputRef = useRef<HTMLInputElement | null>(null);
   const fontSize = scale >= 1 ? 16 : 16 / scale;
+
+  useEffect(() => {
+    if (inputRef.current && focus) {
+      inputRef.current.select();
+    }
+  }, [focus]);
 
   return (
     <Html groupProps={{ offset: { x: offsetX, y: offsetY } }}>
       <input
+        ref={inputRef}
         autoFocus={focus}
         value={value}
         onChange={onChange}
