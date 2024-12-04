@@ -47,6 +47,13 @@ export default function NodeItem({ node, parentNodeId, open, handleAccordion, op
     if (isSelected) openAccordion();
   }, [isSelected]);
 
+  useEffect(() => {
+    if (isEditing && inputRef.current) {
+      inputRef.current.focus();
+      inputRef.current.select();
+    }
+  }, [isEditing]);
+
   function handleAddButton() {
     selectNode({ nodeId: node.id, parentNodeId: parentNodeId });
     addNode(data, { nodeId: node.id, parentNodeId: parentNodeId }, overrideNodeData, (newNodeId) => {
