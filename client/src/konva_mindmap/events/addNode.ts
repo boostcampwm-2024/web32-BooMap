@@ -63,7 +63,10 @@ export function addNode(
     return;
   }
 
-  if (!selectedNode.nodeId || data[selectedNode.nodeId].depth === NODE_DEPTH_LIMIT) return;
+  if (!selectedNode.nodeId || data[selectedNode.nodeId].depth === NODE_DEPTH_LIMIT) {
+    useConnectionStore.getState().propagateError("최대 깊이 5까지만 생성할 수 있어요", "error");
+    return;
+  }
 
   const newNodeId = parseInt(Object.keys(data)[Object.keys(data).length - 1]) + 1;
   // 소켓으로 서버에 데이터를 전송할 때도 사용하기 위해 변수로 따로 빼서 관리
@@ -71,7 +74,7 @@ export function addNode(
     id: newNodeId,
     keyword: "제목없음",
     depth: data[selectedNode.nodeId].depth + 1,
-    location: getNewNodePosition(data[selectedNode.nodeId].children, data, data[selectedNode.nodeId]),
+    location: getNewNodePosition(data, selectedNode.nodeId),
     children: [],
   };
 

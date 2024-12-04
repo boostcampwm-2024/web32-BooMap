@@ -53,7 +53,7 @@ export default function MindMapHeader() {
           onChange={(e) => updateTitle(e.target.value)}
           onBlur={handleInputBlur}
           onKeyDown={handleInputKeyDown}
-          maxLength={32}
+          maxLength={16}
           autoFocus
         />
       ) : (

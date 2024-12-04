@@ -52,32 +52,44 @@ export default function initializeNodePosition(data: NodeData) {
     const depth = node.depth;
     const radius = NODE_RADIUS(depth);
 
-    if (depth === 2) {
-      const angle = (360 / length) * index;
-      const radianAngle = (Math.PI / 180) * angle;
-      xPos += radius * Math.cos(radianAngle) * 8;
-      yPos += radius * Math.sin(radianAngle) * 8;
-    } else if (depth === 3) {
-      const divideAngle = 180 / (length + 1);
-      const adjustedAngle = divideAngle * (index + 1) - 90;
-      const { x, y } = calculateVector(rootLocation, { x: xPos, y: yPos }, adjustedAngle, 360);
+    const applyVectorAdjustment = (origin: { x: number; y: number }, angle: number, distance: number) => {
+      const { x, y } = calculateVector(origin, { x: xPos, y: yPos }, angle, distance);
       xPos += x;
       yPos += y;
-    } else if (depth === 4) {
-      const divideAngle = 180 / (length + 3);
-      const adjustedAngle = divideAngle * (index + 2) - 90;
-      const { x, y } = calculateVector(rootLocation, { x: xPos, y: yPos }, adjustedAngle, 360);
-      xPos += x;
-      yPos += y;
-    } else if (depth === 5) {
-      const ancestor = findAncestor(data, nodeId, 2);
-      const divideAngle = 180 / (length + 1);
-      const adjustedAngle = divideAngle * (index + 1) - 90;
-      const calculatedDistance = Math.sqrt((2 * radius * radius) / (1 - Math.cos((Math.PI / 180) * divideAngle))) * 1.8;
-      const maxDistance = Math.max(calculatedDistance, 200);
-      const { x, y } = calculateVector(ancestor.location, { x: xPos, y: yPos }, adjustedAngle, maxDistance);
-      xPos += x;
-      yPos += y;
+    };
+
+    switch (depth) {
+      case 2: {
+        const angle = (360 / length) * index;
+        const radianAngle = (Math.PI / 180) * angle;
+        xPos += radius * Math.cos(radianAngle) * 8;
+        yPos += radius * Math.sin(radianAngle) * 8;
+        break;
+      }
+      case 3: {
+        const divideAngle = 180 / (length + 1);
+        const adjustedAngle = divideAngle * (index + 1) - 90;
+        applyVectorAdjustment(rootLocation, adjustedAngle, 360);
+        break;
+      }
+      case 4: {
+        const divideAngle = 180 / (length + 3);
+        const adjustedAngle = divideAngle * (index + 2) - 90;
+        applyVectorAdjustment(rootLocation, adjustedAngle, 360);
+        break;
+      }
+      case 5: {
+        const ancestor = findAncestor(data, nodeId, 2);
+        const divideAngle = 180 / (length + 1);
+        const adjustedAngle = divideAngle * (index + 1) - 90;
+        const calculatedDistance =
+          Math.sqrt((2 * radius * radius) / (1 - Math.cos((Math.PI / 180) * divideAngle))) * 1.8;
+        const maxDistance = Math.max(calculatedDistance, 200);
+        applyVectorAdjustment(ancestor.location, adjustedAngle, maxDistance);
+        break;
+      }
+      default:
+        break;
     }
     node.location.x = xPos;
     node.location.y = yPos;

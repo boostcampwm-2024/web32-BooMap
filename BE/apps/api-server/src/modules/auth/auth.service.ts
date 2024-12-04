@@ -1,5 +1,5 @@
 import { RedisService } from '@liaoliaots/nestjs-redis';
-import { Injectable, Logger } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '@app/entity';
 import Redis from 'ioredis';
@@ -29,7 +29,7 @@ export class AuthService {
 
   generateRefreshToken(user: User) {
     const payload = { id: user.id, email: user.email };
-    const refreshToken = this.jwtService.sign(payload, { expiresIn: '3d' });
+    const refreshToken = this.jwtService.sign(payload, { expiresIn: '14d' });
     return refreshToken;
   }
 
@@ -37,12 +37,12 @@ export class AuthService {
     try {
       const isBlacklisted = await this.GeneralRedis.get(refreshToken);
       if (isBlacklisted === 'true') {
-        throw new Error('다시 로그인해주세요.');
+        throw new UnauthorizedException('다시 로그인해주세요.');
       }
       this.jwtService.verify(refreshToken);
       const decoded = this.jwtService.decode(refreshToken);
       if (!decoded || typeof decoded !== 'object') {
-        throw new Error('Invalid token format');
+        throw new BadRequestException('유효하지 않은 토큰입니다.');
       }
 
       const payload: tokenPayload = {

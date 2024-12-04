@@ -87,14 +87,13 @@ export const createSocketSlice: StateCreator<ConnectionStore, [], [], SocketSlic
   handleSocketEvent: ({ actionType, payload, callback }: HandleSocketEventProps) => {
     const socket = get().socket;
     if (!socket) return;
-
-    socket.off(actionType);
-    socket.emit(actionType, payload);
-
-    socket.on(actionType, (response) => {
+    const handler = (response) => {
       if (response && callback) callback(response);
       set({ currentJobStatus: "success" });
-    });
+      socket.off(actionType, handler);
+    };
+    socket.on(actionType, handler);
+    socket.emit(actionType, payload);
   },
 
   handleConnection: async () => {
