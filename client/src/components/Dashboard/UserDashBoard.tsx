@@ -35,8 +35,8 @@ export default function UserDashBoard() {
       <header className="flex items-center justify-between px-3 py-2 font-bold">
         <div className="min-w-72 pl-2">제목</div>
         <div className="min-w-60 pl-8">키워드</div>
-        <div className="min-w-24 pl-4">소유자</div>
-        <div className="min-w-40 pl-1">생성 일자</div>
+        <div className="w-44 pl-4">소유자</div>
+        <div className="min-w-40 pl-4">생성 일자</div>
       </header>
       <div className="no-scrollbar h-[calc(100%-40px)] overflow-y-scroll border-b-[1px] border-t-[1px] border-grayscale-500">
         {filteredData.map((info, i) => (
