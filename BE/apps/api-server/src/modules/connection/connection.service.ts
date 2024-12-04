@@ -43,6 +43,7 @@ export class ConnectionService {
 
   async setConnection(mindmapId: number, userId: number) {
     const role = await this.userService.getRole(userId, mindmapId);
+    this.logger.log(`role: ${role}`);
     if (role === undefined) {
       throw new ForbiddenException('권한이 없습니다.');
     }
