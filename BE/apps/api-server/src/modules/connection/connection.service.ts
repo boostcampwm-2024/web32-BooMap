@@ -25,7 +25,11 @@ export class ConnectionService {
 
   async createGuestConnection() {
     const connectionId = uuidv4();
-    await this.GeneralRedis.hset(connectionId, { type: 'guest' });
+    await Promise.all([
+      this.GeneralRedis.hset(connectionId, { type: 'guest', aiCount: 0, title: '제목없음' }),
+      this.GeneralRedis.set(`mindmapState:${connectionId}`, JSON.stringify({})),
+      this.GeneralRedis.set(`content:${connectionId}`, ''),
+    ]);
     return { connectionId, role: 'owner' };
   }
 
