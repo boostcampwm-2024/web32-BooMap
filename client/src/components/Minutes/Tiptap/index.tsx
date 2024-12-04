@@ -49,9 +49,6 @@ export default function Tiptap() {
         handleSocketEvent({
           actionType: "updateContent",
           payload: { content: editor.getHTML() },
-          callback: () => {
-            updateContent(editor.getHTML());
-          },
         }),
       1500,
     );
