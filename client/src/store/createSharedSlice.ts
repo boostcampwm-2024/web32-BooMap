@@ -20,6 +20,7 @@ export const createSharedSlice: StateCreator<ConnectionStore, [], [], SharedSlic
       get().token
         ? get().addOwnedMindMap(newMindMapConnectionId)
         : get().addOwnedMindMapForGuest(newMindMapConnectionId);
+      get().connectSocket(newMindMapConnectionId);
       navigate(`/mindmap/${newMindMapConnectionId}?mode=${targetMode}`);
     } catch (error) {
       throw error;

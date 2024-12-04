@@ -103,7 +103,6 @@ export const createSocketSlice: StateCreator<ConnectionStore, [], [], SocketSlic
       if (socket) socket.disconnect();
       const response = await createMindmap();
       const connectionId = response.data.connectionId;
-      get().connectSocket(connectionId);
       return connectionId;
     } catch (error) {
       throw error;
