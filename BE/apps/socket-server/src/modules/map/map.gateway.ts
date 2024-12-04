@@ -70,12 +70,7 @@ export class MapGateway implements OnGatewayConnection, OnGatewayDisconnect {
   async handleDisconnect(@ConnectedSocket() client: Socket) {
     this.logging(client, '사용자 연결 해제');
     const connectionId = client.data.connectionId;
-    const roomSize = this.server.sockets.adapter.rooms.get(connectionId)?.size;
-    this.logger.log(`${connectionId} 방 남은 인원 수 : ${roomSize}`);
-    client.leave(connectionId);
-    if (!roomSize) {
-      await this.mapService.saveData(connectionId);
-    }
+    await this.mapService.saveData(connectionId);
   }
 
   @SubscribeMessage('createNode')
