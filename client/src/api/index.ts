@@ -58,6 +58,8 @@ instance.interceptors.response.use(
             originalRequest.headers["Authorization"] = `Bearer ${newAccessToken.accessToken}`;
             return instance(originalRequest);
           } catch (error) {
+            await signOut();
+            useConnectionStore.getState().logout();
             return Promise.reject(error);
           }
         }
