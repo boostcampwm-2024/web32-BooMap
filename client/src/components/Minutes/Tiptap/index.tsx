@@ -27,7 +27,7 @@ export default function Tiptap() {
       Indent,
       Placeholder.configure({
         emptyEditorClass: "is-editor-empty",
-        placeholder: "회의록을 입력해주세요...",
+        placeholder: "회의록을 입력해주세요",
       }),
       TextAlign.configure({
         types: ["heading", "paragraph"],
