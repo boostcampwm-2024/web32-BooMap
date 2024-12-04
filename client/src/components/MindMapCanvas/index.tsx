@@ -52,15 +52,14 @@ export default function MindMapCanvas({ showMinutes, handleShowMinutes }) {
   useWindowEventListener("keydown", (e) => {
     e.preventDefault();
     if (e.metaKey || e.ctrlKey) {
-      if (e.shiftKey && e.code === "KeyZ") redo();
-      switch (e.code) {
-        case "KeyZ":
-          undo();
-          break;
-        case "KeyR":
-          const url = window.location;
-          location.href = url.pathname + url.search;
-          break;
+      if (e.shiftKey && e.code === "KeyZ") {
+        redo();
+      } else if (e.code === "KeyZ") {
+        undo();
+      }
+      if (e.code === "KeyR") {
+        const url = window.location;
+        location.href = url.pathname + url.search;
       }
     }
 
