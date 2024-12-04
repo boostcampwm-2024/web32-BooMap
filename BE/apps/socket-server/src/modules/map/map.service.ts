@@ -216,4 +216,17 @@ export class MapService {
       throw new InvalidConnectionIdException();
     }
   }
+
+  async setExpireMindmapData(connectionId: string) {
+    try {
+      await Promise.all([
+        this.redis.expire(connectionId, 60 * 60 * 24 * 3),
+        this.redis.expire(`mindmapState:${connectionId}`, 60 * 60 * 24 * 3),
+        this.redis.expire(`content:${connectionId}`, 60 * 60 * 24 * 3),
+      ]);
+    } catch (error) {
+      this.logger.error('마인드맵 데이터 만료 설정 실패' + error);
+      throw new DatabaseException('마인드맵 데이터 만료 설정 실패');
+    }
+  }
 }
