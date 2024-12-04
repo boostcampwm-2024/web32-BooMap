@@ -46,7 +46,7 @@ export default function ToolMenu({ dimensions, zoomIn, zoomOut, dragmode, setDra
   }
 
   return (
-    <div className="absolute bottom-2 left-1/2 flex -translate-x-2/4 -translate-y-2/4 items-center justify-center rounded-full border bg-white px-6 py-2 shadow-md">
+    <div className="absolute bottom-2 left-1/2 z-20 flex -translate-x-2/4 -translate-y-2/4 items-center justify-center rounded-full border bg-white px-6 py-2 shadow-md">
       <div className="flex items-center gap-3">
         <Button
           className={`group flex h-8 w-8 items-center justify-center rounded-md p-1 hover:bg-blue-300 ${dragmode ? "bg-blue-400" : ""}`}

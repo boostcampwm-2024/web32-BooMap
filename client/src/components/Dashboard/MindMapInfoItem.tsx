@@ -55,11 +55,11 @@ export default function MindMapInfoItem({ data, index }: MindMapInfoItemProps) {
             </span>
           ))}
         </div>
-        <div className="flex min-w-24 items-center justify-center gap-2">
+        <div className="flex w-44 items-center gap-2 pl-4">
           <FaUserCircle className="h-6 w-6" />
-          <div>{data.ownerName}</div>
+          <div className="w-32 overflow-hidden text-ellipsis whitespace-nowrap">{data.ownerName}</div>
         </div>
-        <div className="flex min-w-40 justify-between">
+        <div className="flex min-w-40 justify-between pl-4">
           <div>{extractDate(new Date(data.createDate))}</div>
           {ownerCheck ? (
             <Button
