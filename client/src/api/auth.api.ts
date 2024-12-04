@@ -30,16 +30,15 @@ instanceForAuth.interceptors.response.use(
         return Promise.reject(error);
       }
 
-      if (error.response.status === 401) {
-        try {
-          await signOut();
-        } catch (error) {
-          logOnDev(`🚨 [API ERROR] ${error.message}`);
-        } finally {
-          useConnectionStore.getState().logout();
-          location.href = "/";
-        }
+      try {
+        await signOut();
+      } catch (error) {
+        logOnDev(`🚨 [API ERROR] ${error.message}`);
+      } finally {
+        useConnectionStore.getState().logout();
+        location.href = "/";
       }
+
       return Promise.reject(error);
     }
     logOnDev(`🚨 [API ERROR] ${error.message}`);
