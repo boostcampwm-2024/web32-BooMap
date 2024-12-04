@@ -90,7 +90,7 @@ export default function NodeListProvider({ children }: { children: ReactNode }) 
         });
       },
       updateNode: (updatedNodeData) => {
-        overrideNodeData(updatedNodeData);
+        setData(updatedNodeData);
       },
       updateTitle: (updatedTitle) => {
         updateTitle(updatedTitle.title);
