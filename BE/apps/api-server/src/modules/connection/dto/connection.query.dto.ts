@@ -9,6 +9,5 @@ export class ConnectionQueryDto {
   @Transform(({ value, obj }) => {
     return obj.type === 'mindmap' ? Number(value) : value;
   })
-  @IsString()
   id: string | number;
 }
