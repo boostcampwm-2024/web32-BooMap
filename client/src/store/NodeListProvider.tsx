@@ -55,6 +55,7 @@ export default function NodeListProvider({ children }: { children: ReactNode }) 
   const stage = useRef<Konva.Stage>();
   const socket = useConnectionStore((state) => state.socket);
   const handleSocketEvent = useConnectionStore((state) => state.handleSocketEvent);
+  const currentRole = useConnectionStore((state) => state.currentRole);
 
   useEffect(() => {
     if (!socket) return;
@@ -97,7 +98,9 @@ export default function NodeListProvider({ children }: { children: ReactNode }) 
         updateTitle(updatedTitle.title);
       },
       updateContent: (updatedContent) => {
-        updateContent(updatedContent.content);
+        if (currentRole === "editor") {
+          updateContent(updatedContent.content);
+        }
       },
     };
 
