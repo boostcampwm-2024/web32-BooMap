@@ -56,50 +56,52 @@ export default function NodeListProvider({ children }: { children: ReactNode }) 
   const handleSocketEvent = useConnectionStore((state) => state.handleSocketEvent);
 
   useEffect(() => {
-    socket?.on("joinRoom", (initialData) => {
-      updateLoadingStatus({ type: "socketLoading", status: true });
-      setTimeout(() => {
-        setData({ ...initialData.nodeData });
-        overrideHistory(JSON.stringify(initialData.nodeData));
-        initializeTitle(initialData);
-        initializeContent(initialData);
-        initializeAiCount(initialData);
-        updateLoadingStatus({ type: "socketLoading", status: false });
-      }, 0);
-    });
+    if (!socket) return;
 
-    socket?.on("updateNode", (updatedNodeData) => {
-      overrideNodeData(updatedNodeData);
-    });
+    const eventHandlers = {
+      joinRoom: (initialData) => {
+        updateLoadingStatus({ type: "socketLoading", status: true });
+        setTimeout(() => {
+          setData({ ...initialData.nodeData });
+          overrideHistory(JSON.stringify(initialData.nodeData));
+          initializeTitle(initialData);
+          initializeContent(initialData);
+          initializeAiCount(initialData);
+          updateLoadingStatus({ type: "socketLoading", status: false });
+        }, 0);
+      },
+      disconnect: () => {
+        setData({});
+        overrideHistory(JSON.stringify({}));
+      },
+      aiPending: (response) => {
+        updateLoadingStatus({ type: "aiPending", status: response.status });
+      },
+      aiResponse: (response) => {
+        decreaseAiCount();
+        const initializedNodes = initializeNodePosition(response);
+        handleSocketEvent({
+          actionType: "updateNode",
+          payload: initializedNodes,
+          callback: (response) => {
+            overrideNodeData(response);
+            overrideHistory(JSON.stringify(response));
+          },
+        });
+      },
+      updateNode: (updatedNodeData) => {
+        overrideNodeData(updatedNodeData);
+      },
+      updateTitle: (updatedTitle) => {
+        updateTitle(updatedTitle.title);
+      },
+      updateContent: (updatedContent) => {
+        updateContent(updatedContent.content);
+      },
+    };
 
-    socket?.on("updateTitle", (updatedTitle) => {
-      updateTitle(updatedTitle.title);
-    });
-
-    socket?.on("updateContent", (updatedContent) => {
-      updateContent(updatedContent.content);
-    });
-
-    socket?.on("disconnect", () => {
-      setData({});
-      overrideHistory(JSON.stringify({}));
-    });
-
-    socket?.on("aiPending", (response) => {
-      updateLoadingStatus({ type: "aiPending", status: response.status });
-    });
-
-    socket?.on("aiResponse", (response) => {
-      decreaseAiCount();
-      const initializedNodes = initializeNodePosition(response);
-      handleSocketEvent({
-        actionType: "updateNode",
-        payload: initializedNodes,
-        callback: (response) => {
-          overrideNodeData(response);
-          overrideHistory(JSON.stringify(response));
-        },
-      });
+    Object.entries(eventHandlers).forEach(([event, handler]) => {
+      socket.on(event, handler);
     });
 
     return () => {
