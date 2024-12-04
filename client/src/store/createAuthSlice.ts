@@ -22,6 +22,7 @@ export const createAuthSlice: StateCreator<ConnectionStore, [], [], AuthSlice> =
   logout: () => {
     set({ email: null, name: null, token: "" });
     get().resetOwnedMindMap();
+    location.href = "/";
   },
 
   setUser: (email: string, name: string, id: number) => {
