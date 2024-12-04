@@ -14,6 +14,7 @@ import useLoading, { MindMapLoadingHook } from "@/hooks/useLoading";
 export type NodeListContextType = {
   stage: RefObject<Konva.Stage>;
   data: NodeData | null;
+  setData: React.Dispatch<React.SetStateAction<NodeData | null>>;
   selectedNode: SelectedNode | null;
   history: string[];
   updateNode: (id: number, node: Partial<Node>) => void;
@@ -151,6 +152,7 @@ export default function NodeListProvider({ children }: { children: ReactNode }) 
     <NodeListContext.Provider
       value={{
         data,
+        setData,
         updateNode,
         overrideNodeData,
         undoData,
