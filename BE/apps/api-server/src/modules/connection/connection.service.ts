@@ -25,7 +25,11 @@ export class ConnectionService {
 
   async createGuestConnection() {
     const connectionId = uuidv4();
-    await this.GeneralRedis.hset(connectionId, { type: 'guest' });
+    await Promise.all([
+      this.GeneralRedis.hset(connectionId, { type: 'guest', aiCount: 0, title: '제목없음' }),
+      this.GeneralRedis.set(`mindmapState:${connectionId}`, JSON.stringify({})),
+      this.GeneralRedis.set(`content:${connectionId}`, ''),
+    ]);
     return { connectionId, role: 'owner' };
   }
 
@@ -39,7 +43,8 @@ export class ConnectionService {
 
   async setConnection(mindmapId: number, userId: number) {
     const role = await this.userService.getRole(userId, mindmapId);
-    if (!role) {
+    this.logger.log(`role: ${role}`);
+    if (role === undefined) {
       throw new ForbiddenException('권한이 없습니다.');
     }
 

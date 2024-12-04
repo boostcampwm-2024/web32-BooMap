@@ -1,4 +1,4 @@
-import { Controller, Get, UseGuards } from '@nestjs/common';
+import { Controller, Get, UnauthorizedException, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
 import { AuthGuard } from '@nestjs/passport';
 import { User } from '../../decorators';
@@ -10,6 +10,10 @@ export class UserController {
   @Get('info')
   @UseGuards(AuthGuard('jwt'))
   async getUserInfo(@User() user) {
-    return await this.userService.getUserInfo(user.id);
+    try {
+      return await this.userService.getUserInfo(user.id);
+    } catch {
+      throw new UnauthorizedException();
+    }
   }
 }
