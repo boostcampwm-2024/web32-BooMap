@@ -12,6 +12,11 @@ async function bootstrap() {
   app.useGlobalFilters(new WsExceptionFilter());
 
   const port = configService.get<number>('SOCKET_PORT');
+  app.enableCors({
+    origin: ['https://boomap.site', 'https://www.boomap.site'],
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    credentials: true,
+  });
   await app.listen(port);
 }
 bootstrap();
