@@ -1,4 +1,3 @@
-import profile from "@/assets/profile.png";
 import useModal from "@/hooks/useModal";
 import { Button } from "@headlessui/react";
 import extractDate from "@/utils/extractDate";
@@ -13,9 +12,10 @@ import { useConnectionStore } from "@/store/useConnectionStore";
 interface MindMapInfoItemProps {
   data: DashBoard;
   index: number;
+  onDelete: (id: number) => void;
 }
 
-export default function MindMapInfoItem({ data, index }: MindMapInfoItemProps) {
+export default function MindMapInfoItem({ data, index, onDelete }: MindMapInfoItemProps) {
   const { open, openModal, closeModal } = useModal();
   const keywordData = data.keyword.slice(0, 4);
   const navigate = useNavigate();
@@ -31,6 +31,7 @@ export default function MindMapInfoItem({ data, index }: MindMapInfoItemProps) {
   function handleDelete() {
     mutation.mutate();
     closeModal();
+    onDelete(data.id);
   }
 
   function navigateToMindMap() {
