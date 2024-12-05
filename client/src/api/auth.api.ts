@@ -25,19 +25,8 @@ instanceForAuth.interceptors.response.use(
   async (error: AxiosError | Error) => {
     if (axios.isAxiosError(error)) {
       logOnDev(`🚨 [API ERROR] ${error.message}`);
-
-      if (!error.response) {
-        return Promise.reject(error);
-      }
-
-      try {
-        await signOut();
-      } catch (error) {
-        logOnDev(`🚨 [API ERROR] ${error.message}`);
-      } finally {
-        useConnectionStore.getState().logout();
-        location.href = "/";
-      }
+      useConnectionStore.getState().logout();
+      location.href = "/";
 
       return Promise.reject(error);
     }
