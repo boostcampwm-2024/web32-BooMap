@@ -81,6 +81,7 @@ export default function MindMapCanvas({ showMinutes, handleShowMinutes }) {
       case "Escape":
         groupRelease();
         selectNode({});
+        break;
       case "Tab":
         if (e.shiftKey) {
           moveToPreviousNode(data, selectedNode, selectNode);

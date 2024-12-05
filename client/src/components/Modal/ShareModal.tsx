@@ -10,7 +10,6 @@ interface ShareModalProps {
 
 export default function ShareModal({ open, closeModal }: ShareModalProps) {
   const [copySuccess, setCopySuccess] = useState(false);
-
   const currentUrl = window.location.href;
 
   async function copyLink() {
@@ -23,15 +22,21 @@ export default function ShareModal({ open, closeModal }: ShareModalProps) {
     setTimeout(() => setCopySuccess(false), 2000);
   }
 
+  function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
+    e.stopPropagation();
+  }
+
   return (
     <Modal open={open} closeModal={closeModal}>
       <div className="py-4">
         <p className="mb-3 text-lg font-bold text-black">협업 링크</p>
         <Input
           type="text"
-          value={currentUrl}
           readOnly
-          className="pointer-events-none h-10 w-full truncate rounded-lg bg-grayscale-200 px-3 py-2 text-grayscale-500"
+          value={currentUrl}
+          onClick={(e) => e.currentTarget.select()}
+          onKeyDown={handleKeyDown}
+          className="h-10 w-full truncate rounded-lg bg-grayscale-200 px-3 py-2 text-grayscale-500 focus:border-transparent focus:outline-none"
         />
         <Button
           onClick={copyLink}
