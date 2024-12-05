@@ -81,6 +81,7 @@ export const createSocketSlice: StateCreator<ConnectionStore, [], [], SocketSlic
     const socket = get().socket;
     if (socket) socket.disconnect();
     set({ socket: null });
+    get().nodeError.length > 0 && set({ nodeError: [] });
     get().updateRole("editor");
   },
 
