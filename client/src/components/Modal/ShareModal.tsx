@@ -10,8 +10,7 @@ interface ShareModalProps {
 
 export default function ShareModal({ open, closeModal }: ShareModalProps) {
   const [copySuccess, setCopySuccess] = useState(false);
-
-  const currentUrl = window.location.href;
+  const [currentUrl, setCurrentUrl] = useState(window.location.href);
 
   async function copyLink() {
     try {
@@ -23,6 +22,15 @@ export default function ShareModal({ open, closeModal }: ShareModalProps) {
     setTimeout(() => setCopySuccess(false), 2000);
   }
 
+  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    e.preventDefault();
+    setCurrentUrl(e.target.value);
+  }
+
+  function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
+    e.stopPropagation();
+  }
+
   return (
     <Modal open={open} closeModal={closeModal}>
       <div className="py-4">
@@ -30,8 +38,10 @@ export default function ShareModal({ open, closeModal }: ShareModalProps) {
         <Input
           type="text"
           value={currentUrl}
-          readOnly
-          className="pointer-events-none h-10 w-full truncate rounded-lg bg-grayscale-200 px-3 py-2 text-grayscale-500"
+          onChange={handleChange}
+          onClick={(e) => e.currentTarget.select()}
+          onKeyDown={handleKeyDown}
+          className="h-10 w-full truncate rounded-lg bg-grayscale-200 px-3 py-2 text-grayscale-500 focus:border-transparent focus:outline-none"
         />
         <Button
           onClick={copyLink}
