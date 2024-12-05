@@ -101,7 +101,9 @@
 <br>
 
 ## 서버 아키텍처
+<div align="center">
 <img width="697" alt="image" src="https://i.imgur.com/JbkxCKa.png">
+</div>
 
 
 
