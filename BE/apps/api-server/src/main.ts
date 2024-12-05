@@ -17,6 +17,11 @@ async function bootstrap() {
       whitelist: true,
     }),
   );
+  app.enableCors({
+    origin: ['https://boomap.site', 'https://www.boomap.site'],
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    credentials: true,
+  });
 
   const port = configService.get<number>('API_PORT');
   await app.listen(port);
