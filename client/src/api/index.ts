@@ -63,7 +63,8 @@ instance.interceptors.response.use(
             return Promise.reject(error);
           }
         }
-
+        useConnectionStore.getState().logout();
+        await signOut();
         return Promise.reject(error);
       }
 
